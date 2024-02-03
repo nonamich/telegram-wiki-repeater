@@ -1,0 +1,44 @@
+name: bot deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/deploy-bot.yml
+      - apps/bot/**
+      - packages/**
+  workflow_dispatch:
+
+jobs:
+  deploy_bot:
+    name: Scraper Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: npm install
+        run: npm ci -w bot --include-workspace-root
+
+      - name: Build
+        run: npm run bot:build
+
+      - name: npm prune
+        run: npm prune --omit=dev -w bot
+
+      - name: Archive
+        run: |
+          zip -qq -9 -r deploy.zip .
+          du -sh deploy.zip
+      - name: Deploy
+        run: aws lambda update-function-code --function-name=telegram-wiki-tg-bot --zip-file=fileb://deploy.zip

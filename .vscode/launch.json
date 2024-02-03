@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "All",
+      "configurations": ["bot"]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "bot",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/apps/bot",
+      "port": 9229,
+      "restart": true,
+      "continueOnAttach": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@repo/shared",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -W"
+  },
+  "devDependencies": {
+    "@repo/configs": "*",
+    "typescript": "^5.3.3"
+  }
+}

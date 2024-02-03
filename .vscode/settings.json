@@ -1,0 +1,13 @@
+{
+  "cSpell.words": [
+    "mostread",
+    "onthisday",
+    "originalimage",
+    "sparticuz",
+    "telegram-wiki"
+  ],
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+  }
+}

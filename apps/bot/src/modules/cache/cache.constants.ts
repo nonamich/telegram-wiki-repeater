@@ -1,0 +1,4 @@
+export const REDIS_INSTANCE_TOKEN = 'REDIS_INSTANCE_TOKEN';
+export const CACHE_MODULE_OPTIONS = 'CACHE_MODULE_OPTIONS';
+
+export const DAY_IN_MS = 60 * 60 * 24;

@@ -12,7 +12,7 @@
     "dev": "npm run start:debug",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "env:run:dev": "npx dotenv-cli -e .env.development",
-    "translate:pull": "npm run env:run:dev -- npx i18nexus-cli pull -p ./src/modules/telegram/i18n/languages/ -ns default --overwrite",
+    "translate:pull": "npm run env:run:dev -- npx i18nexus-cli pull --overwrite --path ./src/modules/telegram/i18n/languages/",
     "translate:import": "npm run env:run:dev -- npx i18nexus-cli import ./src/modules/telegram/i18n/languages/en.json -ns default"
   },
   "dependencies": {

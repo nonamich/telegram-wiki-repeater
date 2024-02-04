@@ -1,0 +1,21 @@
+{
+  "default": {
+    "iconLang": "🇹🇷",
+    "langName": "Türkçe",
+    "chooseLang": "Dilinizi seçin",
+    "chosen": "sen seçtin",
+    "source": "Kaynak",
+    "greeter": {
+      "leave": "Artık Wikipedia'nın ilginç içeriği burada görünecek. İçerik yakında kullanıma sunulacak."
+    },
+    "article": {
+      "header": {
+        "image": "Günlük Öne Çıkan Resim",
+        "mostread": "En Çok Okunan Makale",
+        "news": "Bugünün Haberlerinden Hikayeler",
+        "onthisday": "Tarihte Bu Günde",
+        "tfa": "Bugünün Öne Çıkan Makalesi"
+      }
+    }
+  }
+}

@@ -6,8 +6,8 @@ import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
 import { RedisType } from '../cache/cache.type';
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
+import * as langs from './i18n/languages';
 import { TelegramLanguage } from './i18n/telegram.i18n.interface';
-import * as langs from './i18n/telegram.i18n.langs';
 import { ArticleHTMLParams, HTMLParams } from './interfaces';
 import { TELEGRAM_ALLOWED_TAGS } from './telegram.constants';
 
@@ -90,7 +90,7 @@ export const getArticleExtra = (
   url: string,
 ): ExtraReplyMessage => {
   const {
-    translation: { source },
+    default: { source },
   } = langs[lang];
 
   return {

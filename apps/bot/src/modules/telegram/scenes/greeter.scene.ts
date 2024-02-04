@@ -4,7 +4,7 @@ import { Markup } from 'telegraf';
 import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 
 import { I18N_SUPPORTED_LANGS } from '../i18n/telegram.i18n.constants';
-import * as langs from '../i18n/telegram.i18n.langs';
+import * as langs from '../i18n/languages';
 import { TelegramI18nService } from '../i18n/telegram.i18n.service';
 import { SceneContext } from '../interfaces';
 import { SCENE_IDS } from '../telegram.constants';
@@ -52,7 +52,7 @@ export class GreeterScene {
 
     for (const lang of I18N_SUPPORTED_LANGS) {
       const {
-        translation: { iconLang, langName },
+        default: { iconLang, langName },
       } = langs[lang];
 
       inlineKeyboard.push(

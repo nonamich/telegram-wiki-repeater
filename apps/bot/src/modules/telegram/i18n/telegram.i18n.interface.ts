@@ -2,7 +2,7 @@ import { InitOptions } from 'i18next';
 
 import { WIKI_SUPPORT_LANGUAGE } from '~/modules/wiki/wiki.constants';
 
-import { en } from './telegram.i18n.langs';
+import { en } from './languages';
 
 export type TelegramLanguage = (typeof WIKI_SUPPORT_LANGUAGE)[number];
 

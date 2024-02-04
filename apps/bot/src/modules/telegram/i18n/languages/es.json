@@ -1,0 +1,21 @@
+{
+  "default": {
+    "iconLang": "🇪🇸",
+    "langName": "Español",
+    "chooseLang": "Elige tu idioma",
+    "chosen": "Has elegido",
+    "source": "Fuente",
+    "greeter": {
+      "leave": "Ahora aparecerá aquí contenido interesante de wikipedia. El contenido estará disponible pronto."
+    },
+    "article": {
+      "header": {
+        "image": "Imagen destacada diaria",
+        "mostread": "Artículo más leído",
+        "news": "Historias de las noticias de hoy",
+        "onthisday": "En este día en la historia",
+        "tfa": "Artículo destacado de hoy"
+      }
+    }
+  }
+}

@@ -1,31 +1,37 @@
-import {
-  WikiLanguage,
-  WikiArticle,
-  ArticleSource,
-  WikiImageFeatured,
-} from '~/modules/wiki/interfaces';
+import { WikiArticle, WikiImageFeatured } from '~/modules/wiki/interfaces';
 
-interface WithLang {
-  lang: WikiLanguage;
+import { TelegramLanguage } from '../i18n/telegram.i18n.interface';
+
+export interface WithLang {
+  lang: TelegramLanguage;
 }
 
-export interface TelegramServiceParams extends WithLang {
+export interface WithTags {
+  tags: string[];
+}
+
+export interface WithBeforeTitle {
+  header: string;
+}
+
+export interface BaseParams extends WithLang, WithBeforeTitle {
   chatId: number;
 }
 
-export interface TelegramFeaturedWikiImageParams extends TelegramServiceParams {
+export interface TgWikiImageParams extends BaseParams {
   image: WikiImageFeatured;
 }
 
-export interface TelegramWikiArticleParams extends TelegramServiceParams {
+export interface TgWikiArticleParams extends BaseParams, WithTags {
   article: WikiArticle;
-  type: ArticleSource;
 }
 
-export interface ArticleHTMLParams extends WithLang {
+export interface HTMLParams extends WithLang, WithTags, WithBeforeTitle {
+  content: string;
+}
+
+export interface ArticleHTMLParams extends HTMLParams {
   title: string;
   url: string;
-  content: string;
   description?: string;
-  beforeTitle?: string;
 }

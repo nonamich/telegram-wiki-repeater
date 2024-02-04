@@ -1,35 +1,33 @@
-import path from 'node:path';
-
 import { Injectable } from '@nestjs/common';
 
-import _ from 'lodash';
+import dayjs from 'dayjs';
 import { InjectBot } from 'nestjs-telegraf';
-import sanitizeHtml, { IOptions as SanitizeHtmlOptions } from 'sanitize-html';
-import { Markup, Telegraf } from 'telegraf';
-import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
-import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
+import { Telegraf } from 'telegraf';
 
 import { Schemas, db, drizzle } from '@repo/db';
 
 import {
-  WikiArticle,
-  WikiImage,
-  WikiLanguage,
-  ArticleSource,
-} from '~/modules/wiki/interfaces';
-
-import { I18N_SUPPORTED_LANGS } from './i18n/telegram.i18n.constants';
-import {
-  ArticleHTMLParams,
-  TelegramFeaturedWikiImageParams,
-  TelegramWikiArticleParams,
-  MyContext,
+  TgWikiImageParams,
+  TgWikiArticleParams,
+  SceneContext,
+  TgWikiNewsParams,
+  TgWikiMostReadParams,
+  TgWikiListParams,
 } from './interfaces';
-import { TELEGRAM_ALLOWED_TAGS } from './telegram.constants';
+import { TgWikiOnThisDayParams } from './interfaces/onthisday.interface';
+import {
+  getArticleExtra,
+  getArticleHTML,
+  getArticleTitleHtml,
+  getDefaultExtra,
+  getHTML,
+  getArticleImage,
+  getPreparedHtml,
+} from './telegram.utils';
 
 @Injectable()
 export class TelegramService {
-  constructor(@InjectBot() private bot: Telegraf<MyContext>) {}
+  constructor(@InjectBot() private bot: Telegraf<SceneContext>) {}
 
   getChat(chatId: number) {
     return db.query.chat.findFirst({
@@ -57,38 +55,9 @@ export class TelegramService {
       });
   }
 
-  getLangDashboard(defaultLang: string) {
-    const inlineKeyboard: InlineKeyboardButton[] = [];
-
-    for (const [langCode, data] of Object.entries(I18N_SUPPORTED_LANGS)) {
-      let icon = data.icon;
-
-      if (defaultLang === langCode) {
-        icon = '✅';
-      }
-
-      inlineKeyboard.push(
-        Markup.button.callback(`${icon} ${data.name}`, `lang-${langCode}`),
-      );
-    }
-
-    return {
-      text: '🌍 Choose Your Language',
-      extra: {
-        reply_markup: {
-          inline_keyboard: _.chunk(inlineKeyboard, 3),
-        },
-      },
-    };
-  }
-
-  sendFeaturedWikiImage({
-    chatId,
-    image,
-    lang,
-  }: TelegramFeaturedWikiImageParams) {
+  sendWikiImage({ chatId, image, lang, header }: TgWikiImageParams) {
     const title = image.title.replace(/^File:|\.(png|jpg|svg)$/g, '');
-    const extra = this.getDefaultExtra(image.file_page);
+    const extra = getArticleExtra(lang, image.file_page);
 
     return this.bot.telegram.sendPhoto(
       chatId,
@@ -97,27 +66,140 @@ export class TelegramService {
       },
       {
         ...extra,
-        caption: this.getArticleHTML({
+        caption: getArticleHTML({
           title,
           lang,
-          beforeTitle: this.getTitleOfType('image'),
+          header,
           url: image.file_page,
           content: image.description.html,
+          tags: ['image'],
         }),
       },
     );
   }
 
-  sendWikiArticle({ article, chatId, lang, type }: TelegramWikiArticleParams) {
-    const image = this.getImageArticle(article);
-    const extra = this.getDefaultExtra(article.content_urls.mobile.page);
-    const html = this.getArticleHTML({
+  async sendMostRead({ chatId, header, lang, mostread }: TgWikiMostReadParams) {
+    const { articles, date } = mostread;
+
+    const article = articles.at(0);
+
+    if (!article) {
+      return;
+    }
+
+    header += ` (${article.views})`;
+
+    await this.sendArticle({
+      chatId,
+      header,
+      lang,
+      article,
+      tags: ['most_read'],
+    });
+  }
+
+  async sendListArticles({
+    articles,
+    chatId,
+    header,
+    lang,
+    tags,
+  }: TgWikiListParams) {
+    let content = '';
+
+    for (const article of articles) {
+      content += `\n• ${getArticleTitleHtml(article)}`;
+
+      if (article.description) {
+        content += ` - ${article.description}`;
+      }
+
+      content += ';';
+    }
+
+    const html = getHTML({
+      content,
+      lang,
+      header,
+      tags,
+    });
+
+    const article = articles.find(getArticleImage);
+    const sanitizedHtml = getPreparedHtml(html, lang);
+    const extra = getDefaultExtra();
+
+    if (article) {
+      const image = getArticleImage(article);
+
+      if (image) {
+        this.bot.telegram.sendPhoto(
+          chatId,
+          {
+            url: image.source,
+          },
+          {
+            ...extra,
+            caption: sanitizedHtml,
+          },
+        );
+
+        return;
+      }
+    }
+
+    await this.bot.telegram.sendMessage(chatId, sanitizedHtml, extra);
+  }
+
+  async sendOnThisDay({
+    chatId,
+    header: mainHeader,
+    lang,
+    onthisday,
+  }: TgWikiOnThisDayParams) {
+    for (const { pages, text, year } of onthisday) {
+      const date = dayjs().year(year).locale(lang);
+      const header = `${mainHeader} (${date.format('DD MMMM YYYY')})\n\n${text}\n`;
+      const tags = ['on_this_day', date.format('DD_MMMM_YYYY')];
+
+      await this.sendListArticles({
+        chatId,
+        header,
+        lang,
+        articles: pages,
+        tags,
+      });
+    }
+  }
+
+  async sendNews({ chatId, lang, news, header: mainHeader }: TgWikiNewsParams) {
+    for (const { links, story } of news) {
+      const header = `${mainHeader}\n\n${story}\n`;
+      const tags = [
+        'news',
+        dayjs(links[0].timestamp).locale(lang).format('DD_MMMM_YYYY'),
+      ];
+
+      await this.sendListArticles({
+        chatId,
+        header,
+        lang,
+        articles: links,
+        tags,
+      });
+    }
+  }
+
+  sendArticle({ article, chatId, lang, header, tags }: TgWikiArticleParams) {
+    const image = getArticleImage(article);
+    const extra = getArticleExtra(lang, article.content_urls.mobile.page);
+    const html = getArticleHTML({
       title: article.titles.normalized,
       url: article.content_urls.mobile.page,
       content: article.extract_html,
       description: article.description,
-      beforeTitle: this.getTitleOfType(type),
+      header,
       lang,
+      tags,
     });
 
     if (image) {
@@ -134,97 +216,5 @@ export class TelegramService {
     }
 
     return this.bot.telegram.sendMessage(chatId, html, extra);
-  }
-
-  private getDefaultExtra(source: string, replyId?: number): ExtraReplyMessage {
-    return {
-      parse_mode: 'HTML',
-      reply_markup: {
-        inline_keyboard: [[Markup.button.url('🔗 Source', source)]],
-      },
-      reply_to_message_id: replyId,
-    };
-  }
-
-  private getImageArticle(article: WikiArticle) {
-    let image: WikiImage | undefined;
-
-    if (
-      article.originalimage &&
-      (article.originalimage.width <= 3000 ||
-        article.originalimage.height <= 3000)
-    ) {
-      image = article.originalimage;
-    } else if (article.thumbnail) {
-      image = article.thumbnail;
-    }
-
-    return image;
-  }
-
-  private getTitleOfType(type: ArticleSource) {
-    switch (type) {
-      case 'image':
-        return '🖼️ Daily Featured Image';
-      case 'mostread':
-        return '⚡ Most Read Article';
-      case 'news':
-        return "📰 Stories From Today's News";
-      case 'onthisday':
-        return '🏺 On This Day In History';
-      case 'tfa':
-        return "⭐ Today's Featured Article";
-    }
-  }
-
-  private getArticleHTML({
-    content,
-    url,
-    title,
-    beforeTitle = '',
-    lang,
-    description,
-  }: ArticleHTMLParams) {
-    let html = ``;
-
-    if (beforeTitle) {
-      html += `<strong>${beforeTitle}</strong>\n\n`;
-    }
-
-    html += `<a href="${url}"><strong>${title}</strong></a>`;
-
-    if (description) {
-      html += ` - <i>${description}</i>`;
-    }
-
-    html += `\n\n${this.prepareHtml(content, lang)}`;
-
-    return html;
-  }
-
-  private prepareHtml(html: string, lang: WikiLanguage): string {
-    return sanitizeHtml(html, this.getSanitizeHtmlOptions(lang));
-  }
-
-  private getSanitizeHtmlOptions(lang: WikiLanguage): SanitizeHtmlOptions {
-    return {
-      exclusiveFilter: (frame) => !frame.text.trim(),
-      transformTags: {
-        a: (tagName, attribs) => {
-          if (attribs.href && attribs.rel === 'mw:WikiLink') {
-            attribs.href = path.join(
-              `https://${lang}.wikipedia.org/wiki/`,
-              attribs.href,
-            );
-          }
-
-          return {
-            tagName,
-            attribs,
-          };
-        },
-      },
-      allowedTags: TELEGRAM_ALLOWED_TAGS,
-    };
   }
 }

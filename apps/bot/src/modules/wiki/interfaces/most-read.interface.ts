@@ -1,14 +1,14 @@
 import { WikiArticle } from '.';
 
-export interface MostReadArticle extends WikiArticle {
+export interface WikiArticleMostRead extends WikiArticle {
   views: number;
   rank: number;
   view_history: ViewHistory[];
 }
 
-export interface MostReadResponse {
+export interface WikiMostRead {
   date: string;
-  articles: MostReadArticle[];
+  articles: WikiArticleMostRead[];
 }
 
 interface ViewHistory {

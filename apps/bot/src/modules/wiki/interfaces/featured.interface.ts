@@ -2,9 +2,9 @@ import {
   WikiLanguage,
   WikiArticle,
   WikiImage,
-  MostReadResponse,
-  News,
-  OnThisDayResponse,
+  WikiMostRead,
+  WikiNews,
+  WikiOnThisDay,
 } from '.';
 
 export interface FeaturedRequest {
@@ -16,10 +16,10 @@ export interface FeaturedRequest {
 
 export interface FeaturedResponse {
   tfa?: WikiFeaturedArticle;
-  mostread?: MostReadResponse;
+  mostread?: WikiMostRead;
   image?: WikiImageFeatured;
-  onthisday?: OnThisDayResponse[];
-  news?: News[];
+  onthisday?: WikiOnThisDay[];
+  news?: WikiNews[];
 }
 
 export type ArticleSource = keyof FeaturedResponse;

@@ -3,7 +3,7 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { TelegrafArgumentsHost, TelegrafException } from 'nestjs-telegraf';
 import { TelegramError } from 'telegraf';
 
-import { MyContext } from '../interfaces/telegraf.interface';
+import { SceneContext } from '../interfaces/telegraf.interface';
 
 @Catch(TelegramError)
 export class TelegrafExceptionFilter implements ExceptionFilter {
@@ -12,7 +12,9 @@ export class TelegrafExceptionFilter implements ExceptionFilter {
     host: ArgumentsHost,
   ): Promise<void> {
     const telegrafHost = TelegrafArgumentsHost.create(host);
-    const ctx = telegrafHost.getContext<MyContext>();
+    const ctx = telegrafHost.getContext<SceneContext>();
+
+    console.error(exception);
 
     await ctx.replyWithHTML(`<b>Error</b>: something wrong!`);
   }

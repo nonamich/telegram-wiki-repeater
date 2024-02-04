@@ -14,3 +14,11 @@ export const TELEGRAM_ALLOWED_TAGS = [
   'strike',
   'tg-spoiler',
 ];
+
+export enum SCENE_IDS {
+  GREETER = 'greeter',
+}
+
+export enum COMMANDS {
+  SHOW = 'show',
+}

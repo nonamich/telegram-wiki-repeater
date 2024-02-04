@@ -26,6 +26,7 @@
     "@types/sanitize-html": "^2.9.5",
     "aws-lambda": "^1.0.7",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
     "i18next": "^23.8.2",
     "lodash.chunk": "^4.2.0",
     "nestjs-telegraf": "^2.7.0",
@@ -45,6 +46,7 @@
     "@types/lodash.chunk": "^4.2.9",
     "@types/node": "^20.11.14",
     "eslint": "^8.42.0",
+    "i18nexus-cli": "^3.3.0",
     "source-map-support": "^0.5.21",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"

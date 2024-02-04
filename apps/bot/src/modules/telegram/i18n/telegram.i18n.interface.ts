@@ -1,22 +1,17 @@
 import { InitOptions } from 'i18next';
 
-import { WikiLanguage } from '~/modules/wiki/interfaces';
+import { WIKI_SUPPORT_LANGUAGE } from '~/modules/wiki/wiki.constants';
 
-import { enResource } from './resources/en.resource';
+import { en } from './telegram.i18n.langs';
 
-export interface TelegramLanguageItem {
-  name: string;
-  icon: string;
-}
+export type TelegramLanguage = (typeof WIKI_SUPPORT_LANGUAGE)[number];
 
 export type TelegramLanguageList = {
-  [T in WikiLanguage]: TelegramLanguageItem;
+  [T in TelegramLanguage]: string;
 };
 
 export interface I18NextOptions extends InitOptions {
-  resources: I18NResources;
+  resources: {
+    [key in TelegramLanguage]: typeof en;
+  };
 }
-
-export type I18NResources = {
-  [key in WikiLanguage]: typeof enResource;
-};

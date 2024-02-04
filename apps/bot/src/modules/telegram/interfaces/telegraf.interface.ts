@@ -1,12 +1,21 @@
 import type { i18n } from 'i18next';
-import type { Context as ContextTelegraf } from 'telegraf';
+import type { Scenes } from 'telegraf';
 
-interface SessionData {
-  locale?: string;
+import { SceneSession, SceneSessionData } from 'telegraf/typings/scenes';
+
+interface MySessionData {
+  locale: string;
 }
 
-export interface MyContext extends ContextTelegraf {
+interface BaseContext {
   i18next: i18n;
-  session: SessionData;
   match?: RegExpMatchArray;
+}
+
+export interface SceneContext<T extends object = object>
+  extends Scenes.SceneContext,
+    BaseContext {
+  session: SceneSession<SceneSessionData> & MySessionData;
+
+  state: T;
 }

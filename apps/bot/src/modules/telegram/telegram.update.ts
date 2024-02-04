@@ -1,131 +1,90 @@
 import { UseFilters } from '@nestjs/common';
 
-import { Update, Start, Ctx, Action } from 'nestjs-telegraf';
+import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 
 import { WikiService } from '~/modules/wiki/wiki.service';
 
-import { WikiLanguage } from '../wiki/interfaces/common.interface';
 import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
-import { I18N_SUPPORTED_LANGS } from './i18n/telegram.i18n.constants';
-import { MyContext } from './interfaces/telegraf.interface';
+import { TelegramI18nService } from './i18n/telegram.i18n.service';
+import { SceneContext } from './interfaces/telegraf.interface';
+import { COMMANDS, SCENE_IDS } from './telegram.constants';
 import { TelegramService } from './telegram.service';
 
 @Update()
 @UseFilters(new TelegrafExceptionFilter())
 export class TelegramUpdate {
   constructor(
-    private readonly wikiService: WikiService,
-    private readonly tgService: TelegramService,
+    private readonly wiki: WikiService,
+    private readonly tg: TelegramService,
+    private readonly tgI18n: TelegramI18nService,
   ) {}
 
   @Start()
-  async onStart(@Ctx() ctx: MyContext) {
-    if (!ctx.chat?.id) {
-      return;
-    }
-
-    let chat = await this.tgService.getChat(ctx.chat.id);
-
-    if (chat) {
-      await ctx.i18next.changeLanguage(chat.lang);
-    } else {
-      const [chatUpdated] = await this.tgService.insetOrUpdateChat(
-        ctx.chat.id,
-        ctx.i18next.language,
-      );
-
-      chat = chatUpdated;
-    }
-
-    const { text, extra } = this.tgService.getLangDashboard(chat.lang);
-
-    await ctx.sendMessage(text, extra);
+  @Command('lang')
+  async onStart(@Ctx() ctx: SceneContext) {
+    await ctx.scene.enter(SCENE_IDS.GREETER);
   }
 
-  @Action(/^lang-(\w+)$/)
-  async onLang(@Ctx() ctx: MyContext) {
+  @Command(COMMANDS.SHOW)
+  async onShow(@Ctx() ctx: SceneContext) {
     if (!ctx.chat?.id) {
       return;
     }
 
-    const lang = ctx.match?.at(1);
-
-    if (!lang || !(lang in I18N_SUPPORTED_LANGS)) {
-      return ctx.answerCbQuery(`This language is not supported`);
-    }
-
-    const { extra } = this.tgService.getLangDashboard(lang);
-
-    await this.tgService.insetOrUpdateChat(ctx.chat.id, lang);
-
-    await ctx.i18next.changeLanguage(lang);
-
-    await ctx.editMessageReplyMarkup(extra.reply_markup);
-    await ctx.answerCbQuery();
-  }
-
-  async onStart2(@Ctx() ctx: MyContext) {
-    if (!ctx.chat?.id) {
-      return;
-    }
-
-    let pinMessageId: number | undefined;
     const date = new Date();
-    const lang: WikiLanguage = 'en';
-    const { image, mostread, tfa } = await this.wikiService.getFeaturedContent({
+    const lang = this.tgI18n.getLang(ctx.i18next.language);
+    const featuredContent = await this.wiki.getFeaturedContent({
       lang,
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
+      // year: date.getFullYear(),
+      // month: date.getMonth() + 1,
+      // day: date.getDate(),
+      year: 2024,
+      month: 2,
+      day: 4,
     });
-    const baseParams = {
-      chatId: ctx.chat.id,
-      lang,
-    };
+    const baseParams = { chatId: ctx.chat.id, lang };
 
-    if (tfa) {
-      const message = await this.tgService.sendWikiArticle({
-        ...baseParams,
-        article: tfa,
-        type: 'tfa',
-      });
-
-      pinMessageId = message.message_id;
-    }
-
-    if (image) {
-      const message = await this.tgService.sendFeaturedWikiImage({
-        ...baseParams,
-        image,
-      });
-
-      if (!pinMessageId) {
-        pinMessageId = message.message_id;
-      }
-    }
+    const { image, mostread, tfa, onthisday, news } = featuredContent;
 
     if (mostread) {
-      const article = mostread.articles.at(0);
-
-      if (article) {
-        await this.tgService.sendWikiArticle({
-          ...baseParams,
-          article,
-          type: 'mostread',
-        });
-      }
+      await this.tg.sendMostRead({
+        ...baseParams,
+        header: `⚡ ${ctx.i18next.t('article.header.mostread')}`,
+        mostread,
+      });
     }
 
     // if (onthisday) {
-    //   const article = onthisday.pages.at(0);
-
-    //   if (article) {
-    //     await this.tgService.sendWikiArticle(ctx.chat.id, article);
-    //   }
+    //   await this.tg.sendOnThisDay({
+    //     ...baseParams,
+    //     header: `🏛 ${ctx.i18next.t('article.header.onthisday')}`,
+    //     onthisday,
+    //   });
     // }
 
-    if (pinMessageId) {
-      await ctx.pinChatMessage(pinMessageId);
-    }
+    // if (news) {
+    //   await this.tg.sendNews({
+    //     ...baseParams,
+    //     header: `📰 ${ctx.i18next.t('article.header.news')}`,
+    //     news,
+    //   });
+    // }
+
+    // if (image) {
+    //   await this.tg.sendWikiImage({
+    //     ...baseParams,
+    //     header: `🖼️ ${ctx.i18next.t('article.header.image')}`,
+    //     image,
+    //   });
+    // }
+
+    // if (tfa) {
+    //   await this.tg.sendArticle({
+    //     ...baseParams,
+    //     header: `⭐ ${ctx.i18next.t('article.header.tfa')}`,
+    //     article: tfa,
+    //     tags: ['daily_article'],
+    //   });
+    // }
   }
 }

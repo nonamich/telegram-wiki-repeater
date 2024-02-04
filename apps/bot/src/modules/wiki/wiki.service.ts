@@ -10,6 +10,7 @@ import {
   FeaturedResponse,
   FeaturedRequest,
 } from './interfaces/featured.interface';
+import { WIKI_BASE_URL } from './wiki.constants';
 
 @Injectable()
 export class WikiService {
@@ -31,10 +32,7 @@ export class WikiService {
   }
 
   private async request<T extends object>(url: string): Promise<T> {
-    const {
-      defaults: { baseURL },
-    } = this.http.axiosRef;
-    const cacheKey = `wikiApi:get:${baseURL}${url}`;
+    const cacheKey = `wiki:api:get:${new URL(WIKI_BASE_URL).host}${url}`;
     const cache = await this.cacheService.get<T>(cacheKey);
 
     if (cache) return cache;
@@ -49,7 +47,7 @@ export class WikiService {
       return data;
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 504) {
-        await Utils.sleep(5000);
+        await Utils.sleep(10000);
 
         return this.request(url);
       }

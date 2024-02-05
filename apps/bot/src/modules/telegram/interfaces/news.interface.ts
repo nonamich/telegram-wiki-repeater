@@ -1,7 +1,7 @@
 import { WikiNews } from '~/modules/wiki/interfaces';
 
-import { BaseParams, WithBeforeTitle } from './common.interface';
+import { BaseParams, WithHeader } from './common.interface';
 
-export interface TgWikiNewsParams extends BaseParams, WithBeforeTitle {
+export interface TgWikiNewsParams extends BaseParams, WithHeader {
   news: WikiNews[];
 }

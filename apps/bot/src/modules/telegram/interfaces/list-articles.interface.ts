@@ -1,10 +1,16 @@
 import { WikiArticle } from '~/modules/wiki/interfaces';
 
-import { BaseParams, WithBeforeTitle, WithTags } from './common.interface';
+import {
+  BaseParams,
+  WithHeader,
+  WithSource,
+  WithTags,
+} from './common.interface';
 
 export interface TgWikiListParams
   extends BaseParams,
-    WithBeforeTitle,
-    WithTags {
+    WithHeader,
+    WithTags,
+    WithSource {
   articles: WikiArticle[];
 }

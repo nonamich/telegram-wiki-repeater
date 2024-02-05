@@ -1,21 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { Catch, ExceptionFilter } from '@nestjs/common';
 
-import { TelegrafArgumentsHost, TelegrafException } from 'nestjs-telegraf';
+import { TelegrafException } from 'nestjs-telegraf';
 import { TelegramError } from 'telegraf';
-
-import { SceneContext } from '../interfaces/telegraf.interface';
 
 @Catch(TelegramError)
 export class TelegrafExceptionFilter implements ExceptionFilter {
-  async catch(
-    exception: TelegrafException,
-    host: ArgumentsHost,
-  ): Promise<void> {
-    const telegrafHost = TelegrafArgumentsHost.create(host);
-    const ctx = telegrafHost.getContext<SceneContext>();
-
+  async catch(exception: TelegrafException): Promise<void> {
     console.error(exception);
-
-    await ctx.replyWithHTML(`<b>Error</b>: something wrong!`);
   }
 }

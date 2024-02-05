@@ -1,7 +1,7 @@
 import { WikiMostRead } from '~/modules/wiki/interfaces';
 
-import { BaseParams, WithBeforeTitle } from './common.interface';
+import { BaseParams, WithHeader } from './common.interface';
 
-export interface TgWikiMostReadParams extends BaseParams, WithBeforeTitle {
+export interface TgWikiMostReadParams extends BaseParams, WithHeader {
   mostread: WikiMostRead;
 }

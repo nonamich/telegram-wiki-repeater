@@ -1,15 +1,21 @@
 import path from 'node:path';
 
+import lodash from 'lodash';
 import sanitizeHtml, { IOptions as SanitizeHtmlOptions } from 'sanitize-html';
-import { Markup } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
+import truncateHtml from 'truncate-html';
+
+import { Utils } from '@repo/shared';
 
 import { RedisType } from '../cache/cache.type';
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
 import * as langs from './i18n/languages';
 import { TelegramLanguage } from './i18n/telegram.i18n.interface';
 import { ArticleHTMLParams, HTMLParams } from './interfaces';
-import { TELEGRAM_ALLOWED_TAGS } from './telegram.constants';
+import {
+  MAX_CONTENT_MESSAGE,
+  TELEGRAM_ALLOWED_TAGS,
+} from './telegram.constants';
 
 export const getSessionStore = (redis: RedisType) => {
   const prefix = 'telegraf:';
@@ -63,41 +69,26 @@ export const getSanitizeHtmlOptions = (
 };
 
 export const getArticleImage = (article: WikiArticle) => {
-  let image: WikiImage | undefined;
+  const images = [article.originalimage, article.thumbnail].filter(
+    (image): image is WikiImage => !!image,
+  );
+  const maxH = 2000;
+  const minW = 200;
+  const maxW = 3000;
+  const minH = 150;
 
-  if (
-    article.originalimage &&
-    (article.originalimage.width <= 3000 ||
-      article.originalimage.height <= 3000)
-  ) {
-    image = article.originalimage;
-  } else if (article.thumbnail) {
-    image = article.thumbnail;
-  }
-
-  return image;
+  return images.find((image) => {
+    return (
+      Utils.isBetween(image.width, minW, maxW) &&
+      Utils.isBetween(image.height, minH, maxH)
+    );
+  });
 };
 
 export const getDefaultExtra = (): ExtraReplyMessage => {
   return {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
-  };
-};
-
-export const getArticleExtra = (
-  lang: TelegramLanguage,
-  url: string,
-): ExtraReplyMessage => {
-  const {
-    default: { source },
-  } = langs[lang];
-
-  return {
-    ...getDefaultExtra(),
-    reply_markup: {
-      inline_keyboard: [[Markup.button.url(`🔗 ${source}`, url)]],
-    },
   };
 };
 
@@ -108,11 +99,11 @@ export const getArticleHTML = ({
   header,
   lang,
   description,
-  tags,
+  ...args
 }: ArticleHTMLParams) => {
   let html = ``;
 
-  header += `\n\n<a href="${url}"><strong>${title}</strong></a> `;
+  header += `<a href="${url}"><strong>${title}</strong></a>`;
 
   if (description) {
     header += ` - <i>${description}</i>`;
@@ -120,31 +111,63 @@ export const getArticleHTML = ({
 
   header += '\n\n';
 
-  html += getHTML({
-    content: getPreparedHtml(content, lang),
+  html += getHTMLTemplate({
+    content,
     header,
     lang,
-    tags,
+    ...args,
   });
 
   return html;
 };
 
-export const getHTML = ({ content, header, lang, tags }: HTMLParams) => {
+export const getHTMLTemplate = ({
+  content,
+  header,
+  lang,
+  tags,
+  links = [],
+  source,
+  maxLength = MAX_CONTENT_MESSAGE,
+}: HTMLParams) => {
   let html = ``;
+  const {
+    default: { source: sourceText, support_wikipedia },
+  } = langs[lang];
 
   html += `<strong>${header}</strong>`;
-
   html += `${getPreparedHtml(content, lang)}`;
+  html = truncateHtml(html, {
+    keepWhitespaces: true,
+    length: maxLength,
+  });
 
   if (tags.length) {
     html += '\n\n';
-    html += tags.map((tag) => `#${tag}`).join(' ');
+    html += tags.map((tag) => `#${tag.replaceAll(' ', '_')}`).join(' ');
   }
+
+  if (source) {
+    links.unshift({
+      text: `🔗 ${sourceText}`,
+      href: source,
+    });
+  }
+
+  links.unshift({
+    text: `💸 ${support_wikipedia}`,
+    href: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
+  });
+
+  html += `\n\n${links
+    .map(({ href, text }) => {
+      return `<a href="${href}">${text}</a>`;
+    })
+    .join(' | ')}`;
 
   return html;
 };
 
 export const getArticleTitleHtml = (article: WikiArticle) => {
-  return `<strong><a href="${article.content_urls.mobile.page}">${article.titles.normalized}</a><strong>`;
+  return `<strong><a href="${article.content_urls.mobile.page}">${lodash.capitalize(article.titles.normalized)}</a></strong>`;
 };

@@ -1,13 +1,15 @@
-import _ from 'lodash';
-import { Action, Ctx, Scene, SceneEnter, SceneLeave } from 'nestjs-telegraf';
+import lodash from 'lodash';
+import { Action, Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
 import { Markup } from 'telegraf';
 import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 
-import { I18N_SUPPORTED_LANGS } from '../i18n/telegram.i18n.constants';
-import * as langs from '../i18n/languages';
+import { Utils } from '@repo/shared';
+
+import { I18N_LANGS_INFO } from '../i18n/telegram.i18n.constants';
+import { TelegramLanguageList } from '../i18n/telegram.i18n.interface';
 import { TelegramI18nService } from '../i18n/telegram.i18n.service';
 import { SceneContext } from '../interfaces';
-import { SCENE_IDS } from '../telegram.constants';
+import { COMMANDS, SCENE_IDS } from '../telegram.constants';
 import { TelegramService } from '../telegram.service';
 
 @Scene(SCENE_IDS.GREETER)
@@ -25,6 +27,8 @@ export class GreeterScene {
 
     let chat = await this.tg.getChat(ctx.chat.id);
 
+    ctx.scene.state['isNewMember'] = !chat;
+
     if (!chat) {
       const [chatUpdated] = await this.tg.insetOrUpdateChat(
         ctx.chat.id,
@@ -35,7 +39,7 @@ export class GreeterScene {
     }
 
     const lang = this.tgI18n.getLang(chat.lang);
-    const inlineKeyboard = this.getLangInlineKeyboard();
+    const inlineKeyboard = this.getLangInlineKeyboard(ctx);
 
     await ctx.i18next.changeLanguage(lang);
 
@@ -46,21 +50,25 @@ export class GreeterScene {
     });
   }
 
-  getLangInlineKeyboard() {
+  getLangInlineKeyboard(ctx: SceneContext) {
     const columns = 3;
     const inlineKeyboard: InlineKeyboardButton[] = [];
 
-    for (const lang of I18N_SUPPORTED_LANGS) {
-      const {
-        default: { iconLang, langName },
-      } = langs[lang];
+    let lang: keyof TelegramLanguageList;
+
+    for (lang in I18N_LANGS_INFO) {
+      const info = I18N_LANGS_INFO[lang];
 
       inlineKeyboard.push(
-        Markup.button.callback(`${iconLang} ${langName}`, `lang-${lang}`),
+        Markup.button.callback(`${info.icon} ${info.name}`, `lang-${lang}`),
       );
     }
 
-    return _.chunk(inlineKeyboard, columns);
+    inlineKeyboard.push(
+      Markup.button.callback(`↩ ${ctx.i18next.t('back')}`, 'back'),
+    );
+
+    return lodash.chunk(inlineKeyboard, columns);
   }
 
   @Action(/^lang-(\w\w)$/)
@@ -71,6 +79,7 @@ export class GreeterScene {
 
     const selectedLang = ctx.match?.at(1);
     const lang = this.tgI18n.getLang(selectedLang);
+    const langInfo = I18N_LANGS_INFO[lang];
 
     if (lang !== ctx.i18next.language) {
       await ctx.i18next.changeLanguage(lang);
@@ -78,14 +87,35 @@ export class GreeterScene {
       await this.tg.insetOrUpdateChat(ctx.chat.id, lang);
     }
 
-    const newText = `✅ ${ctx.i18next.t('chosen')}: ${ctx.i18next.t('iconLang')} ${ctx.i18next.t('langName')}`;
+    const newText = `✅ ${ctx.i18next.t('chosen')}: ${langInfo.icon} ${langInfo.name}`;
 
     await ctx.editMessageText(newText);
+    await ctx.telegram.deleteMyCommands();
+    await ctx.telegram.setMyCommands([
+      {
+        command: COMMANDS.LANG,
+        description: ctx.i18next.t('set_lang'),
+      },
+      {
+        command: COMMANDS.SHOW,
+        description: ctx.i18next.t('show'),
+      },
+    ]);
+
+    await ctx.sendMessage(ctx.i18next.t('greeter.leave'));
     await ctx.scene.leave();
+
+    if (!ctx.scene.state['isNewMember']) {
+      return;
+    }
+
+    await Utils.sleep(5000);
+    await this.tg.run(ctx);
   }
 
-  @SceneLeave()
-  async leaveScene(@Ctx() ctx: SceneContext) {
-    await ctx.sendMessage(ctx.i18next.t('greeter.leave'));
+  @Action('back')
+  async onBack(@Ctx() ctx: SceneContext) {
+    await ctx.deleteMessage();
+    await ctx.scene.leave();
   }
 }

@@ -10,9 +10,10 @@ import { TelegramLanguage } from './telegram.i18n.interface';
 export class TelegramI18nService implements OnModuleInit {
   async onModuleInit() {
     for (const lang of I18N_SUPPORTED_LANGS) {
-      await import(`dayjs/locale/${lang}`);
+      import(`dayjs/locale/${lang}`);
     }
   }
+
   getLang(lang?: string): TelegramLanguage {
     if (lang && I18N_SUPPORTED_LANGS.includes(lang as TelegramLanguage)) {
       return lang as TelegramLanguage;

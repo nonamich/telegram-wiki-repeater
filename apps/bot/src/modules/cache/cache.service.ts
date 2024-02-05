@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { DAY_IN_MS, REDIS_INSTANCE_TOKEN } from './cache.constants';
+import { DAY_IN_SEC, REDIS_INSTANCE_TOKEN } from './cache.constants';
 import { RedisType } from './cache.type';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class CacheService {
     }
   }
 
-  async set(cacheKey: string, data: object, EX = DAY_IN_MS) {
+  async set(cacheKey: string, data: object, EX = DAY_IN_SEC) {
     await this.redis.set(cacheKey, JSON.stringify(data), {
       EX,
     });

@@ -10,6 +10,7 @@ import { i18nextMiddleware } from './i18n/telegram.i18n.middleware';
 import { TelegramI18nService } from './i18n/telegram.i18n.service';
 import { sessionMiddleware } from './middlewares/session.middleware';
 import { GreeterScene } from './scenes/greeter.scene';
+import { BOT_NAME } from './telegram.constants';
 import { TelegramService } from './telegram.service';
 import { TelegramUpdate } from './telegram.update';
 import { getSessionStore } from './telegram.utils';
@@ -17,6 +18,7 @@ import { getSessionStore } from './telegram.utils';
 @Module({
   imports: [
     TelegrafModule.forRootAsync({
+      botName: BOT_NAME,
       inject: [ConfigService, CacheService],
       useFactory(config: ConfigService, { redis }: CacheService) {
         return {
@@ -31,9 +33,9 @@ import { getSessionStore } from './telegram.utils';
     WikiModule,
   ],
   providers: [
-    TelegramUpdate,
     TelegramService,
     TelegramI18nService,
+    TelegramUpdate,
     GreeterScene,
   ],
 })

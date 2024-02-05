@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 
 import { Utils } from '@repo/shared';
 
+import { DAY_IN_SEC } from '../cache/cache.constants';
 import { CacheService } from '../cache/cache.service';
 import {
   FeaturedResponse,
@@ -41,7 +42,7 @@ export class WikiService {
       const { data, status } = await this.http.axiosRef.get<T>(url);
 
       if (status === 200) {
-        await this.cacheService.set(cacheKey, data);
+        await this.cacheService.set(cacheKey, data, DAY_IN_SEC / 3);
       }
 
       return data;

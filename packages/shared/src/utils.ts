@@ -16,4 +16,8 @@ export namespace Utils {
   export const sleep = (ms: number) => {
     return new Promise<void>((r) => setTimeout(r, ms));
   };
+
+  export const isBetween = (x: number, min: number, max: number) => {
+    return x >= min && x <= max;
+  };
 }

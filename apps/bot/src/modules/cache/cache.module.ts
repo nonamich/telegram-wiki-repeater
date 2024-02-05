@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, OnModuleDestroy } from '@nestjs/common';
 
 import { RedisClientOptions, createClient } from '@redis/client';
 
@@ -13,7 +13,7 @@ let redis: RedisType;
   providers: [CacheService],
   exports: [CacheService],
 })
-export class CacheModule {
+export class CacheModule implements OnModuleDestroy {
   static async connect(options: RedisClientOptions) {
     if (!redis) {
       redis = await createClient(options).connect();
@@ -54,5 +54,9 @@ export class CacheModule {
         },
       ],
     };
+  }
+
+  async onModuleDestroy() {
+    await redis.disconnect();
   }
 }

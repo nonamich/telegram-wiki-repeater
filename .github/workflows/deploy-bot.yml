@@ -3,7 +3,7 @@ name: bot deploy
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/deploy-bot.yml
       - apps/bot/**

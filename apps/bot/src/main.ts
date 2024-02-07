@@ -1,3 +1,4 @@
+import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { Update } from '@telegraf/types';
@@ -15,6 +16,8 @@ import {
 import { TelegramChatService } from './modules/telegram/telegram.chat.service';
 import { BOT_NAME } from './modules/telegram/telegram.constants';
 
+let app: INestApplicationContext;
+
 if (!Utils.isLambda) {
   handler();
 }
@@ -22,7 +25,9 @@ if (!Utils.isLambda) {
 export async function handler(
   event?: EventHandlerLambda | EventHandlerEventBridge,
 ) {
-  const app = await NestFactory.createApplicationContext(AppModule);
+  if (!app) {
+    app = await NestFactory.createApplicationContext(AppModule);
+  }
 
   if (!event) {
     return;
@@ -36,7 +41,6 @@ export async function handler(
   } else if ('handler' in event) {
     const chatService = app.get(TelegramChatService);
 
-    await chatService.informChats();
-    await app.close();
+    return chatService.informChats();
   }
 }

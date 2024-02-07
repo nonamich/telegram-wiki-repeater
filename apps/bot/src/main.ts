@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { getBotToken } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 
+import { Utils } from '@repo/shared';
+
 import { AppModule } from '~/modules/app.module';
 
 import {
@@ -12,9 +14,13 @@ import {
 import { TelegramChatService } from './modules/telegram/telegram.chat.service';
 import { BOT_NAME } from './modules/telegram/telegram.constants';
 
-main();
+if (!Utils.isLambda) {
+  handler();
+}
 
-async function main(event?: EventHandlerLambda | EventHandlerEventBridge) {
+export async function handler(
+  event?: EventHandlerLambda | EventHandlerEventBridge,
+) {
   const app = await NestFactory.createApplicationContext(AppModule);
 
   if (!event) {

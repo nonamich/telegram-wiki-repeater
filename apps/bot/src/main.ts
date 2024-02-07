@@ -16,11 +16,11 @@ import {
 import { TelegramChatService } from './modules/telegram/telegram.chat.service';
 import { BOT_NAME } from './modules/telegram/telegram.constants';
 
+let app: INestApplicationContext;
+
 if (!Utils.isLambda) {
   handler();
 }
-
-let app: INestApplicationContext;
 
 export async function handler(
   event?: EventHandlerLambda | EventHandlerEventBridge,
@@ -41,6 +41,6 @@ export async function handler(
   } else if ('handler' in event) {
     const chatService = app.get(TelegramChatService);
 
-    await chatService.informChats();
+    return chatService.informChats();
   }
 }

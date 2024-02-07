@@ -52,7 +52,7 @@ export class TelegramService {
   isBestTime() {
     const hours = new Date().getHours();
 
-    return (hours >= 17 && hours < 20) || (hours >= 22 && hours < 24);
+    return (hours >= 17 && hours < 20) || hours >= 22;
   }
 
   async inform(chatId: number, lang: TelegramLanguage) {
@@ -78,7 +78,7 @@ export class TelegramService {
     if (onthisday) {
       await this.sendOnThisDay({
         ...baseParams,
-        header: `🏛 ${translate.article.header.onthisday}`,
+        header: `🏛 ${translate.article.header.onthisday}: `,
         onthisday,
       });
     }

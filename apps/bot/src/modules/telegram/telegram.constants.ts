@@ -1,4 +1,7 @@
 export const CYCLES_RUN = 16 as const;
+export const MAX_CONTENT_MESSAGE = 3800;
+export const MAX_CONTENT_CAPTION = 850;
+export const BOT_NAME = 'wiki_repeater_bot';
 
 export const TELEGRAM_ALLOWED_TAGS = [
   'b',
@@ -16,18 +19,3 @@ export const TELEGRAM_ALLOWED_TAGS = [
   'strike',
   'tg-spoiler',
 ];
-
-export enum SCENE_IDS {
-  GREETER = 'greeter',
-}
-
-export enum COMMANDS {
-  SHOW = 'show',
-  LANG = 'lang',
-}
-
-export const MAX_CONTENT_MESSAGE = 3800;
-
-export const MAX_CONTENT_CAPTION = 900;
-
-export const BOT_NAME = 'wiki_repeater_bot';

@@ -41,4 +41,4 @@ jobs:
           zip -qq -9 -r deploy.zip .
           du -sh deploy.zip
       - name: Deploy
-        run: aws lambda update-function-code --function-name=telegram-wiki-tg-bot --zip-file=fileb://deploy.zip
+        run: aws lambda update-function-code --function-name=telegram-wiki-repeater --zip-file=fileb://deploy.zip

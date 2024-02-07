@@ -14,8 +14,7 @@
       "address": "localhost",
       "localRoot": "${workspaceFolder}/apps/bot",
       "port": 9229,
-      "restart": true,
-      "continueOnAttach": true
+      "restart": true
     }
   ]
 }

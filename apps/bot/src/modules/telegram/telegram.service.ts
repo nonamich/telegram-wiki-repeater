@@ -1,3 +1,5 @@
+import { setTimeout as sleep } from 'node:timers/promises';
+
 import { Injectable } from '@nestjs/common';
 
 import dayjs from 'dayjs';
@@ -6,16 +8,13 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { InputMediaPhoto } from 'telegraf/typings/core/types/typegram';
 
-import { Schemas, db, drizzle } from '@repo/db';
-import { Utils } from '@repo/shared';
-
 import { CacheService } from '~/modules/cache/cache.service';
 
 import { DAY_IN_SEC } from '../cache/cache.constants';
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
 import { WikiService } from '../wiki/wiki.service';
 import * as langs from './i18n/languages';
-import { TelegramI18nService } from './i18n/telegram.i18n.service';
+import { TelegramLanguage } from './i18n/telegram.i18n.interface';
 import {
   TgWikiImageParams,
   TgWikiArticleParams,
@@ -28,7 +27,11 @@ import {
   HTMLParams,
 } from './interfaces';
 import { TgWikiOnThisDayParams } from './interfaces/onthisday.interface';
-import { BOT_NAME, MAX_CONTENT_CAPTION } from './telegram.constants';
+import {
+  BOT_NAME,
+  CYCLES_RUN,
+  MAX_CONTENT_CAPTION,
+} from './telegram.constants';
 import {
   getArticleHTML,
   getArticleTitleHtml,
@@ -44,7 +47,6 @@ export class TelegramService {
     @InjectBot(BOT_NAME) private bot: Telegraf<SceneContext>,
     private readonly cache: CacheService,
     private readonly wiki: WikiService,
-    private readonly tgI18n: TelegramI18nService,
   ) {}
 
   isBestTime() {
@@ -53,22 +55,17 @@ export class TelegramService {
     return (hours >= 17 && hours < 20) || (hours >= 22 && hours < 24);
   }
 
-  async run(ctx: SceneContext) {
-    if (!ctx.chat?.id) {
-      return;
-    }
-
+  async inform(chatId: number, lang: TelegramLanguage) {
     const date = new Date();
-    const lang = this.tgI18n.getLang(ctx.i18next.language);
+    const { default: translate } = langs[lang];
     const featuredContent = await this.wiki.getFeaturedContent({
       lang,
       year: date.getFullYear(),
       month: date.getMonth() + 1,
       day: date.getDate(),
     });
-    const baseParams = { chatId: ctx.chat.id, lang };
+    const baseParams = { chatId, lang };
     const { image, mostread, tfa, onthisday, news } = featuredContent;
-    const isBestTime = this.isBestTime();
 
     if (mostread) {
       await this.sendMostRead({
@@ -81,7 +78,7 @@ export class TelegramService {
     if (onthisday) {
       await this.sendOnThisDay({
         ...baseParams,
-        header: `🏛 ${ctx.i18next.t('article.header.onthisday')}:`,
+        header: `🏛 ${translate.article.header.onthisday}`,
         onthisday,
       });
     }
@@ -94,7 +91,7 @@ export class TelegramService {
       });
     }
 
-    if (isBestTime) {
+    if (this.isBestTime()) {
       if (image) {
         await this.sendWikiFeaturedImage({
           ...baseParams,
@@ -108,36 +105,10 @@ export class TelegramService {
           ...baseParams,
           header: '⭐ ',
           article: tfa,
-          tags: [ctx.i18next.t('tags.tfa')],
+          tags: [translate.tags.tfa],
         });
       }
     }
-  }
-
-  getChat(chatId: number) {
-    return db.query.chat.findFirst({
-      where: (fields, { eq }) => eq(fields.chatId, chatId),
-    });
-  }
-
-  insetOrUpdateChat(chatId: number, lang: string) {
-    return db
-      .insert(Schemas.chat)
-      .values({
-        chatId,
-        lang,
-      })
-      .onConflictDoUpdate({
-        set: {
-          lang,
-        },
-        where: drizzle.eq(Schemas.chat.chatId, chatId),
-        target: Schemas.chat.chatId,
-      })
-      .returning({
-        chatId: Schemas.chat.chatId,
-        lang: Schemas.chat.lang,
-      });
   }
 
   async sendWikiFeaturedImage({
@@ -161,11 +132,7 @@ export class TelegramService {
 
     const title = image.title.replace(/^File:|\.(png|jpg|svg)$/g, '');
 
-    const {
-      default: {
-        tags: { image: imageTag },
-      },
-    } = langs[lang];
+    const { default: translate } = langs[lang];
 
     await this.bot.telegram.sendPhoto(
       chatId,
@@ -173,13 +140,14 @@ export class TelegramService {
         url: image.thumbnail.source,
       },
       {
+        ...getDefaultExtra(),
         caption: getArticleHTML({
           ...args,
           title,
           lang,
           url: image.file_page,
           content: image.description.html,
-          tags: [imageTag],
+          tags: [translate.tags.image],
           maxLength: MAX_CONTENT_CAPTION,
         }),
       },
@@ -252,8 +220,8 @@ export class TelegramService {
         ...args,
         article: articles[0],
         header,
-        expireInSec: 0,
         chatId,
+        expireInSec: 0,
       });
 
       return;
@@ -273,10 +241,6 @@ export class TelegramService {
       item += ';';
 
       content += item;
-
-      if (header.length + content.length >= MAX_CONTENT_CAPTION) {
-        break;
-      }
     }
 
     const htmlParams: HTMLParams = {
@@ -297,7 +261,9 @@ export class TelegramService {
       mediaGroup[0].parse_mode = 'HTML';
 
       await this.bot.telegram.sendMediaGroup(chatId, mediaGroup);
-      await Utils.sleep(2000); // fix for IMAGE_PROCESS_FAILED error
+      await sleep(2000); // fix for IMAGE_PROCESS_FAILED error
+
+      setTimeout;
 
       return;
     }
@@ -311,17 +277,30 @@ export class TelegramService {
     header: mainHeader,
     lang,
     onthisday,
+    chatId,
     ...args
   }: TgWikiOnThisDayParams) {
+    const numberToSend = Math.min(Math.round(onthisday.length / CYCLES_RUN));
+    let numberSkips = 0;
+
     for (const { pages, text, year } of onthisday) {
-      const date = dayjs().year(year).locale(lang);
+      const skipParams = {
+        id: 'onthisday:' + pages.map(({ pageid }) => pageid).join(''),
+        chatId,
+        lang,
+      };
+
+      const isSkipped = await this.isSkipExists(skipParams);
+
+      if (isSkipped) {
+        continue;
+      }
+
+      const { default: translate } = langs[lang];
+      const date = dayjs().locale(lang).year(year);
+
       const header = `${mainHeader} ${lodash.capitalize(text)} (${year})\n`;
-      const {
-        default: {
-          tags: { on_this_day: onThisDayTag },
-        },
-      } = langs[lang];
-      const tags = [onThisDayTag, date.format('DD_MMMM_YYYY')];
+      const tags = [translate.tags.on_this_day, date.format('DD_MMMM_YYYY')];
       const pathSource = lodash.capitalize(date.format('MMMM_D'));
       let source: string | undefined;
 
@@ -333,30 +312,50 @@ export class TelegramService {
         ...args,
         header,
         lang,
+        chatId,
         articles: pages,
         tags,
         source,
       });
 
-      break;
+      await this.setSkipCache(skipParams);
+
+      numberSkips++;
+
+      if (numberSkips >= numberToSend) {
+        break;
+      }
     }
   }
 
   async sendNews({
     lang,
     news,
+    chatId,
     header: mainHeader,
     ...args
   }: TgWikiNewsParams) {
+    const numberToSend = Math.min(Math.round(news.length / CYCLES_RUN));
+    let numberSkips = 0;
+
     for (const { links, story } of news) {
+      const skipParams = {
+        id: 'onthisday:' + links.map(({ pageid }) => pageid).join(''),
+        chatId,
+        lang,
+        expireInSec: DAY_IN_SEC * 3,
+      };
+
+      const isSkipped = await this.isSkipExists(skipParams);
+
+      if (isSkipped) {
+        continue;
+      }
+
       const header = `${mainHeader} ${getPreparedHtml(story, lang)}\n`;
-      const {
-        default: {
-          tags: { news: newsTag },
-        },
-      } = langs[lang];
+      const { default: translate } = langs[lang];
       const tags = [
-        newsTag,
+        translate.tags.news,
         dayjs(links[0].timestamp).locale(lang).format('DD_MMMM_YYYY'),
       ];
 
@@ -364,9 +363,18 @@ export class TelegramService {
         ...args,
         header,
         lang,
+        chatId,
         articles: links,
         tags,
       });
+
+      await this.setSkipCache(skipParams);
+
+      numberSkips++;
+
+      if (numberSkips >= numberToSend) {
+        break;
+      }
     }
   }
 
@@ -427,7 +435,7 @@ export class TelegramService {
     return { isSkipped };
   }
 
-  private getSkipCageKey({ id, chatId, lang }: SkipParams) {
+  private getSkipCacheKey({ id, chatId, lang }: SkipParams) {
     return `skip:${lang}:${chatId}:${id}`;
   }
 
@@ -435,7 +443,7 @@ export class TelegramService {
     expireInSec = DAY_IN_SEC,
     ...args
   }: SetSkipParams) {
-    const key = this.getSkipCageKey(args);
+    const key = this.getSkipCacheKey(args);
 
     if (!expireInSec) {
       return false;
@@ -454,7 +462,7 @@ export class TelegramService {
       return false;
     }
 
-    const key = this.getSkipCageKey(args);
+    const key = this.getSkipCacheKey(args);
     const value = await this.cache.redis.get(key);
 
     return !!value;

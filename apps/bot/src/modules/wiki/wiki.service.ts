@@ -1,9 +1,9 @@
+import { setTimeout as sleep } from 'node:timers/promises';
+
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { AxiosError } from 'axios';
-
-import { Utils } from '@repo/shared';
 
 import { DAY_IN_SEC } from '../cache/cache.constants';
 import { CacheService } from '../cache/cache.service';
@@ -48,7 +48,7 @@ export class WikiService {
       return data;
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 504) {
-        await Utils.sleep(10000);
+        await sleep(10000);
 
         return this.request(url);
       }

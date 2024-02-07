@@ -1,15 +1,16 @@
+import { setTimeout as sleep } from 'node:timers/promises';
+
 import lodash from 'lodash';
 import { Action, Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
 import { Markup } from 'telegraf';
 import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 
-import { Utils } from '@repo/shared';
-
 import { I18N_LANGS_INFO } from '../i18n/telegram.i18n.constants';
 import { TelegramLanguageList } from '../i18n/telegram.i18n.interface';
 import { TelegramI18nService } from '../i18n/telegram.i18n.service';
 import { SceneContext } from '../interfaces';
-import { COMMANDS, SCENE_IDS } from '../telegram.constants';
+import { TelegramChatService } from '../telegram.chat.service';
+import { COMMANDS, SCENE_IDS } from '../telegram.enums';
 import { TelegramService } from '../telegram.service';
 
 @Scene(SCENE_IDS.GREETER)
@@ -17,6 +18,7 @@ export class GreeterScene {
   constructor(
     private readonly tg: TelegramService,
     private readonly tgI18n: TelegramI18nService,
+    private readonly chatService: TelegramChatService,
   ) {}
 
   @SceneEnter()
@@ -25,12 +27,12 @@ export class GreeterScene {
       return;
     }
 
-    let chat = await this.tg.getChat(ctx.chat.id);
+    let chat = await this.chatService.getChat(ctx.chat.id);
 
     ctx.scene.state['isNewMember'] = !chat;
 
     if (!chat) {
-      const [chatUpdated] = await this.tg.insetOrUpdateChat(
+      const [chatUpdated] = await this.chatService.insetOrUpdateChat(
         ctx.chat.id,
         ctx.i18next.language,
       );
@@ -84,7 +86,7 @@ export class GreeterScene {
     if (lang !== ctx.i18next.language) {
       await ctx.i18next.changeLanguage(lang);
 
-      await this.tg.insetOrUpdateChat(ctx.chat.id, lang);
+      await this.chatService.insetOrUpdateChat(ctx.chat.id, lang);
     }
 
     const newText = `✅ ${ctx.i18next.t('chosen')}: ${langInfo.icon} ${langInfo.name}`;
@@ -109,8 +111,8 @@ export class GreeterScene {
       return;
     }
 
-    await Utils.sleep(5000);
-    await this.tg.run(ctx);
+    await sleep(5000);
+    await this.tg.inform(ctx.chat.id, lang);
   }
 
   @Action('back')

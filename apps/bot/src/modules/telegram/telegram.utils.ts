@@ -37,10 +37,7 @@ export const getSessionStore = (redis: RedisType) => {
   };
 };
 
-export const getPreparedHtml = (
-  html: string,
-  lang: TelegramLanguage,
-): string => {
+export const getPreparedHtml = (html: string, lang: TelegramLanguage) => {
   return sanitizeHtml(html, getSanitizeHtmlOptions(lang));
 };
 
@@ -48,6 +45,7 @@ export const getSanitizeHtmlOptions = (
   lang: TelegramLanguage,
 ): SanitizeHtmlOptions => {
   return {
+    allowedTags: TELEGRAM_ALLOWED_TAGS,
     transformTags: {
       a: (tagName, attribs) => {
         if (attribs.href && attribs.rel === 'mw:WikiLink') {
@@ -64,7 +62,6 @@ export const getSanitizeHtmlOptions = (
         };
       },
     },
-    allowedTags: TELEGRAM_ALLOWED_TAGS,
   };
 };
 
@@ -72,10 +69,10 @@ export const getArticleImage = (article: WikiArticle) => {
   const images = [article.originalimage, article.thumbnail].filter(
     (image): image is WikiImage => !!image,
   );
-  const maxH = 2000;
-  const minW = 200;
   const maxW = 3000;
-  const minH = 150;
+  const maxH = 3000;
+  const minW = 200;
+  const minH = 200;
 
   return images.find((image) => {
     return (
@@ -131,15 +128,20 @@ export const getHTMLTemplate = ({
   maxLength = MAX_CONTENT_MESSAGE,
 }: HTMLParams) => {
   let html = ``;
-  const {
-    default: { source: sourceText, support_wikipedia },
-  } = langs[lang];
+  const { default: translate } = langs[lang];
+
+  let ellipsis = '...';
+
+  if (source) {
+    ellipsis += `\n<a href="${source}">${translate.read_more.toLowerCase()}</a>`;
+  }
 
   html += `<strong>${header}</strong>`;
   html += `${getPreparedHtml(content, lang)}`;
   html = truncateHtml(html, {
     keepWhitespaces: true,
     length: maxLength,
+    ellipsis,
   });
 
   if (tags.length) {
@@ -149,13 +151,13 @@ export const getHTMLTemplate = ({
 
   if (source) {
     links.unshift({
-      text: `🔗 ${sourceText}`,
+      text: `🔗 ${translate.source}`,
       href: source,
     });
   }
 
   links.unshift({
-    text: `💸 ${support_wikipedia}`,
+    text: `💸 ${translate.support_wikipedia}`,
     href: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
   });
 

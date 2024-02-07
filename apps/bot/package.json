@@ -25,8 +25,6 @@
     "@repo/db": "*",
     "@repo/shared": "*",
     "@telegraf/session": "^2.0.0-beta.7",
-    "@types/lodash": "^4.14.202",
-    "@types/sanitize-html": "^2.9.5",
     "aws-lambda": "^1.0.7",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
@@ -54,6 +52,8 @@
     "eslint": "^8.42.0",
     "source-map-support": "^0.5.21",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@types/lodash": "^4.14.202",
+    "@types/sanitize-html": "^2.9.5"
   }
 }

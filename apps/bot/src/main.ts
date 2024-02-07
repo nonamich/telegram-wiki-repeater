@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 
+import { Update } from '@telegraf/types';
 import { getBotToken } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 
@@ -29,8 +30,9 @@ export async function handler(
 
   if ('body' in event) {
     const bot = app.get<Telegraf>(getBotToken(BOT_NAME));
+    const update = JSON.parse(event.body) as Update;
 
-    await bot.handleUpdate(event.body);
+    await bot.handleUpdate(update);
   } else if ('handler' in event) {
     const chatService = app.get(TelegramChatService);
 

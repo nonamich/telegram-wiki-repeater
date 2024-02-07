@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { TelegrafModule } from 'nestjs-telegraf';
+import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
+
+import { Utils } from '@repo/shared';
 
 import { CacheService } from '~/modules/cache/cache.service';
 import { WikiModule } from '~/modules/wiki/wiki.module';
@@ -22,13 +24,24 @@ import { getSessionStore } from './telegram.utils';
       botName: BOT_NAME,
       inject: [ConfigService, CacheService],
       useFactory(config: ConfigService, { redis }: CacheService) {
-        return {
+        const options: TelegrafModuleOptions = {
           token: config.getOrThrow('TELEGRAM_BOT_TOKEN'),
           middlewares: [
             sessionMiddleware(getSessionStore(redis)),
             i18nextMiddleware(),
           ],
         };
+
+        if (!Utils.isDev) {
+          options.launchOptions = {
+            webhook: {
+              domain: config.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN'),
+              hookPath: config.getOrThrow('TELEGRAM_WEBHOOK_SECRET'),
+            },
+          };
+        }
+
+        return options;
       },
     }),
     WikiModule,

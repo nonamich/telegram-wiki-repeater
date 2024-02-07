@@ -78,7 +78,7 @@ export class TelegramService {
     if (onthisday) {
       await this.sendOnThisDay({
         ...baseParams,
-        header: `🏛 ${translate.article.header.onthisday}: `,
+        header: `🏛 ${translate.article.header.onthisday}:`,
         onthisday,
       });
     }
@@ -164,7 +164,7 @@ export class TelegramService {
       id: 'mostRead',
       chatId: args.chatId,
       lang,
-      expireInSec: DAY_IN_SEC / 3,
+      expireInSec: DAY_IN_SEC / 12,
     };
 
     const isSkipped = await this.isSkipExists(skipParams);
@@ -179,7 +179,7 @@ export class TelegramService {
         lang,
         article,
         tags: [translate.tags.mostread],
-        expireInSec: DAY_IN_SEC * 4,
+        expireInSec: DAY_IN_SEC * 7,
       });
 
       if (!isSkipped) {
@@ -301,12 +301,6 @@ export class TelegramService {
 
       const header = `${mainHeader} ${lodash.capitalize(text)} (${year})\n`;
       const tags = [translate.tags.on_this_day, date.format('DD_MMMM_YYYY')];
-      const pathSource = lodash.capitalize(date.format('MMMM_D'));
-      let source: string | undefined;
-
-      if (lang !== 'ar') {
-        source = encodeURI(`https://${lang}.wikipedia.org/wiki/${pathSource}`);
-      }
 
       await this.sendListArticles({
         ...args,
@@ -315,7 +309,6 @@ export class TelegramService {
         chatId,
         articles: pages,
         tags,
-        source,
       });
 
       await this.setSkipCache(skipParams);

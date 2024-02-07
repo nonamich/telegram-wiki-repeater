@@ -1,7 +1,5 @@
-import { Update } from '@telegraf/types';
-
 export interface EventHandlerLambda {
-  body: Update;
+  body: string;
 }
 
 export interface EventHandlerEventBridge {

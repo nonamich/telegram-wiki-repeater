@@ -29,8 +29,6 @@ export class GreeterScene {
 
     let chat = await this.chatService.getChat(ctx.chat.id);
 
-    ctx.scene.state['isNewMember'] = !chat;
-
     if (!chat) {
       const [chatUpdated] = await this.chatService.insetOrUpdateChat(
         ctx.chat.id,
@@ -107,11 +105,8 @@ export class GreeterScene {
     await ctx.sendMessage(ctx.i18next.t('greeter.leave'));
     await ctx.scene.leave();
 
-    if (!ctx.scene.state['isNewMember']) {
-      return;
-    }
-
     await sleep(5000);
+
     await this.tg.inform(ctx.chat.id, lang);
   }
 

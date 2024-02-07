@@ -9,7 +9,7 @@ import { TelegramModule } from './telegram/telegram.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development'],
+      envFilePath: ['.env', '.env.development'],
     }),
     CacheModule.forRootAsync({
       isGlobal: true,

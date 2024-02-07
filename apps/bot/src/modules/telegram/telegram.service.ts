@@ -164,7 +164,7 @@ export class TelegramService {
       id: 'mostRead',
       chatId: args.chatId,
       lang,
-      expireInSec: DAY_IN_SEC / 2,
+      expireInSec: DAY_IN_SEC / 3,
     };
 
     const isSkipped = await this.isSkipExists(skipParams);
@@ -179,7 +179,7 @@ export class TelegramService {
         lang,
         article,
         tags: [translate.tags.mostread],
-        expireInSec: DAY_IN_SEC * 3,
+        expireInSec: DAY_IN_SEC * 4,
       });
 
       if (!isSkipped) {

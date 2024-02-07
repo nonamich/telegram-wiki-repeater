@@ -285,7 +285,7 @@ export class TelegramService {
 
     for (const { pages, text, year } of onthisday) {
       const skipParams = {
-        id: 'onthisday:' + pages.map(({ pageid }) => pageid).join(''),
+        id: 'onthisday:' + pages.map(({ pageid }) => pageid).join(','),
         chatId,
         lang,
       };
@@ -340,7 +340,7 @@ export class TelegramService {
 
     for (const { links, story } of news) {
       const skipParams = {
-        id: 'onthisday:' + links.map(({ pageid }) => pageid).join(''),
+        id: 'news:' + links.map(({ pageid }) => pageid).join(','),
         chatId,
         lang,
         expireInSec: DAY_IN_SEC * 3,

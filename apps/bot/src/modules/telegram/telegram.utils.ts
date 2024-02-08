@@ -158,7 +158,7 @@ export const getHTMLTemplate = ({
 
   links.unshift({
     text: `💸 ${translate.support_wikipedia}`,
-    href: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
+    href: 'https://bit.ly/3UxVjAh',
   });
 
   html += `\n\n${links

@@ -12,7 +12,7 @@
       "type": "node",
       "request": "attach",
       "address": "localhost",
-      "localRoot": "${workspaceFolder}/apps/bot",
+      "localRoot": "${workspaceFolder}",
       "port": 9229,
       "restart": true
     }

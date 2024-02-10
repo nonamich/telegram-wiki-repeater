@@ -1,16 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
-import { WIKI_BASE_URL, WIKI_USER_AGENT } from './wiki.constants';
+import { WIKI_BASE_URL } from './wiki.constants';
 import { WikiService } from './wiki.service';
 
 @Module({
   imports: [
     HttpModule.register({
       baseURL: WIKI_BASE_URL,
-      headers: {
-        'Api-User-Agent': WIKI_USER_AGENT,
-      },
     }),
   ],
   providers: [WikiService],

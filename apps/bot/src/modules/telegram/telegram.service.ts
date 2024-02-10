@@ -8,9 +8,9 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { InputMediaPhoto } from 'telegraf/typings/core/types/typegram';
 
-import { CacheService } from '~/modules/cache/cache.service';
+import { RedisService } from '~/modules/redis/redis.service';
 
-import { DAY_IN_SEC } from '../cache/cache.constants';
+import { DAY_IN_SEC } from '../redis/redis.constants';
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
 import { WikiService } from '../wiki/wiki.service';
 import * as langs from './i18n/languages';
@@ -45,7 +45,7 @@ import {
 export class TelegramService {
   constructor(
     @InjectBot(BOT_NAME) private bot: Telegraf<SceneContext>,
-    private readonly cache: CacheService,
+    private readonly redis: RedisService,
     private readonly wiki: WikiService,
   ) {}
 
@@ -442,9 +442,7 @@ export class TelegramService {
       return false;
     }
 
-    await this.cache.redis.set(key, 'true', {
-      EX: expireInSec,
-    });
+    await this.redis.setex(key, expireInSec, 'true');
   }
 
   private async isSkipExists({
@@ -456,7 +454,7 @@ export class TelegramService {
     }
 
     const key = this.getSkipCacheKey(args);
-    const value = await this.cache.redis.get(key);
+    const value = await this.redis.get(key);
 
     return !!value;
   }

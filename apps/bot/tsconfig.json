@@ -22,7 +22,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
     }
   }
 }

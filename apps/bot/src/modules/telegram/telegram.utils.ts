@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import { Redis } from 'ioredis';
 import lodash from 'lodash';
 import sanitizeHtml, { IOptions as SanitizeHtmlOptions } from 'sanitize-html';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
@@ -7,7 +8,6 @@ import truncateHtml from 'truncate-html';
 
 import { Utils } from '@repo/shared';
 
-import { RedisType } from '../cache/cache.type';
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
 import * as langs from './i18n/languages';
 import { TelegramLanguage } from './i18n/telegram.i18n.interface';
@@ -17,7 +17,7 @@ import {
   TELEGRAM_ALLOWED_TAGS,
 } from './telegram.constants';
 
-export const getSessionStore = (redis: RedisType) => {
+export const getSessionStore = (redis: Redis) => {
   const prefix = 'telegraf:';
 
   return {
@@ -158,7 +158,7 @@ export const getHTMLTemplate = ({
 
   links.unshift({
     text: `💸 ${translate.support_wikipedia}`,
-    href: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
+    href: 'https://bit.ly/3UxVjAh',
   });
 
   html += `\n\n${links

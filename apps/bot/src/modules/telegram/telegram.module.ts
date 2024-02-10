@@ -5,7 +5,7 @@ import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
 
 import { Utils } from '@repo/shared';
 
-import { CacheService } from '~/modules/cache/cache.service';
+import { RedisService } from '~/modules/redis/redis.service';
 import { WikiModule } from '~/modules/wiki/wiki.module';
 
 import { i18nextMiddleware } from './i18n/telegram.i18n.middleware';
@@ -22,8 +22,8 @@ import { getSessionStore } from './telegram.utils';
   imports: [
     TelegrafModule.forRootAsync({
       botName: BOT_NAME,
-      inject: [ConfigService, CacheService],
-      useFactory(config: ConfigService, { redis }: CacheService) {
+      inject: [ConfigService, RedisService],
+      useFactory(config: ConfigService, redis: RedisService) {
         const options: TelegrafModuleOptions = {
           token: config.getOrThrow('TELEGRAM_BOT_TOKEN'),
           middlewares: [

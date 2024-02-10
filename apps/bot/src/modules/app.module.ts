@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { CacheModule } from './cache/cache.module';
-import { DatabaseModule } from './database/database.module';
+import { DBModule } from './db/db.module';
+import { RedisModule } from './redis/redis.module';
 import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
@@ -11,20 +11,17 @@ import { TelegramModule } from './telegram/telegram.module';
       isGlobal: true,
       envFilePath: ['.env', '.env.development'],
     }),
-    CacheModule.forRootAsync({
-      isGlobal: true,
+    RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory(config: ConfigService) {
         return {
           password: config.getOrThrow('REDIS_PASSWORD'),
-          socket: {
-            host: config.getOrThrow('REDIS_HOST'),
-            port: config.getOrThrow('REDIS_PORT'),
-          },
+          host: config.getOrThrow('REDIS_HOST'),
+          port: config.getOrThrow('REDIS_PORT'),
         };
       },
     }),
-    DatabaseModule,
+    DBModule.forRoot(),
     TelegramModule,
   ],
 })

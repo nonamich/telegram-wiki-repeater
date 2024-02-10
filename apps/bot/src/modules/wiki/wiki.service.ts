@@ -5,8 +5,8 @@ import { Injectable } from '@nestjs/common';
 
 import { AxiosError } from 'axios';
 
-import { DAY_IN_SEC } from '../cache/cache.constants';
-import { CacheService } from '../cache/cache.service';
+import { DAY_IN_HOUR } from '../redis/redis.constants';
+import { RedisService } from '../redis/redis.service';
 import {
   FeaturedResponse,
   FeaturedRequest,
@@ -16,7 +16,7 @@ import { WIKI_BASE_URL } from './wiki.constants';
 @Injectable()
 export class WikiService {
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly redis: RedisService,
     private readonly http: HttpService,
   ) {}
 
@@ -34,15 +34,17 @@ export class WikiService {
 
   private async request<T extends object>(url: string): Promise<T> {
     const cacheKey = `wiki:api:get:${new URL(WIKI_BASE_URL).host}${url}`;
-    const cache = await this.cacheService.get<T>(cacheKey);
+    const cache = await this.redis.get(cacheKey);
 
-    if (cache) return cache;
+    if (cache) {
+      return JSON.parse(cache) as T;
+    }
 
     try {
       const { data, status } = await this.http.axiosRef.get<T>(url);
 
       if (status === 200) {
-        await this.cacheService.set(cacheKey, data, DAY_IN_SEC / 3);
+        await this.redis.setex(cacheKey, DAY_IN_HOUR * 2, JSON.stringify(data));
       }
 
       return data;

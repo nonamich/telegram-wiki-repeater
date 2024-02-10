@@ -1,6 +1,6 @@
 import { UseFilters } from '@nestjs/common';
 
-import { Update, Start, Ctx, Command, On } from 'nestjs-telegraf';
+import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 
 import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
 import { SceneContext } from './interfaces/telegraf.interface';
@@ -31,10 +31,5 @@ export class TelegramUpdate {
     const { chatId, lang } = this.chatService.getChatInfoFromContext(ctx);
 
     await this.tg.inform(chatId, lang);
-  }
-
-  @On('message')
-  onMessage(@Ctx() ctx: SceneContext) {
-    ctx;
   }
 }

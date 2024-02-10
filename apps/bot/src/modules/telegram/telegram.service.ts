@@ -8,10 +8,12 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { InputMediaPhoto } from 'telegraf/typings/core/types/typegram';
 
+import { Utils } from '@repo/shared';
+
 import { RedisService } from '~/modules/redis/redis.service';
 
 import { DAY_IN_SEC } from '../redis/redis.constants';
-import { WikiArticle, WikiImage } from '../wiki/interfaces';
+import { WikiArticle } from '../wiki/interfaces';
 import { WikiService } from '../wiki/wiki.service';
 import * as langs from './i18n/languages';
 import { TelegramLanguage } from './i18n/telegram.i18n.interface';
@@ -29,15 +31,16 @@ import {
 import { TgWikiOnThisDayParams } from './interfaces/onthisday.interface';
 import {
   BOT_NAME,
-  CYCLES_RUN,
+  RUN_PER_DAY,
   MAX_CONTENT_CAPTION,
+  MAX_IMAGES_ON_GROUP,
 } from './telegram.constants';
 import {
   getArticleHTML,
   getArticleTitleHtml,
   getDefaultExtra,
   getHTMLTemplate,
-  getArticleImage,
+  getImageArticle,
   getPreparedHtml,
 } from './telegram.utils';
 
@@ -58,7 +61,7 @@ export class TelegramService {
   async inform(chatId: number, lang: TelegramLanguage) {
     const date = new Date();
     const { default: translate } = langs[lang];
-    const featuredContent = await this.wiki.getFeaturedContent({
+    const featuredContent = await this.wiki.getFeatured({
       lang,
       year: date.getFullYear(),
       month: date.getMonth() + 1,
@@ -191,9 +194,9 @@ export class TelegramService {
   }
 
   getMediaGroup(articles: WikiArticle[]) {
-    const images = articles
-      .map(getArticleImage)
-      .filter((image): image is WikiImage => !!image);
+    const images = articles.map(getImageArticle).filter(Utils.truthy);
+
+    images.splice(MAX_IMAGES_ON_GROUP);
 
     return images.map((image) => {
       const inputMedia: InputMediaPhoto = {
@@ -280,14 +283,22 @@ export class TelegramService {
     chatId,
     ...args
   }: TgWikiOnThisDayParams) {
-    const numberToSend = Math.min(Math.round(onthisday.length / CYCLES_RUN));
+    const numberToSend = Math.max(
+      1,
+      Math.round(onthisday.length / RUN_PER_DAY),
+    );
     let numberSkips = 0;
 
     for (const { pages, text, year } of onthisday) {
+      if (!pages.length) {
+        continue;
+      }
+
       const skipParams = {
         id: 'onthisday:' + pages.map(({ pageid }) => pageid).join(','),
         chatId,
         lang,
+        expireInSec: DAY_IN_SEC * 3,
       };
 
       const isSkipped = await this.isSkipExists(skipParams);
@@ -328,15 +339,19 @@ export class TelegramService {
     header: mainHeader,
     ...args
   }: TgWikiNewsParams) {
-    const numberToSend = Math.min(Math.round(news.length / CYCLES_RUN));
+    const numberToSend = Math.max(1, Math.round(news.length / RUN_PER_DAY));
     let numberSkips = 0;
 
     for (const { links, story } of news) {
+      if (!links.length) {
+        continue;
+      }
+
       const skipParams = {
         id: 'news:' + links.map(({ pageid }) => pageid).join(','),
         chatId,
         lang,
-        expireInSec: DAY_IN_SEC * 3,
+        expireInSec: DAY_IN_SEC * 7,
       };
 
       const isSkipped = await this.isSkipExists(skipParams);
@@ -395,7 +410,7 @@ export class TelegramService {
       return { isSkipped };
     }
 
-    const image = getArticleImage(article);
+    const image = getImageArticle(article);
     const extra = getDefaultExtra();
     const html = getArticleHTML({
       ...args,

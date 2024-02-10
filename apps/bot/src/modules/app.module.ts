@@ -15,6 +15,7 @@ import { TelegramModule } from './telegram/telegram.module';
       inject: [ConfigService],
       useFactory(config: ConfigService) {
         return {
+          username: config.getOrThrow('REDIS_USERNAME'),
           password: config.getOrThrow('REDIS_PASSWORD'),
           host: config.getOrThrow('REDIS_HOST'),
           port: config.getOrThrow('REDIS_PORT'),

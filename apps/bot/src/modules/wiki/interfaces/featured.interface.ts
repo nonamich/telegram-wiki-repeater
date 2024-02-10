@@ -1,5 +1,6 @@
+import { WithLang } from '~/modules/telegram/interfaces';
+
 import {
-  WikiLanguage,
   WikiArticle,
   WikiImage,
   WikiMostRead,
@@ -7,8 +8,7 @@ import {
   WikiOnThisDay,
 } from '.';
 
-export interface FeaturedRequest {
-  lang: WikiLanguage;
+export interface FeaturedRequest extends WithLang {
   year: number;
   month: number;
   day: number;

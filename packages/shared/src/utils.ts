@@ -1,3 +1,5 @@
+import { Truthy } from './types';
+
 export namespace Utils {
   export const isDev = process.env.NODE_ENV !== 'production';
 
@@ -15,5 +17,13 @@ export namespace Utils {
 
   export const isBetween = (x: number, min: number, max: number) => {
     return x >= min && x <= max;
+  };
+
+  export const zeroPad = (num: number) => {
+    return num.toString().padStart(2, '0');
+  };
+
+  export const truthy = <T>(value: T): value is Truthy<T> => {
+    return !!value;
   };
 }

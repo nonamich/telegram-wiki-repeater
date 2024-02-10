@@ -65,7 +65,7 @@ export const getSanitizeHtmlOptions = (
   };
 };
 
-export const getArticleImage = (article: WikiArticle) => {
+export const getImageArticle = (article: WikiArticle) => {
   const images = [article.originalimage, article.thumbnail].filter(
     (image): image is WikiImage => !!image,
   );

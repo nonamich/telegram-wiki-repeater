@@ -34,8 +34,8 @@ export async function handler(
   }
 
   if ('body' in event) {
-    const bot = app.get<Telegraf>(getBotToken(BOT_NAME));
     const update = JSON.parse(event.body) as Update;
+    const bot = app.get<Telegraf>(getBotToken(BOT_NAME));
 
     await bot.handleUpdate(update);
   } else if ('handler' in event) {

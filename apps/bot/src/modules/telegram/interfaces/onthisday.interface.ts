@@ -1,7 +1,7 @@
 import { WikiOnThisDay } from '~/modules/wiki/interfaces';
 
-import { BaseParams, WithHeader } from './common.interface';
+import { BaseParams } from './common.interface';
 
-export interface TgWikiOnThisDayParams extends BaseParams, WithHeader {
+export interface TgWikiOnThisDayParams extends BaseParams {
   onthisday: WikiOnThisDay[];
 }

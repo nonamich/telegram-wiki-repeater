@@ -1,4 +1,4 @@
-export const RUN_PER_DAY = 30;
+export const RUN_PER_DAY = 4;
 export const MAX_CONTENT_MESSAGE = 3800;
 export const MAX_CONTENT_CAPTION = 850;
 export const BOT_NAME = 'wiki_repeater_bot';

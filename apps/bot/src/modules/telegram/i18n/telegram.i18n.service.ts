@@ -10,7 +10,7 @@ import { TelegramLanguage } from './telegram.i18n.interface';
 export class TelegramI18nService implements OnModuleInit {
   async onModuleInit() {
     for (const lang of I18N_SUPPORTED_LANGS) {
-      import(`dayjs/locale/${lang}`);
+      await import(`dayjs/locale/${lang}`);
     }
   }
 

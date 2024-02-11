@@ -36,16 +36,41 @@ export class WikiService {
       url: `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`,
     });
 
-    if (!response.onthisday || response.onthisday.length < 30) {
-      const { events, deaths, holidays } = await this.getOnThisDay({
+    if (!response.onthisday || response.onthisday.length < 20) {
+      let { onthisday } = response;
+      const { selected, events, holidays } = await this.getOnThisDay({
         lang,
         month,
         day,
       });
 
-      response.onthisday = [response.onthisday, events, deaths, holidays]
-        .filter(Utils.truthy)
-        .flat();
+      if (!onthisday) {
+        onthisday = [];
+      } else if (!onthisday.length && selected) {
+        onthisday = selected;
+      }
+
+      if (events) {
+        onthisday.push(
+          ...events.slice(0, 15).map((item) => {
+            item.source = 'event';
+
+            return item;
+          }),
+        );
+      }
+
+      if (holidays) {
+        onthisday.push(
+          ...holidays.slice(0, 15).map((item) => {
+            item.source = 'holiday';
+
+            return item;
+          }),
+        );
+      }
+
+      response.onthisday = onthisday.slice(0, 20);
     }
 
     return response;
@@ -57,10 +82,10 @@ export class WikiService {
     filter,
   }: WikiRequest<T>): Promise<T> {
     const cacheKey = `wiki:${url}`;
-    const cache = await this.redis.get(cacheKey);
+    const cacheBase64 = await this.redis.get(cacheKey);
 
-    if (cache) {
-      const buffer = Buffer.from(cache, WIKI_CACHE_ENCODING);
+    if (cacheBase64) {
+      const buffer = Buffer.from(cacheBase64, WIKI_CACHE_ENCODING);
       const json = zlib.brotliDecompressSync(buffer).toString('utf8');
 
       return JSON.parse(json) as T;
@@ -71,10 +96,11 @@ export class WikiService {
 
       if (status === 200) {
         const input = JSON.stringify(data);
-        const buffer = zlib.brotliCompressSync(input);
-        const base64 = buffer.toString(WIKI_CACHE_ENCODING);
+        const cache = zlib
+          .brotliCompressSync(input)
+          .toString(WIKI_CACHE_ENCODING);
 
-        await this.redis.setex(cacheKey, expires, base64);
+        await this.redis.setex(cacheKey, expires, cache);
       }
 
       return data;

@@ -13,7 +13,7 @@ import { Utils } from '@repo/shared';
 import { RedisService } from '~/modules/redis/redis.service';
 
 import { DAY_IN_SEC } from '../redis/redis.constants';
-import { WikiArticle } from '../wiki/interfaces';
+import { FeaturedRequest, WikiArticle } from '../wiki/interfaces';
 import { WikiService } from '../wiki/wiki.service';
 import * as langs from './i18n/languages';
 import { TelegramLanguage } from './i18n/telegram.i18n.interface';
@@ -60,15 +60,21 @@ export class TelegramService {
 
   async inform(chatId: number, lang: TelegramLanguage) {
     const date = new Date();
-    const { default: translate } = langs[lang];
-    const featuredContent = await this.wiki.getFeatured({
+    const params: FeaturedRequest = {
       lang,
       year: date.getFullYear(),
       month: date.getMonth() + 1,
       day: date.getDate(),
-    });
+    };
+
+    if (date.getHours() <= 8) {
+      params.day--;
+    }
+
+    const featuredContent = await this.wiki.getFeatured(params);
     const baseParams = { chatId, lang };
     const { image, mostread, tfa, onthisday, news } = featuredContent;
+    const { default: translate } = langs[lang];
 
     if (mostread) {
       await this.sendMostRead({
@@ -81,7 +87,7 @@ export class TelegramService {
     if (onthisday) {
       await this.sendOnThisDay({
         ...baseParams,
-        header: `🏛 ${translate.article.header.onthisday}:`,
+        header: `🏛 `,
         onthisday,
       });
     }
@@ -194,9 +200,10 @@ export class TelegramService {
   }
 
   getMediaGroup(articles: WikiArticle[]) {
-    const images = articles.map(getImageArticle).filter(Utils.truthy);
-
-    images.splice(MAX_IMAGES_ON_GROUP);
+    const images = articles
+      .map(getImageArticle)
+      .filter(Utils.truthy)
+      .slice(0, MAX_IMAGES_ON_GROUP);
 
     return images.map((image) => {
       const inputMedia: InputMediaPhoto = {
@@ -216,6 +223,8 @@ export class TelegramService {
     chatId,
     ...args
   }: TgWikiListParams) {
+    articles = articles.slice(0, 5);
+
     if (articles.length <= 1) {
       header += '\n';
 
@@ -289,7 +298,7 @@ export class TelegramService {
     );
     let numberSkips = 0;
 
-    for (const { pages, text, year } of onthisday) {
+    for (const { pages, text, year, source } of onthisday) {
       if (!pages.length) {
         continue;
       }
@@ -308,10 +317,26 @@ export class TelegramService {
       }
 
       const { default: translate } = langs[lang];
-      const date = dayjs().locale(lang).year(year);
+      const tags = [translate.tags.on_this_day];
+      let header = mainHeader;
 
-      const header = `${mainHeader} ${lodash.capitalize(text)} (${year})\n`;
-      const tags = [translate.tags.on_this_day, date.format('DD_MMMM_YYYY')];
+      if (!source) {
+        header += `${translate.article.header.onthisday}`;
+      } else {
+        header += `${translate.article.header[`onthisday_${source}`]}`;
+      }
+
+      if (year) {
+        const date = dayjs().locale(lang).year(year);
+
+        tags.push(date.format('DD_MMMM_YYYY'));
+
+        header += ` ${year}`;
+      }
+
+      header += `: ${lodash.capitalize(text)}`;
+
+      header += '\n';
 
       await this.sendListArticles({
         ...args,

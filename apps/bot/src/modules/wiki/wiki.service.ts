@@ -52,7 +52,7 @@ export class WikiService {
 
       if (events) {
         onthisday.push(
-          ...events.slice(0, 15).map((item) => {
+          ...events.slice(0, 5).map((item) => {
             item.source = 'event';
 
             return item;
@@ -62,15 +62,19 @@ export class WikiService {
 
       if (holidays) {
         onthisday.push(
-          ...holidays.slice(0, 15).map((item) => {
+          ...holidays.slice(0, 5).map((item) => {
             item.source = 'holiday';
 
             return item;
           }),
         );
       }
+    }
 
-      response.onthisday = onthisday.slice(0, 20);
+    response.onthisday = (response.onthisday ?? []).slice(0, 15);
+
+    if (response.news) {
+      response.news = response.news.slice(0, 10);
     }
 
     return response;

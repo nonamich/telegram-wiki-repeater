@@ -11,5 +11,4 @@ node_modules
 !.vscode/extensions.json
 
 # devs
-*.development
 .tmp

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: './.env.development',
+  path: './.env',
 });
 
 /** @type { import("drizzle-kit").Config } */

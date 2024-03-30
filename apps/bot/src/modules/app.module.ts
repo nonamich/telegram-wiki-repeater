@@ -9,7 +9,7 @@ import { TelegramModule } from './telegram/telegram.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development'],
+      envFilePath: ['.env'],
     }),
     RedisModule.forRootAsync({
       inject: [ConfigService],

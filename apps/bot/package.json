@@ -11,8 +11,7 @@
     "start:prod": "node dist/main",
     "dev": "npm run start:debug",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "env:run:dev": "dotenv-run -f .env.development",
-    "translate:pull": "npm run env:run:dev -- npx i18nexus-cli pull --path ./src/modules/telegram/i18n/languages/"
+    "translate:pull": "dotenv-run -f .env.development -- npx i18nexus-cli pull --path ./src/modules/telegram/i18n/languages/"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",

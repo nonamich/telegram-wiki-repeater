@@ -58,7 +58,7 @@ export class TelegramService {
     return (hours >= 17 && hours < 20) || hours >= 22;
   }
 
-  async inform(chatId: number, lang: TelegramLanguage) {
+  getFeaturedRequestParams(lang: TelegramLanguage) {
     const date = new Date();
     const params: FeaturedRequest = {
       lang,
@@ -71,7 +71,13 @@ export class TelegramService {
       params.day--;
     }
 
-    const featuredContent = await this.wiki.getFeatured(params);
+    return params;
+  }
+
+  async inform(chatId: number, lang: TelegramLanguage) {
+    const featuredContent = await this.wiki.getFeaturedContent(
+      this.getFeaturedRequestParams(lang),
+    );
     const baseParams = { chatId, lang };
     const { image, mostread, tfa, onthisday, news } = featuredContent;
     const { default: translate } = langs[lang];

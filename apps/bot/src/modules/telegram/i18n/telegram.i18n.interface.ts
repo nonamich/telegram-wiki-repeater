@@ -1,10 +1,10 @@
 import { InitOptions } from 'i18next';
 
-import { WIKI_SUPPORT_LANGUAGE } from '~/modules/wiki/wiki.constants';
+import { WIKI_LANGUAGES } from '~/modules/wiki/wiki.constants';
 
 import { en } from './languages';
 
-export type TelegramLanguage = (typeof WIKI_SUPPORT_LANGUAGE)[number];
+export type TelegramLanguage = (typeof WIKI_LANGUAGES)[number];
 
 export type TelegramLanguageList = {
   [T in TelegramLanguage]: {

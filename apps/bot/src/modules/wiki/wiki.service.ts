@@ -15,7 +15,7 @@ import {
   FeaturedResponse,
   FeaturedRequest,
 } from './interfaces/featured.interface';
-import { WIKI_CACHE_ENCODING } from './wiki.constants';
+import { WIKI_CACHE_ENCODING, WIKI_RETRY_MS } from './wiki.constants';
 
 @Injectable()
 export class WikiService {
@@ -31,7 +31,7 @@ export class WikiService {
     });
   }
 
-  async getFeatured({ lang, year, month, day }: FeaturedRequest) {
+  async getFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
     const response = await this.request<FeaturedResponse>({
       url: `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`,
     });
@@ -71,7 +71,7 @@ export class WikiService {
       }
     }
 
-    response.onthisday = (response.onthisday ?? []).slice(0, 15);
+    response.onthisday = (response.onthisday || []).slice(0, 15);
 
     if (response.news) {
       response.news = response.news.slice(0, 10);
@@ -80,42 +80,65 @@ export class WikiService {
     return response;
   }
 
-  private async request<T extends object>({
-    url,
-    expires = HOUR_IN_SEC * 5,
-    filter,
-  }: WikiRequest<T>): Promise<T> {
+  private getCacheKey(url: string) {
     const cacheKey = `wiki:${url}`;
-    const cacheBase64 = await this.redis.get(cacheKey);
 
-    if (cacheBase64) {
-      const buffer = Buffer.from(cacheBase64, WIKI_CACHE_ENCODING);
+    return cacheKey;
+  }
+
+  private async getFromCache<T>(url: string) {
+    const cacheKey = this.getCacheKey(url);
+    const cacheAsBase64 = await this.redis.get(cacheKey);
+
+    if (cacheAsBase64) {
+      const buffer = Buffer.from(cacheAsBase64, WIKI_CACHE_ENCODING);
       const json = zlib.brotliDecompressSync(buffer).toString('utf8');
 
       return JSON.parse(json) as T;
+    }
+
+    return null;
+  }
+
+  private async setToCache<T extends object>(
+    data: T,
+    { url, expires = HOUR_IN_SEC * 5 }: WikiRequest,
+  ) {
+    const cacheKey = this.getCacheKey(url);
+    const input = JSON.stringify(data);
+    const cache = zlib.brotliCompressSync(input).toString(WIKI_CACHE_ENCODING);
+
+    await this.redis.setex(cacheKey, expires, cache);
+  }
+
+  private async request<T extends object>({
+    url,
+    expires,
+  }: WikiRequest): Promise<T> {
+    const cache = await this.getFromCache<T>(url);
+
+    if (cache) {
+      return cache;
     }
 
     try {
       const { data, status } = await this.http.axiosRef.get<T>(url);
 
       if (status === 200) {
-        const input = JSON.stringify(data);
-        const cache = zlib
-          .brotliCompressSync(input)
-          .toString(WIKI_CACHE_ENCODING);
-
-        await this.redis.setex(cacheKey, expires, cache);
+        await this.setToCache(data, {
+          url,
+          expires,
+        });
       }
 
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        await sleep(10000);
+        await sleep(WIKI_RETRY_MS);
 
         return this.request<T>({
           url,
           expires,
-          filter,
         });
       }
 

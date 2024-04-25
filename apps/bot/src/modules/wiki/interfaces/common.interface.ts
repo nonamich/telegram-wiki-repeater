@@ -1,6 +1,6 @@
-import { WIKI_SUPPORT_LANGUAGE } from '../wiki.constants';
+import { WIKI_LANGUAGES } from '../wiki.constants';
 
-export type WikiLanguage = (typeof WIKI_SUPPORT_LANGUAGE)[number];
+export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
 
 export interface WikiArticle {
   content_urls: ContentUrls;

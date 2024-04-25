@@ -1,8 +1,8 @@
-import { WIKI_SUPPORT_LANGUAGE } from '~/modules/wiki/wiki.constants';
+import { WIKI_LANGUAGES } from '~/modules/wiki/wiki.constants';
 
 import { TelegramLanguageList } from './telegram.i18n.interface';
 
-export const I18N_SUPPORTED_LANGS = WIKI_SUPPORT_LANGUAGE;
+export const I18N_SUPPORTED_LANGS = WIKI_LANGUAGES;
 export const I18N_LANGS_INFO: TelegramLanguageList = {
   ar: {
     icon: '☪',

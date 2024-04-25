@@ -1,6 +1,4 @@
-export interface WikiRequest<T extends object> {
+export interface WikiRequest {
   url: string;
   expires?: number;
-
-  filter?: (data: T) => T;
 }

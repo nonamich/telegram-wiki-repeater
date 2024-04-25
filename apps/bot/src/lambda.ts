@@ -5,7 +5,7 @@ import { getBotToken } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 
 import { createApp } from './app';
-import { EventHandler, EventHandlerLambda } from './interfaces/app.type';
+import { EventHandler, EventHandlerLambda } from './interfaces/app.interface';
 import { TelegramChatService } from './modules/telegram/telegram.chat.service';
 import { BOT_NAME } from './modules/telegram/telegram.constants';
 

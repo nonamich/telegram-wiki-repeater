@@ -1,0 +1,32 @@
+{
+  "back": "Back",
+  "show": "Show More",
+  "tags": {
+    "tfa": "article today",
+    "news": "news",
+    "image": "image",
+    "mostread": "most read",
+    "on_this_day": "on this day"
+  },
+  "views": "Views",
+  "chosen": "You have chosen",
+  "source": "Source",
+  "article": {
+    "header": {
+      "tfa": "Today's Featured Article",
+      "news": "Stories From Today's News",
+      "image": "Daily Featured Image",
+      "mostread": "Most Read Article",
+      "onthisday": "On this day",
+      "onthisday_event": "Today's Event",
+      "onthisday_holiday": "Holiday On This Day"
+    }
+  },
+  "greeter": {
+    "leave": "Now interesting content from Wikipedia will appear here. The content will be available soon and will be updated every hour"
+  },
+  "set_lang": "Choose a Language",
+  "read_more": "Read More",
+  "chooseLang": "Choose Your Language",
+  "support_wikipedia": "Support Wikipedia"
+}

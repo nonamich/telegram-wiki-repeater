@@ -6,8 +6,7 @@ import { Telegraf } from 'telegraf';
 
 import { createApp } from './app';
 import { EventHandler, EventHandlerLambda } from './interfaces/app.interface';
-import { TelegramChatService } from './modules/telegram/telegram.chat.service';
-import { BOT_NAME } from './modules/telegram/telegram.constants';
+import { TelegramChatService } from './modules/telegram.old/telegram.chat.service';
 
 let app: INestApplicationContext;
 
@@ -33,7 +32,7 @@ async function lambdaEventController(event: EventHandler) {
 
 async function sendReplay(event: EventHandlerLambda) {
   const update = JSON.parse(event.body) as Update;
-  const bot = app.get<Telegraf>(getBotToken(BOT_NAME));
+  const bot = app.get<Telegraf>(getBotToken());
 
   await bot.handleUpdate(update);
 }

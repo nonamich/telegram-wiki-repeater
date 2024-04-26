@@ -1,4 +1,4 @@
-import { WithLang } from '~/modules/telegram/interfaces';
+import { WithLang } from '~/modules/telegram.old/interfaces';
 
 import {
   WikiArticle,

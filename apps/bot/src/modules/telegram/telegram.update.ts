@@ -1,35 +1,37 @@
-import { UseFilters } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 
-import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
+import { Update, Start, Ctx } from 'nestjs-telegraf';
+import { Scenes } from 'telegraf';
 
-import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
-import { SceneContext } from './interfaces/telegraf.interface';
-import { TelegramChatService } from './telegram.chat.service';
-import { COMMANDS, SCENE_IDS } from './telegram.enums';
-import { TelegramService } from './telegram.service';
+import { I18nService } from '~/modules/i18n/i18n.service';
+
+import { AdminGuard } from './guards/admin.guard';
 
 @Update()
-@UseFilters(new TelegrafExceptionFilter())
+@UseGuards(AdminGuard)
 export class TelegramUpdate {
-  constructor(
-    private readonly tg: TelegramService,
-    private readonly chatService: TelegramChatService,
-  ) {}
+  constructor(readonly i18nService: I18nService) {}
 
   @Start()
-  async onStart(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(SCENE_IDS.GREETER);
+  async onStart(@Ctx() ctx: Scenes.SceneContext) {
+    await Promise.all([
+      this.i18nService.runWithContext('uk', async () => {
+        await this.sayHi(ctx);
+      }),
+      this.i18nService.runWithContext('en', async () => {
+        await this.sayHi(ctx);
+      }),
+      this.i18nService.runWithContext('tr', async () => {
+        await this.sayHi(ctx);
+      }),
+    ]);
   }
 
-  @Command(COMMANDS.LANG)
-  async onLang(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(SCENE_IDS.GREETER);
-  }
+  async sayHi(ctx: Scenes.SceneContext) {
+    const i18n = this.i18nService.currentContext();
 
-  @Command(COMMANDS.SHOW)
-  async onShow(@Ctx() ctx: SceneContext) {
-    const { chatId, lang } = this.chatService.getChatInfoFromContext(ctx);
-
-    await this.tg.inform(chatId, lang);
+    await ctx.sendMessage({
+      text: `${i18n.language}: ${i18n.t('views')}`,
+    });
   }
 }

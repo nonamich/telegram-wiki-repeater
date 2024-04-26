@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { DBModule } from './db/db.module';
+import { I18nModule } from './i18n/i18n.module';
 import { RedisModule } from './redis/redis.module';
 import { TelegramModule } from './telegram/telegram.module';
 
@@ -23,6 +24,7 @@ import { TelegramModule } from './telegram/telegram.module';
       },
     }),
     DBModule.forRoot(),
+    I18nModule.forRoot(),
     TelegramModule,
   ],
 })

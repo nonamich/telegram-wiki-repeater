@@ -1,0 +1,32 @@
+{
+  "back": "Atrás",
+  "show": "Mostrar más",
+  "tags": {
+    "tfa": "artículo de hoy",
+    "news": "noticias",
+    "image": "imagen",
+    "mostread": "mas leido",
+    "on_this_day": "en este día"
+  },
+  "views": "Puntos de vista",
+  "chosen": "Has elegido",
+  "source": "Fuente",
+  "article": {
+    "header": {
+      "tfa": "Artículo destacado de hoy",
+      "news": "Historias de las noticias de hoy",
+      "image": "Imagen destacada diaria",
+      "mostread": "Artículo más leído",
+      "onthisday": "En este día",
+      "onthisday_event": "El evento de hoy",
+      "onthisday_holiday": "Vacaciones en este día"
+    }
+  },
+  "greeter": {
+    "leave": "Ahora aparecerá aquí contenido interesante de Wikipedia. El contenido estará disponible pronto y se actualizará cada hora."
+  },
+  "set_lang": "Elige un idioma",
+  "read_more": "Leer más",
+  "chooseLang": "Elige tu idioma",
+  "support_wikipedia": "Soporte Wikipedia"
+}

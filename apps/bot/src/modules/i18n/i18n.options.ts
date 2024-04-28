@@ -2,12 +2,12 @@ import path from 'node:path';
 
 import { InitOptions } from 'i18next';
 
-import { I18nException } from './exceptions/i18n.exception';
 import { I18N_LANGS } from './i18n.constants';
 
 export const i18nextOptions: InitOptions = {
   debug: false,
   supportedLngs: I18N_LANGS,
+  ns: 'default',
   defaultNS: 'default',
   preload: I18N_LANGS,
   backend: {
@@ -15,8 +15,5 @@ export const i18nextOptions: InitOptions = {
   },
   interpolation: {
     escapeValue: false,
-  },
-  missingKeyHandler() {
-    throw new I18nException(`Missing Key: ${''}`);
   },
 };

@@ -1,5 +1,3 @@
-import { WithLang } from '~/modules/telegram.old/interfaces';
-
 import {
   WikiArticle,
   WikiImage,
@@ -8,10 +6,11 @@ import {
   WikiOnThisDay,
 } from '.';
 
-export interface FeaturedRequest extends WithLang {
+export interface FeaturedRequest {
   year: number;
   month: number;
   day: number;
+  lang: string;
 }
 
 export interface FeaturedResponse {
@@ -46,16 +45,10 @@ export interface WikiImageFeatured {
     lang: string;
   };
   wb_entity_id: string;
-  structured: {
-    captions: {
-      uk: string;
-      en: string;
-      vi: string;
-    };
-  };
 }
 
 interface Artist {
   html: string;
   text: string;
+  name?: string;
 }

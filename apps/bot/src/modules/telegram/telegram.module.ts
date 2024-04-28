@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 
 import { TelegrafModule } from 'nestjs-telegraf';
 
-import { I18nModule } from '~/modules/i18n/i18n.module';
 import { WikiModule } from '~/modules/wiki/wiki.module';
 
 import { TelegramOptionsFactory } from './telegram.options-factory';
+import { TelegramSender } from './telegram.sender';
+import { TelegramService } from './telegram.service';
 import { TelegramSessionStore } from './telegram.session-store';
 import { TelegramUpdate } from './telegram.update';
+import { TelegramViews } from './views/telegram.view';
 
 @Module({
   imports: [
@@ -21,9 +23,8 @@ import { TelegramUpdate } from './telegram.update';
       ],
       useClass: TelegramOptionsFactory,
     }),
-    I18nModule.forFeature(),
     WikiModule,
   ],
-  providers: [TelegramUpdate],
+  providers: [TelegramUpdate, TelegramService, TelegramSender, TelegramViews],
 })
 export class TelegramModule {}

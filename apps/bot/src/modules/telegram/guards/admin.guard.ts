@@ -1,23 +1,22 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { TelegrafExecutionContext } from 'nestjs-telegraf';
+import { Context } from 'telegraf';
 
 import { TelegramExceptionForbidden } from '../exceptions/telegram.exception.forbidden';
-import { Context } from '../interfaces/telegraf.interface';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  private readonly ADMIN_IDS: number[] = [];
+  adminId: number;
+
+  constructor(readonly configService: ConfigService) {
+    this.adminId = +this.configService.getOrThrow<string>('TELEGRAM_ADMIN_ID');
+  }
 
   canActivate(context: ExecutionContext): boolean {
-    const ctx = TelegrafExecutionContext.create(context);
-    const { from } = ctx.getContext<Context>();
-
-    if (!from) {
-      throw new TelegramExceptionForbidden();
-    }
-
-    const isAdmin = this.ADMIN_IDS.includes(from.id);
+    const ctx = TelegrafExecutionContext.create(context).getContext<Context>();
+    const isAdmin = this.adminId === ctx.from?.id;
 
     if (!isAdmin) {
       throw new TelegramExceptionForbidden();

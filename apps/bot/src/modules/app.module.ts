@@ -24,7 +24,7 @@ import { TelegramModule } from './telegram/telegram.module';
       },
     }),
     DBModule.forRoot(),
-    I18nModule.forRoot(),
+    I18nModule,
     TelegramModule,
   ],
 })

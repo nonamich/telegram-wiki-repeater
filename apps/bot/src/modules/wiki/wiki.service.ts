@@ -31,6 +31,22 @@ export class WikiService {
     });
   }
 
+  getFeaturedRequestParams(lang: string) {
+    const date = new Date();
+    const params: FeaturedRequest = {
+      lang,
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    };
+
+    if (date.getHours() <= 8) {
+      params.day--;
+    }
+
+    return params;
+  }
+
   async getFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
     const response = await this.request<FeaturedResponse>({
       url: `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`,
@@ -75,6 +91,13 @@ export class WikiService {
 
     if (response.news) {
       response.news = response.news.slice(0, 10);
+    }
+
+    if (response.image) {
+      response.image.title = response.image.title.replace(
+        /^File:|\.(png|jpg|svg)$/g,
+        '',
+      );
     }
 
     return response;

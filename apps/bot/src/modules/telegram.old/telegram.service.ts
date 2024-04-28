@@ -32,7 +32,7 @@ import { TgWikiOnThisDayParams } from './interfaces/onthisday.interface';
 import {
   BOT_NAME,
   RUN_PER_DAY,
-  MAX_CONTENT_CAPTION,
+  MAX_CONTENT_LENGTH,
   MAX_IMAGES_ON_GROUP,
 } from './telegram.constants';
 import {
@@ -163,7 +163,7 @@ export class TelegramService {
           url: image.file_page,
           content: image.description.html,
           tags: [translate.tags.image],
-          maxLength: MAX_CONTENT_CAPTION,
+          maxLength: MAX_CONTENT_LENGTH,
         }),
       },
     );
@@ -272,7 +272,7 @@ export class TelegramService {
     if (mediaGroup.length) {
       const html = getHTMLTemplate({
         ...htmlParams,
-        maxLength: MAX_CONTENT_CAPTION,
+        maxLength: MAX_CONTENT_LENGTH,
       });
 
       mediaGroup[0].caption = html;
@@ -451,7 +451,7 @@ export class TelegramService {
       description: article.description,
       lang,
       source: article.content_urls.mobile.page,
-      maxLength: MAX_CONTENT_CAPTION,
+      maxLength: MAX_CONTENT_LENGTH,
     });
 
     if (image) {

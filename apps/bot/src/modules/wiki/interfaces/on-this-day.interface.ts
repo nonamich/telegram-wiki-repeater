@@ -1,5 +1,3 @@
-import { WithLang } from '~/modules/telegram.old/interfaces';
-
 import { WikiArticle } from '.';
 
 export interface WikiOnThisDay {
@@ -9,9 +7,10 @@ export interface WikiOnThisDay {
   source?: 'event' | 'holiday';
 }
 
-export interface OnThisDayRequest extends WithLang {
+export interface OnThisDayRequest {
   day: number;
   month: number;
+  lang: string;
 }
 
 export interface OnThisDayResponse {

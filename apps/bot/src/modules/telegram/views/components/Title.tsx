@@ -1,12 +1,16 @@
 import { FunctionalComponent } from 'preact';
 
-type Props = {
+export type TitleProps = {
   icon?: string;
   title: string;
   url: string;
 };
 
-export const Title: FunctionalComponent<Props> = ({ title, url, icon }) => {
+export const Title: FunctionalComponent<TitleProps> = ({
+  title,
+  url,
+  icon,
+}) => {
   return (
     <>
       {icon}{' '}

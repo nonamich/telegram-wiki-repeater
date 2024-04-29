@@ -6,10 +6,6 @@ export const newsTestData: WikiNews = {
       type: 'standard',
       title: 'Ariel_Henry',
       displaytitle: '<span class="mw-page-title-main">Ariel Henry</span>',
-      namespace: {
-        id: 0,
-        text: '',
-      },
       wikibase_item: 'Q107451258',
       titles: {
         canonical: 'Ariel_Henry',
@@ -35,7 +31,6 @@ export const newsTestData: WikiNews = {
       tid: '82f4e0db-053d-11ef-9600-24fe841c7b3b',
       timestamp: '2024-04-28T08:58:42Z',
       description: 'Haitian politician and neurosurgeon (born 1949)',
-      description_source: 'local',
       content_urls: {
         desktop: {
           page: 'https://en.wikipedia.org/wiki/Ariel_Henry',
@@ -62,10 +57,6 @@ export const newsTestData: WikiNews = {
       title: 'President_of_Haiti',
       displaytitle:
         '<span class="mw-page-title-main">President of Haiti</span>',
-      namespace: {
-        id: 0,
-        text: '',
-      },
       wikibase_item: 'Q3290543',
       titles: {
         canonical: 'President_of_Haiti',
@@ -91,7 +82,6 @@ export const newsTestData: WikiNews = {
       tid: '7fad37c9-053c-11ef-b9db-5d0d8294defd',
       timestamp: '2024-04-28T08:51:27Z',
       description: 'Head of state of Haiti',
-      description_source: 'local',
       content_urls: {
         desktop: {
           page: 'https://en.wikipedia.org/wiki/President_of_Haiti',
@@ -119,10 +109,6 @@ export const newsTestData: WikiNews = {
       title: 'Prime_Minister_of_Haiti',
       displaytitle:
         '<span class="mw-page-title-main">Prime Minister of Haiti</span>',
-      namespace: {
-        id: 0,
-        text: '',
-      },
       wikibase_item: 'Q1064589',
       titles: {
         canonical: 'Prime_Minister_of_Haiti',
@@ -149,7 +135,6 @@ export const newsTestData: WikiNews = {
       tid: '50c480a1-04ff-11ef-8054-138e4cb64d3b',
       timestamp: '2024-04-28T01:33:29Z',
       description: 'Head of government of Haiti',
-      description_source: 'local',
       content_urls: {
         desktop: {
           page: 'https://en.wikipedia.org/wiki/Prime_Minister_of_Haiti',
@@ -177,10 +162,6 @@ export const newsTestData: WikiNews = {
       title: 'Transitional_Presidential_Council',
       displaytitle:
         '<span class="mw-page-title-main">Transitional Presidential Council</span>',
-      namespace: {
-        id: 0,
-        text: '',
-      },
       wikibase_item: 'Q125499604',
       titles: {
         canonical: 'Transitional_Presidential_Council',
@@ -208,7 +189,6 @@ export const newsTestData: WikiNews = {
       timestamp: '2024-04-28T02:58:35Z',
       description:
         'Collegial head of state exercising the powers and duties of the president of Haiti',
-      description_source: 'local',
       content_urls: {
         desktop: {
           page: 'https://en.wikipedia.org/wiki/Transitional_Presidential_Council',

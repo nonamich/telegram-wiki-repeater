@@ -4,15 +4,12 @@ export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
 
 export interface WikiArticle {
   content_urls: ContentUrls;
-  coordinates?: Coordinates;
-  description_source?: string;
   description?: string;
   dir: string;
   displaytitle: string;
   extract_html: string;
   extract: string;
   lang: string;
-  namespace: Namespace;
   normalizedtitle: string;
   originalimage?: WikiImage;
   thumbnail?: WikiImage;
@@ -32,11 +29,6 @@ export interface WikiImage {
   height: number;
 }
 
-interface Coordinates {
-  lat: number;
-  lon: number;
-}
-
 interface ContentUrls {
   desktop: ContentUrl;
   mobile: ContentUrl;
@@ -47,11 +39,6 @@ interface ContentUrl {
   revisions: string;
   edit: string;
   talk: string;
-}
-
-interface Namespace {
-  id: number;
-  text: string;
 }
 
 interface Titles {

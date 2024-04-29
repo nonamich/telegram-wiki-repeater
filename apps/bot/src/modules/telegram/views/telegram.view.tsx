@@ -6,12 +6,16 @@ import { renderToString } from 'preact-render-to-string';
 import { TelegramViewsUtils } from './telegram.view.utils';
 import {
   FeaturedImage,
-  Props as FeaturedImageProps,
-} from './templates/FeaturedImage';
+  FeaturedImageProps,
+  ArticleList,
+  ArticleListProps,
+  Article,
+  ArticleProps,
+} from './templates';
 
 @Injectable()
 export class TelegramViews {
-  render(node: VNode) {
+  renderToString(node: VNode) {
     const unsanitizeHtml = renderToString(node);
     const html = TelegramViewsUtils.getSanitizedHTML(unsanitizeHtml);
 
@@ -19,6 +23,14 @@ export class TelegramViews {
   }
 
   renderFeaturedImage(props: FeaturedImageProps) {
-    return this.render(<FeaturedImage {...props} />);
+    return this.renderToString(<FeaturedImage {...props} />);
+  }
+
+  renderArticle(props: ArticleProps) {
+    return this.renderToString(<Article {...props} />);
+  }
+
+  renderArticleList(props: ArticleListProps) {
+    return this.renderToString(<ArticleList {...props} />);
   }
 }

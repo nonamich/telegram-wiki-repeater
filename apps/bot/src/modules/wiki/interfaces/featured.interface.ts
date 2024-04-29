@@ -16,7 +16,7 @@ export interface FeaturedRequest {
 export interface FeaturedResponse {
   tfa?: WikiFeaturedArticle;
   mostread?: WikiMostRead;
-  image?: WikiImageFeatured;
+  image?: WikiFeaturedImage;
   onthisday?: WikiOnThisDay[];
   news?: WikiNews[];
 }
@@ -27,7 +27,7 @@ export interface WikiFeaturedArticle extends WikiArticle {
   thumbnail?: WikiImage;
 }
 
-export interface WikiImageFeatured {
+export interface WikiFeaturedImage {
   title: string;
   thumbnail: WikiImage;
   image: WikiImage;

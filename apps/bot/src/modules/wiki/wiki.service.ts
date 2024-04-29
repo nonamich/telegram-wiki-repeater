@@ -87,7 +87,9 @@ export class WikiService {
       }
     }
 
-    response.onthisday = (response.onthisday || []).slice(0, 15);
+    if (response.onthisday) {
+      response.onthisday = response.onthisday.slice(0, 10);
+    }
 
     if (response.news) {
       response.news = response.news.slice(0, 10);

@@ -1,4 +1,4 @@
-import { WikiArticle, WikiImageFeatured } from '~/modules/wiki/interfaces';
+import { WikiArticle, WikiFeaturedImage } from '~/modules/wiki/interfaces';
 
 import { TelegramLanguage } from '../i18n/telegram.i18n.interface';
 
@@ -33,7 +33,7 @@ export interface WithSource {
 export interface BaseParams extends WithLang, WithHeader, WithChatId {}
 
 export interface TgWikiImageParams extends BaseParams {
-  image: WikiImageFeatured;
+  image: WikiFeaturedImage;
 }
 
 export interface TgWikiArticleParams

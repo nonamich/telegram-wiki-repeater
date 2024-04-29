@@ -229,8 +229,6 @@ export class TelegramService {
     chatId,
     ...args
   }: TgWikiListParams) {
-    articles = articles.slice(0, 5);
-
     if (articles.length <= 1) {
       header += '\n';
 

@@ -1,6 +1,6 @@
-import { WikiImageFeatured } from '~/modules/wiki/interfaces';
+import { WikiFeaturedImage } from '~/modules/wiki/interfaces';
 
-export const imageTestData: WikiImageFeatured = {
+export const tfiTestData: WikiFeaturedImage = {
   title: 'Crack climbing in Indian Creek, Utah',
   thumbnail: {
     source:

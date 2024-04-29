@@ -3,11 +3,11 @@ import { FunctionalComponent } from 'preact';
 import { useI18n } from '~/modules/i18n/i18n.utils';
 import { WIKI_DONATE_SHORT_URL } from '~/modules/wiki/wiki.constants';
 
-type Props = {
+export type LinksProps = {
   source?: string;
 };
 
-export const Links: FunctionalComponent<Props> = ({ source }) => {
+export const Links: FunctionalComponent<LinksProps> = ({ source }) => {
   const { t, language } = useI18n();
   const links = [
     {
@@ -17,7 +17,7 @@ export const Links: FunctionalComponent<Props> = ({ source }) => {
   ];
 
   if (source) {
-    links.unshift({
+    links.push({
       text: `🔗 ${t('source')}`,
       url: source,
     });

@@ -1,13 +1,15 @@
 import { FunctionalComponent } from 'preact';
 
-type Props = {
+export type DescriptionProps = {
   description?: string;
 };
 
-export const Description: FunctionalComponent<Props> = ({ description }) => {
+export const Description: FunctionalComponent<DescriptionProps> = ({
+  description,
+}) => {
   if (!description) {
     return <></>;
   }
 
-  return <i>{description}</i>;
+  return <i> - {description}</i>;
 };

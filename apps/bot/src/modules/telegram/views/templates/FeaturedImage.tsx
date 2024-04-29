@@ -1,14 +1,16 @@
 import { FunctionComponent } from 'preact';
 
-import { WikiImageFeatured } from '~/modules/wiki/interfaces';
+import { WikiFeaturedImage } from '~/modules/wiki/interfaces';
 
 import { BR, Content, HTags, Links, Title } from '../components';
 
-export type Props = {
-  image: WikiImageFeatured;
+export type FeaturedImageProps = {
+  image: WikiFeaturedImage;
 };
 
-export const FeaturedImage: FunctionComponent<Props> = ({ image }) => {
+export const FeaturedImage: FunctionComponent<FeaturedImageProps> = ({
+  image,
+}) => {
   return (
     <>
       <Title title={image.title} url={image.file_page} icon="🖼️" />

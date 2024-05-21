@@ -4,7 +4,7 @@ export interface WikiOnThisDay {
   text: string;
   pages: WikiArticle[];
   year?: number;
-  source?: 'event' | 'holiday';
+  source?: 'event' | 'holiday' | 'births' | 'deaths';
 }
 
 export interface OnThisDayRequest {

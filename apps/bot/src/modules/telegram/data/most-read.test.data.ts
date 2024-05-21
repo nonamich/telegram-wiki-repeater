@@ -1,6 +1,6 @@
-import { WikiArticleMostRead } from '~/modules/wiki/interfaces';
+import { WikiMostReadArticle } from '~/modules/wiki/interfaces';
 
-export const tfiTestData: WikiArticleMostRead = {
+export const mostReadTestData: WikiMostReadArticle = {
   views: 414507,
   rank: 3,
   view_history: [

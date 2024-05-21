@@ -47,53 +47,15 @@ export class WikiService {
     return params;
   }
 
-  async getFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
+  getUrlFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
+    return `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`;
+  }
+
+  async getFeaturedContent(params: FeaturedRequest) {
     const response = await this.request<FeaturedResponse>({
-      url: `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`,
+      url: this.getUrlFeaturedContent(params),
     });
-
-    if (!response.onthisday || response.onthisday.length < 20) {
-      let { onthisday } = response;
-      const { selected, events, holidays } = await this.getOnThisDay({
-        lang,
-        month,
-        day,
-      });
-
-      if (!onthisday) {
-        onthisday = [];
-      } else if (!onthisday.length && selected) {
-        onthisday = selected;
-      }
-
-      if (events) {
-        onthisday.push(
-          ...events.slice(0, 5).map((item) => {
-            item.source = 'event';
-
-            return item;
-          }),
-        );
-      }
-
-      if (holidays) {
-        onthisday.push(
-          ...holidays.slice(0, 5).map((item) => {
-            item.source = 'holiday';
-
-            return item;
-          }),
-        );
-      }
-    }
-
-    if (response.onthisday) {
-      response.onthisday = response.onthisday.slice(0, 10);
-    }
-
-    if (response.news) {
-      response.news = response.news.slice(0, 10);
-    }
+    const onthisday = await this.getOnThisDay(params);
 
     if (response.image) {
       response.image.title = response.image.title.replace(
@@ -102,16 +64,14 @@ export class WikiService {
       );
     }
 
-    return response;
+    return { ...response, onthisday };
   }
 
   private getCacheKey(url: string) {
-    const cacheKey = `wiki:${url}`;
-
-    return cacheKey;
+    return `wiki:${url}`;
   }
 
-  private async getFromCache<T>(url: string) {
+  private async getCacheResponse<T>(url: string) {
     const cacheKey = this.getCacheKey(url);
     const cacheAsBase64 = await this.redis.get(cacheKey);
 
@@ -140,7 +100,7 @@ export class WikiService {
     url,
     expires,
   }: WikiRequest): Promise<T> {
-    const cache = await this.getFromCache<T>(url);
+    const cache = await this.getCacheResponse<T>(url);
 
     if (cache) {
       return cache;

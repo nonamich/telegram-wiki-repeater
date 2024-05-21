@@ -14,7 +14,7 @@
     "translate:pull": "dotenv-run -f .env.development -- npx i18nexus-cli pull --path ./src/modules/telegram/i18n/languages/"
   },
   "dependencies": {
-    "@nestjs/axios": "^3.0.1",
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
@@ -22,7 +22,7 @@
     "@repo/db": "*",
     "@repo/shared": "*",
     "@telegraf/session": "^2.0.0-beta.7",
-    "axios": "^1.6.7",
+    "axios": "^1.7.1",
     "dayjs": "^1.11.10",
     "i18next": "^23.8.2",
     "i18next-fs-backend": "^2.3.1",

@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
-import { InputMediaPhoto } from 'telegraf/types';
 
 import {
+  WikiMostReadArticle,
   WikiFeaturedArticle,
   WikiFeaturedImage,
   WikiNews,
+  WikiOnThisDay,
 } from '~/modules/wiki/interfaces';
 
 import { TelegramSendArticleList } from './interfaces/telegram.interface';
@@ -16,11 +17,19 @@ import { TelegramViews } from './views/telegram.view';
 import { ArticleProps } from './views/templates';
 
 @Injectable()
-export class TelegramService {
+export class TelegramSender {
   constructor(
     @InjectBot() private readonly bot: Telegraf,
     private readonly views: TelegramViews,
   ) {}
+
+  async sendMostReadArticle(chatId: number, article: WikiMostReadArticle) {
+    await this.sendArticle(chatId, {
+      article,
+      icon: '⚡',
+      tags: ['mostread'],
+    });
+  }
 
   async sendFeaturedArticle(chatId: number, article: WikiFeaturedArticle) {
     await this.sendArticle(chatId, {
@@ -36,69 +45,42 @@ export class TelegramService {
     await this.sendPost(chatId, caption, image.thumbnail.source);
   }
 
-  async sendNews(chatId: number, news: WikiNews) {
+  async sendNews(chatId: number, news: WikiNews[]) {
     await this.sendList({
       chatId,
-      articles: news.links,
-      title: news.story,
-      icon: '🆕',
+      list: news.map(({ story }) => story),
+      title: `🆕 In the news:`,
       tags: ['news'],
     });
   }
 
+  // async sendOnThisDay(chatId: number, { pages, text }: WikiOnThisDay) {
+  //   await this.sendList({
+  //     chatId,
+  //     articles: pages,
+  //     title: text,
+  //     icon: '🏺',
+  //     tags: ['on_this_day'],
+  //   });
+  // }
+
   private async sendList({
     chatId,
-    articles,
-    icon,
+    list,
     title,
     tags,
   }: TelegramSendArticleList) {
-    if (!articles.length) {
-      return;
-    }
-
-    if (articles.length === 1) {
-      await this.sendArticle(chatId, {
-        article: articles.at(0)!,
-        icon,
-        tags,
-      });
-
-      return;
-    }
-
-    const mediaGroup = TelegramUtils.getMediaGroup(articles);
     const html = this.views.renderArticleList({
-      articles,
-      icon,
+      list,
       title,
       tags,
     });
-
-    if (mediaGroup.length) {
-      await this.sendMediaGroup(chatId, mediaGroup, html);
-
-      return;
-    }
 
     await this.bot.telegram.sendMessage(
       chatId,
       html,
       TelegramUtils.getDefaultExtra(),
     );
-  }
-
-  private async sendMediaGroup(
-    chatId: number,
-    mediaGroup: InputMediaPhoto[],
-    html: string,
-  ) {
-    const extra = TelegramUtils.getDefaultExtra();
-
-    mediaGroup[0].caption = html;
-    mediaGroup[0].parse_mode = extra.parse_mode;
-
-    await this.bot.telegram.sendMediaGroup(chatId, mediaGroup);
   }
 
   private async sendArticle(chatId: number, props: ArticleProps) {

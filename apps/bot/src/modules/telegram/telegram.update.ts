@@ -3,14 +3,10 @@ import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 import { WikiService } from '../wiki/wiki.service';
 import { Context } from './interfaces/telegram.interface';
 import { COMMANDS, SCENE_IDS } from './telegram.enums';
-import { TelegramService } from './telegram.service';
 
 @Update()
 export class TelegramUpdate {
-  constructor(
-    private readonly tg: TelegramService,
-    private readonly wiki: WikiService,
-  ) {}
+  constructor(private readonly wiki: WikiService) {}
 
   @Start()
   async onStart(@Ctx() ctx: Context) {

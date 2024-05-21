@@ -12,4 +12,8 @@ export interface TelegramSendArticleList {
   tags: Tag[];
 }
 
-export interface Context extends Scenes.SceneContext {}
+interface BaseContext {
+  match: RegExpMatchArray;
+}
+
+export interface Context extends Scenes.SceneContext, BaseContext {}

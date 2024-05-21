@@ -5,7 +5,6 @@ export const newsTestData: WikiNews = {
     {
       type: 'standard',
       title: 'Ariel_Henry',
-      displaytitle: '<span class="mw-page-title-main">Ariel Henry</span>',
       wikibase_item: 'Q107451258',
       titles: {
         canonical: 'Ariel_Henry',
@@ -55,8 +54,6 @@ export const newsTestData: WikiNews = {
     {
       type: 'standard',
       title: 'President_of_Haiti',
-      displaytitle:
-        '<span class="mw-page-title-main">President of Haiti</span>',
       wikibase_item: 'Q3290543',
       titles: {
         canonical: 'President_of_Haiti',
@@ -107,8 +104,6 @@ export const newsTestData: WikiNews = {
     {
       type: 'standard',
       title: 'Prime_Minister_of_Haiti',
-      displaytitle:
-        '<span class="mw-page-title-main">Prime Minister of Haiti</span>',
       wikibase_item: 'Q1064589',
       titles: {
         canonical: 'Prime_Minister_of_Haiti',
@@ -160,8 +155,6 @@ export const newsTestData: WikiNews = {
     {
       type: 'standard',
       title: 'Transitional_Presidential_Council',
-      displaytitle:
-        '<span class="mw-page-title-main">Transitional Presidential Council</span>',
       wikibase_item: 'Q125499604',
       titles: {
         canonical: 'Transitional_Presidential_Council',

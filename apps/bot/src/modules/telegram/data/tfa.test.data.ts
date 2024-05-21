@@ -3,7 +3,6 @@ import { WikiFeaturedArticle } from '~/modules/wiki/interfaces';
 export const tfaTestData: WikiFeaturedArticle = {
   type: 'standard',
   title: 'Cross_Road_Blues',
-  displaytitle: '<span class="mw-page-title-main">Cross Road Blues</span>',
   wikibase_item: 'Q1141207',
   titles: {
     canonical: 'Cross_Road_Blues',

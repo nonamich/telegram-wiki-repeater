@@ -6,7 +6,6 @@ export interface WikiArticle {
   content_urls: ContentUrls;
   description?: string;
   dir: string;
-  displaytitle: string;
   extract_html: string;
   extract: string;
   lang: string;

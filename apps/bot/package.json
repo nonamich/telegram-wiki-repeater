@@ -11,8 +11,7 @@
     "start:prod": "node dist/main",
     "dev": "npm run start:debug",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "t:pull": "npx i18nexus-cli pull --path ./src/modules/i18n/locales/",
-    "t:import": "npx i18nexus-cli import ./src/modules/i18n/locales/en/default.json -ns default"
+    "t:pull": "npx i18nexus-cli pull --path ./src/modules/i18n/locales/"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.2",

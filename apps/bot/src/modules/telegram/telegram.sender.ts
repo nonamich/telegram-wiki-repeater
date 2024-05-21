@@ -8,7 +8,6 @@ import {
   WikiFeaturedArticle,
   WikiFeaturedImage,
   WikiNews,
-  WikiOnThisDay,
 } from '~/modules/wiki/interfaces';
 
 import { TelegramSendArticleList } from './interfaces/telegram.interface';

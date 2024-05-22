@@ -2,6 +2,7 @@ import { Action, Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
 import { Chat } from 'telegraf/types';
 
 import { I18nContext } from '~/modules/i18n/i18n.context';
+import { WikiLanguage } from '~/modules/wiki/interfaces';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
 import { CurrentChat } from '../decorators/current-chat.decorator';
@@ -42,7 +43,7 @@ export class TestScene {
             },
             {
               text: 'On This Day',
-              callback_data: 'on_this_day',
+              callback_data: 'test-on_this_day',
             },
           ],
         ],
@@ -52,17 +53,17 @@ export class TestScene {
 
   @Action(/test-(\w+)/)
   async onTest(@Ctx() ctx: Context, @CurrentChat() chat: Chat) {
-    const type = ctx.match.at(1)!;
-
     await ctx.deleteMessage();
-
     await ctx.scene.leave();
 
-    const featuredContent = await this.wiki.getFeaturedContent({
-      ...this.wiki.getFeaturedRequestParams('en'),
-    });
+    const lang: WikiLanguage = 'tr';
 
-    await I18nContext.create('en', async () => {
+    const featuredContent = await this.wiki.getFeaturedContent({
+      ...this.wiki.getFeaturedRequestParams(lang),
+    });
+    const type = ctx.match.at(1)!;
+
+    await I18nContext.create(lang, async () => {
       switch (type) {
         case 'tfi':
           await this.sender.sendFeaturedImage(chat.id, featuredContent.image!);
@@ -85,7 +86,20 @@ export class TestScene {
 
           break;
         case 'on_this_day':
-          // await this.sender.sendOnThisDay(chat.id, featuredContent.onthisday!);
+          await this.sender.sendOnThisDay(
+            chat.id,
+            featuredContent.onthisday!.selected!.at(1)!,
+          );
+
+          await this.sender.sendOnThisDay(
+            chat.id,
+            featuredContent.onthisday!.selected!.at(0)!,
+          );
+
+          await this.sender.sendOnThisDay(
+            chat.id,
+            featuredContent.onthisday!.selected!.at(2)!,
+          );
 
           break;
       }

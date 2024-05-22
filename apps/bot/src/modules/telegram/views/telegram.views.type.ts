@@ -5,4 +5,4 @@ export type TypeOfArticle =
   | 'news'
   | 'on_this_day';
 
-export type Tag = TypeOfArticle | Date;
+export type Tag = TypeOfArticle | string;

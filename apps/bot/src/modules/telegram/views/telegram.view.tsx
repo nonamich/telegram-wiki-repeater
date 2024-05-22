@@ -7,10 +7,12 @@ import { TelegramViewsUtils } from './telegram.view.utils';
 import {
   FeaturedImage,
   FeaturedImageProps,
-  ArticleList,
-  ArticleListProps,
+  News,
+  NewsProps,
   Article,
   ArticleProps,
+  OnThisDay,
+  OnThisDayProps,
 } from './templates';
 
 @Injectable()
@@ -30,7 +32,11 @@ export class TelegramViews {
     return this.renderToString(<Article {...props} />);
   }
 
-  renderArticleList(props: ArticleListProps) {
-    return this.renderToString(<ArticleList {...props} />);
+  renderNews(props: NewsProps) {
+    return this.renderToString(<News {...props} />);
+  }
+
+  renderOnThisDay(props: OnThisDayProps) {
+    return this.renderToString(<OnThisDay {...props} />);
   }
 }

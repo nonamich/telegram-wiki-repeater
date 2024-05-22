@@ -33,9 +33,7 @@ export class TelegramUtils {
     return images.map((image) => {
       const inputMedia: InputMediaPhoto = {
         type: 'photo',
-        media: {
-          url: image.source,
-        },
+        media: image.source,
       };
 
       return inputMedia;

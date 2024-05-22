@@ -1,12 +1,14 @@
-import i18next from 'i18next';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { I18nAsyncLocalStorage } from './i18n.async-local-storage';
+import i18next, { i18n as I18n } from 'i18next';
+
+import { WikiLanguage } from '../wiki/interfaces';
 
 export class I18nContext {
-  static storage = new I18nAsyncLocalStorage();
+  static storage = new AsyncLocalStorage<I18n>();
 
   static async create(
-    lang: string,
+    lang: WikiLanguage,
     next: (...args: any[]) => Promise<void> | void,
   ) {
     const i18n = i18next.cloneInstance();
@@ -17,6 +19,6 @@ export class I18nContext {
   }
 
   static current() {
-    return I18nContext.storage.getStore()!;
+    return I18nContext.storage.getStore();
   }
 }

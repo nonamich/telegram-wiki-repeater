@@ -11,9 +11,11 @@ export type FeaturedImageProps = {
 export const FeaturedImage: FunctionComponent<FeaturedImageProps> = ({
   image,
 }) => {
+  const title = image.title.replace(/^File:|\.(png|jpg|svg)$/g, '');
+
   return (
     <>
-      <Title title={image.title} url={image.file_page} icon="🖼️" />
+      <Title title={title} url={image.file_page} beforeTitle="🖼️" />
       <BR />
       <Content content={image.description.html} source={image.file_page} />
       <BR />

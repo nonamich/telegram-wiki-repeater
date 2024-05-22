@@ -10,7 +10,12 @@ import { Utils } from '@repo/shared';
 
 import { DAY_IN_SEC, HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
-import { OnThisDayRequest, OnThisDayResponse, WikiRequest } from './interfaces';
+import {
+  OnThisDayRequest,
+  OnThisDayResponse,
+  WikiLanguage,
+  WikiRequest,
+} from './interfaces';
 import {
   FeaturedResponse,
   FeaturedRequest,
@@ -31,7 +36,7 @@ export class WikiService {
     });
   }
 
-  getFeaturedRequestParams(lang: string) {
+  getFeaturedRequestParams(lang: WikiLanguage) {
     const date = new Date();
     const params: FeaturedRequest = {
       lang,
@@ -39,10 +44,6 @@ export class WikiService {
       month: date.getMonth() + 1,
       day: date.getDate(),
     };
-
-    if (date.getHours() <= 8) {
-      params.day--;
-    }
 
     return params;
   }
@@ -55,16 +56,9 @@ export class WikiService {
     const response = await this.request<FeaturedResponse>({
       url: this.getUrlFeaturedContent(params),
     });
-    const onthisday = await this.getOnThisDay(params);
+    const { holidays: _, ...onthisday } = await this.getOnThisDay(params);
 
-    if (response.image) {
-      response.image.title = response.image.title.replace(
-        /^File:|\.(png|jpg|svg)$/g,
-        '',
-      );
-    }
-
-    return { ...response, onthisday };
+    return response;
   }
 
   private getCacheKey(url: string) {

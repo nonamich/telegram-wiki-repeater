@@ -1,9 +1,10 @@
+import { WikiLanguage } from '~/modules/wiki/interfaces';
 import { WIKI_LANGUAGES } from '~/modules/wiki/wiki.constants';
 
 export const I18N_LANGS = WIKI_LANGUAGES;
 
 export const I18N_LANGS_INFO: Record<
-  (typeof WIKI_LANGUAGES)[number],
+  WikiLanguage,
   { icon: string; name: string }
 > = {
   ar: {

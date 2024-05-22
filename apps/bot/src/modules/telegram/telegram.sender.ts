@@ -2,15 +2,16 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
+import { InputMediaPhoto } from 'telegraf/types';
 
 import {
   WikiMostReadArticle,
   WikiFeaturedArticle,
   WikiFeaturedImage,
   WikiNews,
+  WikiOnThisDay,
 } from '~/modules/wiki/interfaces';
 
-import { TelegramSendArticleList } from './interfaces/telegram.interface';
 import { TelegramUtils } from './telegram.utils';
 import { TelegramViews } from './views/telegram.view';
 import { ArticleProps } from './views/templates';
@@ -25,7 +26,7 @@ export class TelegramSender {
   async sendMostReadArticle(chatId: number, article: WikiMostReadArticle) {
     await this.sendArticle(chatId, {
       article,
-      icon: '⚡',
+      beforeTitle: '⚡',
       tags: ['mostread'],
     });
   }
@@ -33,7 +34,7 @@ export class TelegramSender {
   async sendFeaturedArticle(chatId: number, article: WikiFeaturedArticle) {
     await this.sendArticle(chatId, {
       article,
-      icon: '⭐️',
+      beforeTitle: '⭐️',
       tags: ['tfa'],
     });
   }
@@ -45,41 +46,19 @@ export class TelegramSender {
   }
 
   async sendNews(chatId: number, news: WikiNews[]) {
-    await this.sendList({
-      chatId,
-      list: news.map(({ story }) => story),
-      title: `🆕 In the news:`,
-      tags: ['news'],
-    });
+    const html = this.views.renderNews({ news });
+    const articles = news.map(({ links }) => links.slice(0, 1)).flat();
+    const mediaGroup = TelegramUtils.getMediaGroup(articles);
+
+    await this.sendPost(chatId, html, mediaGroup);
   }
 
-  // async sendOnThisDay(chatId: number, { pages, text }: WikiOnThisDay) {
-  //   await this.sendList({
-  //     chatId,
-  //     articles: pages,
-  //     title: text,
-  //     icon: '🏺',
-  //     tags: ['on_this_day'],
-  //   });
-  // }
+  async sendOnThisDay(chatId: number, event: WikiOnThisDay) {
+    const html = this.views.renderOnThisDay({ event });
+    const mainArticle = event.pages.at(0)!;
+    const image = TelegramUtils.getArticleImage(mainArticle);
 
-  private async sendList({
-    chatId,
-    list,
-    title,
-    tags,
-  }: TelegramSendArticleList) {
-    const html = this.views.renderArticleList({
-      list,
-      title,
-      tags,
-    });
-
-    await this.bot.telegram.sendMessage(
-      chatId,
-      html,
-      TelegramUtils.getDefaultExtra(),
-    );
+    await this.sendPost(chatId, html, image?.source);
   }
 
   private async sendArticle(chatId: number, props: ArticleProps) {
@@ -89,20 +68,23 @@ export class TelegramSender {
     await this.sendPost(chatId, html, image?.source);
   }
 
-  async sendPost(chatId: number, html: string, imageURL?: string) {
+  async sendPost(
+    chatId: number,
+    html: string,
+    media?: string | InputMediaPhoto[],
+  ) {
     const extra = TelegramUtils.getDefaultExtra();
 
-    if (imageURL) {
-      await this.bot.telegram.sendPhoto(
-        chatId,
-        {
-          url: imageURL,
-        },
-        {
-          ...extra,
-          caption: html,
-        },
-      );
+    if (typeof media === 'string') {
+      await this.bot.telegram.sendPhoto(chatId, media, {
+        ...extra,
+        caption: html,
+      });
+    } else if (media?.length) {
+      media[0].caption = html;
+      media[0].parse_mode = extra.parse_mode;
+
+      await this.bot.telegram.sendMediaGroup(chatId, media);
     } else {
       await this.bot.telegram.sendMessage(chatId, html, extra);
     }

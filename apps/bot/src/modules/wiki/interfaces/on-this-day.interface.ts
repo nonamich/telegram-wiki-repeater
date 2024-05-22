@@ -3,8 +3,7 @@ import { WikiArticle } from '.';
 export interface WikiOnThisDay {
   text: string;
   pages: WikiArticle[];
-  year?: number;
-  source?: 'event' | 'holiday' | 'births' | 'deaths';
+  year: number;
 }
 
 export interface OnThisDayRequest {
@@ -17,6 +16,6 @@ export interface OnThisDayResponse {
   births?: WikiOnThisDay[];
   deaths?: WikiOnThisDay[];
   events?: WikiOnThisDay[];
-  holidays?: WikiOnThisDay[];
+  holidays?: Omit<WikiOnThisDay, 'year'>[];
   selected?: WikiOnThisDay[];
 }

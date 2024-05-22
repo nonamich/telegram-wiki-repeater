@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
 import { WikiArticle } from '~/modules/wiki/interfaces';
 
@@ -14,13 +15,13 @@ import {
 
 export type ArticleProps = {
   article: WikiArticle;
-  icon: string;
+  beforeTitle: JSXInternal.Element | string;
   tags: HTagsProps['tags'];
 };
 
 export const Article: FunctionComponent<ArticleProps> = ({
   article,
-  icon,
+  beforeTitle,
   tags,
 }) => {
   return (
@@ -28,7 +29,7 @@ export const Article: FunctionComponent<ArticleProps> = ({
       <Title
         title={article.titles.normalized}
         url={article.content_urls.mobile.page}
-        icon={icon}
+        beforeTitle={beforeTitle}
       />
       <Description description={article.description} />
       <BR />

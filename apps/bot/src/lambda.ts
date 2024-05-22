@@ -6,7 +6,7 @@ import { Telegraf } from 'telegraf';
 
 import { createApp } from './app';
 import { EventHandler, EventHandlerLambda } from './interfaces/app.interface';
-import { TelegramChatService } from './modules/telegram.old/telegram.chat.service';
+// import { TelegramChatService } from './modules/telegram.old/telegram.chat.service';
 
 let app: INestApplicationContext;
 
@@ -38,7 +38,6 @@ async function sendReplay(event: EventHandlerLambda) {
 }
 
 async function scheduledSending() {
-  const chatService = app.get(TelegramChatService);
-
-  return chatService.informChats();
+  // const chatService = app.get(TelegramChatService);
+  // return chatService.informChats();
 }

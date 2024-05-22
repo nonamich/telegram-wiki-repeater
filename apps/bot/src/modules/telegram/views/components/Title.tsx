@@ -1,7 +1,8 @@
 import { FunctionalComponent } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
 export type TitleProps = {
-  icon?: string;
+  beforeTitle?: JSXInternal.Element | string;
   title: string;
   url: string;
 };
@@ -9,11 +10,11 @@ export type TitleProps = {
 export const Title: FunctionalComponent<TitleProps> = ({
   title,
   url,
-  icon,
+  beforeTitle,
 }) => {
   return (
     <>
-      {icon}{' '}
+      {beforeTitle && <>{beforeTitle} </>}
       <a href={url}>
         <strong>{title}</strong>
       </a>

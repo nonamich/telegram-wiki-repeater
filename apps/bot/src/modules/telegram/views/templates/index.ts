@@ -1,3 +1,4 @@
 export * from './Article';
-export * from './ArticleList';
+export * from './ArticleNews';
 export * from './FeaturedImage';
+export * from './OnThisDay';

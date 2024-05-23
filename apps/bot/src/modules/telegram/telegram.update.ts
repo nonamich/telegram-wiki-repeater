@@ -2,7 +2,7 @@ import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 
 import { WikiService } from '../wiki/wiki.service';
 import { Context } from './interfaces/telegram.interface';
-import { COMMANDS, SCENE_IDS } from './telegram.enums';
+import { COMMANDS, SCENES } from './telegram.enums';
 
 @Update()
 export class TelegramUpdate {
@@ -23,6 +23,6 @@ export class TelegramUpdate {
 
   @Command(COMMANDS.TEST)
   async onTest(@Ctx() ctx: Context) {
-    await ctx.scene.enter(SCENE_IDS.TEST);
+    await ctx.scene.enter(SCENES.TEST);
   }
 }

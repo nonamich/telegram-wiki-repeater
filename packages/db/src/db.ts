@@ -4,15 +4,9 @@ import postgres from 'postgres';
 import { Schemas } from '.';
 
 export const initDBClient = () => {
-  return postgres({
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    host: process.env.DATABASE_HOST,
-    database: process.env.DATABASE_DATABASE,
-    ssl: 'require',
-  });
+  return postgres(process.env.DATABASE_URL!);
 };
 
 export const initORM = (client: postgres.Sql) => {
-  return drizzle(client, { schema: Schemas });
+  drizzle(client, { schema: Schemas });
 };

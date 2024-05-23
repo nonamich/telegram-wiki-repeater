@@ -17,7 +17,6 @@ export class TelegramOptionsFactory implements TelegrafOptionsFactory {
     const options: TelegrafModuleOptions = {
       token: this.config.getOrThrow('TELEGRAM_BOT_TOKEN'),
       middlewares: [session({ store: this.store })],
-      launchOptions: {},
     };
 
     return options;

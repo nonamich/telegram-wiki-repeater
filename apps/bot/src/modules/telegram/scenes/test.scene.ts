@@ -7,10 +7,10 @@ import { WikiService } from '~/modules/wiki/wiki.service';
 
 import { CurrentChat } from '../decorators/current-chat.decorator';
 import { Context } from '../interfaces/telegram.interface';
-import { SCENE_IDS } from '../telegram.enums';
+import { SCENES } from '../telegram.enums';
 import { TelegramSender } from '../telegram.sender';
 
-@Scene(SCENE_IDS.TEST)
+@Scene(SCENES.TEST)
 export class TestScene {
   constructor(
     private sender: TelegramSender,
@@ -56,11 +56,11 @@ export class TestScene {
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'tr';
+    const lang: WikiLanguage = 'en';
 
-    const featuredContent = await this.wiki.getFeaturedContent({
-      ...this.wiki.getFeaturedRequestParams(lang),
-    });
+    const featuredContent = await this.wiki.getFeaturedContent(
+      this.wiki.getFeaturedRequestParams(lang),
+    );
     const type = ctx.match.at(1)!;
 
     await I18nContext.create(lang, async () => {
@@ -75,7 +75,7 @@ export class TestScene {
           break;
 
         case 'news':
-          await this.sender.sendNews(chat.id, featuredContent.news!);
+          await this.sender.sendNews(chat.id, featuredContent.news!.at(1)!);
 
           break;
         case 'mostread':
@@ -88,17 +88,17 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.selected!.at(1)!,
+            featuredContent.onthisday!.at(1)!,
           );
 
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.selected!.at(0)!,
+            featuredContent.onthisday!.at(0)!,
           );
 
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.selected!.at(2)!,
+            featuredContent.onthisday!.at(2)!,
           );
 
           break;

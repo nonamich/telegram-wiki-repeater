@@ -5,17 +5,3 @@ export interface WikiOnThisDay {
   pages: WikiArticle[];
   year: number;
 }
-
-export interface OnThisDayRequest {
-  day: number;
-  month: number;
-  lang: string;
-}
-
-export interface OnThisDayResponse {
-  births?: WikiOnThisDay[];
-  deaths?: WikiOnThisDay[];
-  events?: WikiOnThisDay[];
-  holidays?: Omit<WikiOnThisDay, 'year'>[];
-  selected?: WikiOnThisDay[];
-}

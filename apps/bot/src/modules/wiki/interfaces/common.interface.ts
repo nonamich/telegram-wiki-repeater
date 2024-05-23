@@ -5,21 +5,11 @@ export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
 export interface WikiArticle {
   content_urls: ContentUrls;
   description?: string;
-  dir: string;
   extract_html: string;
-  extract: string;
-  lang: string;
-  normalizedtitle: string;
   originalimage?: WikiImage;
   thumbnail?: WikiImage;
   pageid: number;
-  revision: string;
-  tid: string;
-  timestamp: string;
-  title: string;
   titles: Titles;
-  type: string;
-  wikibase_item: string;
 }
 
 export interface WikiImage {
@@ -35,13 +25,8 @@ interface ContentUrls {
 
 interface ContentUrl {
   page: string;
-  revisions: string;
-  edit: string;
-  talk: string;
 }
 
 interface Titles {
-  canonical: string;
   normalized: string;
-  display: string;
 }

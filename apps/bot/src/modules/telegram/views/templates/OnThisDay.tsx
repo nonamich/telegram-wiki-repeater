@@ -5,7 +5,6 @@ import { useI18n } from '~/modules/i18n/i18n.utils';
 import { WikiOnThisDay } from '~/modules/wiki/interfaces';
 
 import { BR, Description, HTags, Links, NewLine, Title } from '../components';
-import { MAX_PAGES_PER_EVENT } from '../telegram.view.constants';
 import { Article } from './Article';
 
 export type OnThisDayProps = {
@@ -35,7 +34,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {' — '}
       {text}
       <BR />
-      {pages.slice(0, MAX_PAGES_PER_EVENT).map((page, index) => {
+      {pages.map((page, index) => {
         return (
           <>
             {index > 0 && <NewLine />}•{' '}
@@ -43,7 +42,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
               title={page.titles.normalized}
               url={page.content_urls.mobile.page}
             />
-            <Description description={page.description} />
+            <Description description={page.description} />;
           </>
         );
       })}

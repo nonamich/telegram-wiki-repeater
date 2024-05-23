@@ -2,6 +2,6 @@ export enum COMMANDS {
   TEST = 'test',
 }
 
-export enum SCENE_IDS {
+export enum SCENES {
   TEST = 'test',
 }

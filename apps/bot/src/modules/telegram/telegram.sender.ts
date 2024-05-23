@@ -6,10 +6,11 @@ import { InputMediaPhoto } from 'telegraf/types';
 
 import {
   WikiMostReadArticle,
-  WikiFeaturedArticle,
   WikiFeaturedImage,
   WikiNews,
   WikiOnThisDay,
+  WikiImage,
+  WikiArticle,
 } from '~/modules/wiki/interfaces';
 
 import { TelegramUtils } from './telegram.utils';
@@ -31,7 +32,7 @@ export class TelegramSender {
     });
   }
 
-  async sendFeaturedArticle(chatId: number, article: WikiFeaturedArticle) {
+  async sendFeaturedArticle(chatId: number, article: WikiArticle) {
     await this.sendArticle(chatId, {
       article,
       beforeTitle: '⭐️',
@@ -45,12 +46,16 @@ export class TelegramSender {
     await this.sendPost(chatId, caption, image.thumbnail.source);
   }
 
-  async sendNews(chatId: number, news: WikiNews[]) {
+  async sendNews(chatId: number, news: WikiNews) {
     const html = this.views.renderNews({ news });
-    const articles = news.map(({ links }) => links.slice(0, 1)).flat();
-    const mediaGroup = TelegramUtils.getMediaGroup(articles);
+    const articleWithImage = news.links.find(TelegramUtils.getArticleImage);
+    let image: WikiImage | undefined;
 
-    await this.sendPost(chatId, html, mediaGroup);
+    if (articleWithImage) {
+      image = TelegramUtils.getArticleImage(articleWithImage);
+    }
+
+    await this.sendPost(chatId, html, image?.source);
   }
 
   async sendOnThisDay(chatId: number, event: WikiOnThisDay) {
@@ -84,7 +89,9 @@ export class TelegramSender {
       media[0].caption = html;
       media[0].parse_mode = extra.parse_mode;
 
-      await this.bot.telegram.sendMediaGroup(chatId, media);
+      await this.bot.telegram.sendMediaGroup(chatId, media, {
+        disable_notification: extra.disable_notification,
+      });
     } else {
       await this.bot.telegram.sendMessage(chatId, html, extra);
     }

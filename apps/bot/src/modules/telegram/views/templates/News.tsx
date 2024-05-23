@@ -7,26 +7,19 @@ import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '../../telegram.constants';
 import { BR, HTags, Links } from '../components';
 
 export type NewsProps = {
-  news: WikiNews[];
+  news: WikiNews;
 };
 
-export const News: FunctionalComponent<NewsProps> = ({ news }) => {
+export const News: FunctionalComponent<NewsProps> = ({ news: { story } }) => {
   const { t } = useI18n();
 
   return (
     <>
-      🆕 {t('in_the_news')}
-      <BR />
-      {news.map(({ story }, index) => {
-        return (
-          <>
-            {index > 0 && <BR />}•{' '}
-            <TELEGRAM_TAG_DANGEROUSLY_HTML
-              dangerouslySetInnerHTML={{ __html: story }}
-            />
-          </>
-        );
-      })}
+      📰 {t('in_the_news')}
+      {' — '}
+      <TELEGRAM_TAG_DANGEROUSLY_HTML
+        dangerouslySetInnerHTML={{ __html: story }}
+      />
       <BR />
       <HTags tags={['news']} />
       <BR />

@@ -7,11 +7,9 @@ import { AdminGuard } from './modules/telegram/guards/admin.guard';
 
 export const createApp = async () => {
   const app = await NestFactory.create(AppModule);
-
   const configService = app.get<ConfigService>(ConfigService);
 
   app.useGlobalGuards(new AdminGuard(configService));
-
   app.useGlobalFilters(new TelegramExceptionFilter());
 
   return app;

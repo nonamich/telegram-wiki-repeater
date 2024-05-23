@@ -8,14 +8,9 @@ import { AxiosError } from 'axios';
 
 import { Utils } from '@repo/shared';
 
-import { DAY_IN_SEC, HOUR_IN_SEC } from '../redis/redis.constants';
+import { HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
-import {
-  OnThisDayRequest,
-  OnThisDayResponse,
-  WikiLanguage,
-  WikiRequest,
-} from './interfaces';
+import { WikiLanguage, WikiRequest } from './interfaces';
 import {
   FeaturedResponse,
   FeaturedRequest,
@@ -28,13 +23,6 @@ export class WikiService {
     private readonly redis: RedisService,
     private readonly http: HttpService,
   ) {}
-
-  getOnThisDay({ lang, month, day }: OnThisDayRequest) {
-    return this.request<OnThisDayResponse>({
-      url: `/${lang}/onthisday/all/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`,
-      expires: DAY_IN_SEC,
-    });
-  }
 
   getFeaturedRequestParams(lang: WikiLanguage) {
     const date = new Date();
@@ -56,7 +44,6 @@ export class WikiService {
     const response = await this.request<FeaturedResponse>({
       url: this.getUrlFeaturedContent(params),
     });
-    const { holidays: _, ...onthisday } = await this.getOnThisDay(params);
 
     return response;
   }

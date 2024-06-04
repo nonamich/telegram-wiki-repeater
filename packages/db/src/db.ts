@@ -8,5 +8,5 @@ export const initDBClient = () => {
 };
 
 export const initORM = (client: postgres.Sql) => {
-  drizzle(client, { schema: Schemas });
+  return drizzle(client, { schema: Schemas });
 };

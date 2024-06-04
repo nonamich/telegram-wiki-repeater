@@ -13,6 +13,7 @@ import {
   WikiArticle,
 } from '~/modules/wiki/interfaces';
 
+import { ChatId } from './telegram.types';
 import { TelegramUtils } from './telegram.utils';
 import { TelegramViews } from './views/telegram.view';
 import { ArticleProps } from './views/templates';
@@ -24,7 +25,7 @@ export class TelegramSender {
     private readonly views: TelegramViews,
   ) {}
 
-  async sendMostReadArticle(chatId: number, article: WikiMostReadArticle) {
+  async sendMostReadArticle(chatId: ChatId, article: WikiMostReadArticle) {
     await this.sendArticle(chatId, {
       article,
       beforeTitle: '⚡',
@@ -32,7 +33,7 @@ export class TelegramSender {
     });
   }
 
-  async sendFeaturedArticle(chatId: number, article: WikiArticle) {
+  async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
     await this.sendArticle(chatId, {
       article,
       beforeTitle: '⭐️',
@@ -40,13 +41,13 @@ export class TelegramSender {
     });
   }
 
-  async sendFeaturedImage(chatId: number, image: WikiFeaturedImage) {
+  async sendFeaturedImage(chatId: ChatId, image: WikiFeaturedImage) {
     const caption = this.views.renderFeaturedImage({ image });
 
     await this.sendPost(chatId, caption, image.thumbnail.source);
   }
 
-  async sendNews(chatId: number, news: WikiNews) {
+  async sendNews(chatId: ChatId, news: WikiNews) {
     const html = this.views.renderNews({ news });
     const articleWithImage = news.links.find(TelegramUtils.getArticleImage);
     let image: WikiImage | undefined;
@@ -58,7 +59,7 @@ export class TelegramSender {
     await this.sendPost(chatId, html, image?.source);
   }
 
-  async sendOnThisDay(chatId: number, event: WikiOnThisDay) {
+  async sendOnThisDay(chatId: ChatId, event: WikiOnThisDay) {
     const html = this.views.renderOnThisDay({ event });
     const mainArticle = event.pages.at(0)!;
     const image = TelegramUtils.getArticleImage(mainArticle);
@@ -66,7 +67,7 @@ export class TelegramSender {
     await this.sendPost(chatId, html, image?.source);
   }
 
-  private async sendArticle(chatId: number, props: ArticleProps) {
+  private async sendArticle(chatId: ChatId, props: ArticleProps) {
     const html = this.views.renderArticle(props);
     const image = TelegramUtils.getArticleImage(props.article);
 
@@ -74,7 +75,7 @@ export class TelegramSender {
   }
 
   async sendPost(
-    chatId: number,
+    chatId: ChatId,
     html: string,
     media?: string | InputMediaPhoto[],
   ) {

@@ -3,7 +3,10 @@ import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { Utils } from '@repo/shared';
 
 import { WikiArticle, WikiImage } from '../wiki/interfaces';
-import { MAX_IMAGE_SIZE, MIN_IMAGE_SIZE } from './telegram.constants';
+import {
+  TELEGRAM_MAX_IMAGE_SIZE,
+  TELEGRAM_MIN_IMAGE_SIZE,
+} from './telegram.constants';
 
 export class TelegramUtils {
   static getArticleImage(article: WikiArticle) {
@@ -16,8 +19,16 @@ export class TelegramUtils {
 
   static isValidImage(image: WikiImage) {
     return (
-      Utils.isBetween(image.width, MIN_IMAGE_SIZE, MAX_IMAGE_SIZE) &&
-      Utils.isBetween(image.height, MIN_IMAGE_SIZE, MAX_IMAGE_SIZE)
+      Utils.isBetween(
+        image.width,
+        TELEGRAM_MIN_IMAGE_SIZE,
+        TELEGRAM_MAX_IMAGE_SIZE,
+      ) &&
+      Utils.isBetween(
+        image.height,
+        TELEGRAM_MIN_IMAGE_SIZE,
+        TELEGRAM_MAX_IMAGE_SIZE,
+      )
     );
   }
 

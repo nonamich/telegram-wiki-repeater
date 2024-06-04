@@ -4,7 +4,7 @@ import { WikiModule } from '~/modules/wiki/wiki.module';
 
 import { TestScene } from './scenes/test.scene';
 import { TelegramOptionsFactory } from './telegram.options-factory';
-import { TelegramPlanner } from './telegram.planner';
+import { TelegramScheduler } from './telegram.scheduler';
 import { TelegramSender } from './telegram.sender';
 import { TelegramSessionStore } from './telegram.session-store';
 import { TelegramUpdate } from './telegram.update';
@@ -19,7 +19,7 @@ import { TelegramViews } from './views/telegram.view';
     TelegramViews,
     TelegramSessionStore,
     TelegramOptionsFactory,
-    TelegramPlanner,
+    TelegramScheduler,
   ],
   exports: [TelegramSessionStore],
 })

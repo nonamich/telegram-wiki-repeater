@@ -6,23 +6,23 @@ import {
 } from '~/modules/wiki/interfaces';
 
 export class TelegramUniqueIDGenerator {
-  getUniqueIdNews(news: WikiNews) {
+  static getUniqueIdNews(news: WikiNews) {
     return this.getUniqueIdByArticles(news.links);
   }
 
-  getUniqueIdOnThisDay(event: WikiOnThisDay) {
+  static getUniqueIdOnThisDay(event: WikiOnThisDay) {
     return this.getUniqueIdByArticles(event.pages);
   }
 
-  getUniqueIdByArticles(articles: WikiArticle[]) {
+  static getUniqueIdByArticles(articles: WikiArticle[]) {
     return articles.map(this.getUniqueIdArticle).join('');
   }
 
-  getUniqueIdArticle({ pageid }: WikiArticle) {
+  static getUniqueIdArticle({ pageid }: WikiArticle) {
     return pageid;
   }
 
-  getUniqueIdFeaturedImage({ wb_entity_id }: WikiFeaturedImage) {
+  static getUniqueIdFeaturedImage({ wb_entity_id }: WikiFeaturedImage) {
     return wb_entity_id;
   }
 }

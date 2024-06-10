@@ -1,9 +1,9 @@
 import { FunctionalComponent } from 'preact';
 
 import { useI18n } from '~/modules/i18n/i18n.utils';
+import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '~/modules/telegram/telegram.constants';
 import { WikiNews } from '~/modules/wiki/interfaces';
 
-import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '../../telegram.constants';
 import { BR, HTags, Links } from '../components';
 
 export type NewsProps = {

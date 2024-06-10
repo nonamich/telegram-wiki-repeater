@@ -13,13 +13,14 @@ import {
   WikiArticle,
 } from '~/modules/wiki/interfaces';
 
+import { TelegramSendByType } from './interfaces/telegram.interface';
 import { ChatId } from './telegram.types';
 import { TelegramUtils } from './telegram.utils';
-import { TelegramViews } from './views/telegram.view';
-import { ArticleProps } from './views/templates';
+import { TelegramViews } from './with-i18n-context/views/telegram.view';
+import { ArticleProps } from './with-i18n-context/views/templates';
 
 @Injectable()
-export class TelegramSender {
+export class TelegramSender implements TelegramSendByType {
   constructor(
     @InjectBot() private readonly bot: Telegraf,
     private readonly views: TelegramViews,

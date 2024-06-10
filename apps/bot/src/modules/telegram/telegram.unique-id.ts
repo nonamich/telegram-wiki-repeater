@@ -5,7 +5,7 @@ import {
   WikiOnThisDay,
 } from '~/modules/wiki/interfaces';
 
-export class TelegramUniqueIDGenerator {
+export class TelegramUniqueID {
   static getUniqueIdNews(news: WikiNews) {
     return this.getUniqueIdByArticles(news.links);
   }
@@ -14,15 +14,19 @@ export class TelegramUniqueIDGenerator {
     return this.getUniqueIdByArticles(event.pages);
   }
 
+  static getUniqueIdFeaturedImage({ wb_entity_id }: WikiFeaturedImage) {
+    return wb_entity_id.toString();
+  }
+
   static getUniqueIdByArticles(articles: WikiArticle[]) {
     return articles.map(this.getUniqueIdArticle).join('');
   }
 
-  static getUniqueIdArticle({ pageid }: WikiArticle) {
-    return pageid;
+  static getUniqueIdFeaturedArticle(article: WikiArticle) {
+    return this.getUniqueIdArticle(article);
   }
 
-  static getUniqueIdFeaturedImage({ wb_entity_id }: WikiFeaturedImage) {
-    return wb_entity_id;
+  static getUniqueIdArticle({ pageid }: WikiArticle) {
+    return pageid.toString();
   }
 }

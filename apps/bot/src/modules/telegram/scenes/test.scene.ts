@@ -81,7 +81,7 @@ export class TestScene {
         case 'mostread':
           await this.sender.sendMostReadArticle(
             chat.id,
-            featuredContent.mostread!.articles.at(0)!,
+            featuredContent.mostread!.at(0)!,
           );
 
           break;

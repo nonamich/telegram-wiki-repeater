@@ -10,7 +10,7 @@ import { Utils } from '@repo/shared';
 
 import { HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
-import { WikiLanguage, WikiRequest } from './interfaces';
+import { OrderOfArticles, WikiLanguage, WikiRequest } from './interfaces';
 import {
   FeaturedResponse,
   FeaturedRequest,
@@ -45,7 +45,7 @@ export class WikiService {
       url: this.getUrlFeaturedContent(params),
     });
 
-    return response;
+    return { ...response, mostread: response?.mostread?.articles };
   }
 
   private getCacheKey(url: string) {
@@ -110,5 +110,42 @@ export class WikiService {
 
       throw error;
     }
+  }
+
+  async getFeaturedContentAsArray(lang: WikiLanguage) {
+    const response = await this.getFeaturedContent(
+      this.getFeaturedRequestParams(lang),
+    );
+    const { image, mostread, news, onthisday, tfa } = response;
+    const entityOfData: OrderOfArticles = [];
+    const entityOfDataMixed: OrderOfArticles = [];
+
+    if (image) {
+      entityOfData.push(['tfi', image]);
+    }
+
+    if (tfa) {
+      entityOfData.push(['tfa', tfa]);
+    }
+
+    if (mostread) {
+      for (const item of mostread) {
+        entityOfDataMixed.push(['mostread', item]);
+      }
+    }
+
+    if (news) {
+      for (const item of news) {
+        entityOfDataMixed.push(['news', item]);
+      }
+    }
+
+    if (onthisday) {
+      for (const item of onthisday) {
+        entityOfDataMixed.push(['onthisday', item]);
+      }
+    }
+
+    return [...entityOfData, ...entityOfDataMixed];
   }
 }

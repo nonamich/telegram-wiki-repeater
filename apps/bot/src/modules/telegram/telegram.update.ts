@@ -16,6 +16,10 @@ export class TelegramUpdate {
         command: COMMANDS.TEST,
         description: 'Enter to Test scene',
       },
+      {
+        command: COMMANDS.CHANNEL,
+        description: 'Enter to Channel scene',
+      },
     ]);
 
     await ctx.reply(`Hello Admin! ${ctx.from?.first_name}`);
@@ -24,5 +28,10 @@ export class TelegramUpdate {
   @Command(COMMANDS.TEST)
   async onTest(@Ctx() ctx: Context) {
     await ctx.scene.enter(SCENES.TEST);
+  }
+
+  @Command(COMMANDS.CHANNEL)
+  async onChannel(@Ctx() ctx: Context) {
+    await ctx.scene.enter(SCENES.CHANNEL);
   }
 }

@@ -5,5 +5,5 @@ handler();
 async function handler() {
   const app = await createApp();
 
-  app.init();
+  await app.init();
 }

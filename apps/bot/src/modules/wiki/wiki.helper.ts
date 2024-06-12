@@ -21,18 +21,18 @@ export abstract class WikiHelper {
   }
 
   static getCurrentEventsURL(lang: string) {
-    return this.getURL(lang, 'currentEvents');
+    return this.getURLByType(lang, 'currentEvents');
   }
 
   static getFeaturedPicturesURL(lang: string) {
-    return this.getURL(lang, 'featuredPictures');
+    return this.getURLByType(lang, 'featuredPictures');
   }
 
   static getFeaturedArticlesURL(lang: string) {
-    return this.getURL(lang, 'featuredArticles');
+    return this.getURLByType(lang, 'featuredArticles');
   }
 
-  static getURL(lang: string, type: keyof WikiSiteData) {
+  static getURLByType(lang: string, type: keyof WikiSiteData) {
     return `${this.getBaseURL(lang)}${this.pathnames[lang][type]}`;
   }
 
@@ -43,5 +43,9 @@ export abstract class WikiHelper {
       .replaceAll(' ', '_');
 
     return `${this.getBaseURL(lang)}${pathname}`;
+  }
+
+  static getDonationURL() {
+    return 'https://donate.wikipedia.org/wiki/Ways_to_Give';
   }
 }

@@ -20,7 +20,7 @@ export const Article: FunctionComponent<ArticleProps> = ({
     <>
       <Title
         title={article.titles.normalized}
-        url={article.content_urls.mobile.page}
+        url={article.content_urls.desktop.page}
         beforeTitle={beforeTitle}
       />
       <Description description={article.description} />

@@ -43,7 +43,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
             {index > 0 && <NewLine />}•{' '}
             <Title
               title={page.titles.normalized}
-              url={page.content_urls.mobile.page}
+              url={page.content_urls.desktop.page}
             />
             <Description description={page.description} hyphen="-" />;
           </>

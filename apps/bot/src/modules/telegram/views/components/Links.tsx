@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 
 import { useI18n } from '~/modules/i18n/i18n.utils';
-import { WIKI_DONATE_SHORT_URL } from '~/modules/wiki/wiki.constants';
+import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
 import { List } from './List';
 
@@ -19,7 +19,7 @@ export const Links: FunctionalComponent<LinksProps> = ({ link }) => {
   const links = [
     {
       text: `💸 ${t('support_wikipedia')}`,
-      url: `${WIKI_DONATE_SHORT_URL}/${language}`,
+      url: `${WikiHelper.getDonationURL()}/${language}`,
     },
   ];
 
@@ -31,8 +31,8 @@ export const Links: FunctionalComponent<LinksProps> = ({ link }) => {
     <List
       items={links}
       separator=" | "
-      each={({ text, url }) => (
-        <a key={url} href={url}>
+      each={({ text, url }, index) => (
+        <a key={index} href={url}>
           {text}
         </a>
       )}

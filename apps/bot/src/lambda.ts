@@ -1,16 +1,10 @@
-import { Logger } from '@nestjs/common';
-
-import memoize from 'lodash.memoize';
-
 import { createApp } from './app';
 import { TelegramScheduler } from './modules/telegram/telegram.scheduler';
 
 export async function handler() {
-  const app = await memoize(() => {
-    Logger.log('creating app');
+  const app = await createApp();
 
-    return createApp();
-  })();
+  await app.init();
 
   const scheduler = app.get(TelegramScheduler);
 

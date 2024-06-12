@@ -1,12 +1,12 @@
-import { WikiFeaturedImage } from '~/modules/wiki/interfaces';
+import { WikiFeaturedImage } from '~/modules/wiki/types';
 
 import { TelegramShowTime } from '../telegram.show-time';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class TFIDispatcherStrategy extends BaseDispatcherStrategy<WikiFeaturedImage> {
-  getSkipParams() {
+  getAdditionalSkipParams() {
     return {
-      ids: this.data.wb_entity_id,
+      ids: this.props.data.wb_entity_id,
       type: 'tfi' as const,
     };
   }
@@ -16,6 +16,6 @@ export class TFIDispatcherStrategy extends BaseDispatcherStrategy<WikiFeaturedIm
   }
 
   async send() {
-    await this.sender.sendFeaturedImage(this.chatId, this.data);
+    await this.sender.sendFeaturedImage(this.props.chatId, this.props.data);
   }
 }

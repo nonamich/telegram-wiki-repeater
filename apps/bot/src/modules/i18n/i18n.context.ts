@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 import i18next, { i18n as I18n } from 'i18next';
 
-import { WikiLanguage } from '../wiki/interfaces';
+import { WikiLanguage } from '../wiki/types';
 
 export class I18nContext {
   static storage = new AsyncLocalStorage<I18n>();

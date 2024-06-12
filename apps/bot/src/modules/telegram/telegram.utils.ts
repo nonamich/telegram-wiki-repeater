@@ -2,13 +2,13 @@ import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
 import { Utils } from '@repo/shared';
 
-import { WikiArticle, WikiImage } from '../wiki/interfaces';
+import { WikiArticle, WikiImage } from '../wiki/types';
 import {
   TELEGRAM_MAX_IMAGE_SIZE,
   TELEGRAM_MIN_IMAGE_SIZE,
 } from './telegram.constants';
 
-export class TelegramUtils {
+export abstract class TelegramUtils {
   static getArticleImage(article: WikiArticle) {
     const images = [article.originalimage, article.thumbnail].filter(
       (image): image is WikiImage => !!image,

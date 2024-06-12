@@ -8,9 +8,9 @@ import { TelegramOptionsFactory } from './telegram.options-factory';
 import { TelegramScheduler } from './telegram.scheduler';
 import { TelegramSender } from './telegram.sender';
 import { TelegramSessionStore } from './telegram.session-store';
+import { TelegramSkipper } from './telegram.skipper';
 import { TelegramUpdate } from './telegram.update';
-import { TelegramSkipper } from './with-i18n-context/telegram.skipper';
-import { TelegramViews } from './with-i18n-context/views/telegram.view';
+import { TelegramViews } from './views/telegram.view';
 
 @Module({
   imports: [WikiModule],

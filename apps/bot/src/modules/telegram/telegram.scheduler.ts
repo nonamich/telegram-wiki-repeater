@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DBService } from '~/modules/db/db.service';
 import { I18nContext } from '~/modules/i18n/i18n.context';
-import { WikiLanguage } from '~/modules/wiki/interfaces';
+import { WikiLanguage } from '~/modules/wiki/types';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
@@ -14,9 +14,8 @@ import {
   TFIDispatcherStrategy,
 } from './dispatcher-strategies';
 import { TelegramSender } from './telegram.sender';
-import { TelegramShowTime } from './telegram.show-time';
+import { TelegramSkipper } from './telegram.skipper';
 import { ChatId } from './telegram.types';
-import { TelegramSkipper } from './with-i18n-context/telegram.skipper';
 
 @Injectable()
 export class TelegramScheduler {
@@ -27,34 +26,43 @@ export class TelegramScheduler {
     private readonly skipper: TelegramSkipper,
   ) {}
 
-  async isSkip() {
-    return !TelegramShowTime.isTime();
-  }
-
-  async executeWithContext(chatId: ChatId, lang: WikiLanguage) {
-    const args = [this.skipper, this.sender, chatId] as const;
+  async executeWithI18nContext(chatId: ChatId, lang: WikiLanguage) {
+    const args = [this.skipper, this.sender] as const;
+    const featuredContent = await this.wiki.getFeaturedContentAsArray(lang);
 
     await I18nContext.create(lang, async () => {
-      for (const [type, data] of await this.wiki.getFeaturedContentAsArray(
-        lang,
-      )) {
+      for (const [type, data] of featuredContent) {
         let strategy: BaseDispatcherStrategy;
+        const baseProps = {
+          chatId,
+          lang,
+        };
 
         switch (type) {
           case 'tfi':
-            strategy = new TFIDispatcherStrategy(...[...args, data]);
+            strategy = new TFIDispatcherStrategy(
+              ...[...args, { ...baseProps, data }],
+            );
             break;
           case 'tfa':
-            strategy = new TFADispatcherStrategy(...[...args, data]);
+            strategy = new TFADispatcherStrategy(
+              ...[...args, { ...baseProps, data }],
+            );
             break;
           case 'news':
-            strategy = new NewsDispatcherStrategy(...[...args, data]);
+            strategy = new NewsDispatcherStrategy(
+              ...[...args, { ...baseProps, data }],
+            );
             break;
           case 'mostread':
-            strategy = new MostReadDispatcherStrategy(...[...args, data]);
+            strategy = new MostReadDispatcherStrategy(
+              ...[...args, { ...baseProps, data }],
+            );
             break;
           case 'onthisday':
-            strategy = new OnThisDayDispatcherStrategy(...[...args, data]);
+            strategy = new OnThisDayDispatcherStrategy(
+              ...[...args, { ...baseProps, data }],
+            );
             break;
         }
 
@@ -71,7 +79,7 @@ export class TelegramScheduler {
     const channels = await this.db.getChannels();
 
     for (const channel of channels) {
-      await this.executeWithContext(channel.id, channel.lang);
+      await this.executeWithI18nContext(channel.id, channel.lang);
     }
   }
 }

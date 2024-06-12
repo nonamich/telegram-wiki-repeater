@@ -1,8 +1,8 @@
 import { WIKI_LANGUAGES } from '../wiki.constants';
-import { WikiFeaturedImage } from './featured.interface';
-import { WikiMostReadArticle } from './most-read.interface';
-import { WikiNews } from './news.interface';
-import { WikiOnThisDay } from './on-this-day.interface';
+import { WikiFeaturedImage } from './featured';
+import { WikiMostReadArticle } from './most-read';
+import { WikiNews } from './news';
+import { WikiOnThisDay } from './on-this-day';
 
 export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
 
@@ -37,7 +37,7 @@ interface Titles {
 
 export type ArticleType = 'tfi' | 'tfa' | 'mostread' | 'news' | 'onthisday';
 
-type OrderOfArticle<T extends ArticleType, D extends object> = [T, D];
+export type OrderOfArticle<T extends ArticleType, D extends object> = [T, D];
 
 export type OrderOfArticles = Array<
   | OrderOfArticle<'tfi', WikiFeaturedImage>
@@ -46,3 +46,9 @@ export type OrderOfArticles = Array<
   | OrderOfArticle<'news', WikiNews>
   | OrderOfArticle<'onthisday', WikiOnThisDay>
 >;
+
+export type WikiSiteData = {
+  currentEvents: string;
+  featuredArticles: string;
+  featuredPictures: string;
+};

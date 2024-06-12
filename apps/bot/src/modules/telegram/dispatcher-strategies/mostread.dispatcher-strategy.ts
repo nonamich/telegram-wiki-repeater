@@ -1,30 +1,31 @@
 import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
-import { WikiMostReadArticle } from '~/modules/wiki/interfaces';
+import { WikiMostReadArticle } from '~/modules/wiki/types';
 
 import { SkipParams } from '../telegram.types';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class MostReadDispatcherStrategy extends BaseDispatcherStrategy<WikiMostReadArticle> {
   async setSkipTotal() {
-    await this.skipper.setSkipCache(this.getSkipTotalParams());
+    await this.skipper.setSkipCache(this.getTotalSkipParams());
   }
 
   async isSkipTotal() {
-    return await this.skipper.isSkip(this.getSkipTotalParams());
+    return await this.skipper.isSkip(this.getTotalSkipParams());
   }
 
-  getSkipTotalParams(): SkipParams {
+  getTotalSkipParams(): SkipParams {
     return {
-      chatId: this.chatId,
+      ...this.getBaseSlipParams(),
       ids: 'total',
       type: 'mostread',
       expireInSec: DAY_IN_SEC,
     };
   }
 
-  getSkipParams() {
+  getAdditionalSkipParams() {
     return {
-      ids: this.data.pageid,
+      ids: this.props.data.pageid,
+      lang: this.props.lang,
       type: 'mostread' as const,
       expireInSec: DAY_IN_SEC * 5,
     };
@@ -35,7 +36,7 @@ export class MostReadDispatcherStrategy extends BaseDispatcherStrategy<WikiMostR
   }
 
   async send() {
-    await this.sender.sendMostReadArticle(this.chatId, this.data);
+    await this.sender.sendMostReadArticle(this.props.chatId, this.props.data);
 
     await this.setSkipTotal();
   }

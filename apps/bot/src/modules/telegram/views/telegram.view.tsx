@@ -9,16 +9,18 @@ import {
   FeaturedImageProps,
   News,
   NewsProps,
-  Article,
-  ArticleProps,
   OnThisDay,
   OnThisDayProps,
+  MostReadProps,
+  MostRead,
+  FeaturedArticle,
+  FeaturedArticleProps,
 } from './templates';
 
 @Injectable()
 export class TelegramViews {
   renderToString(node: VNode) {
-    const unsanitizeHtml = renderToString(node);
+    const unsanitizeHtml = renderToString(<>{node}</>);
     const html = TelegramViewsUtils.getSanitizedHTML(unsanitizeHtml);
 
     return html;
@@ -28,8 +30,8 @@ export class TelegramViews {
     return this.renderToString(<FeaturedImage {...props} />);
   }
 
-  renderArticle(props: ArticleProps) {
-    return this.renderToString(<Article {...props} />);
+  renderFeaturedArticle(props: FeaturedArticleProps) {
+    return this.renderToString(<FeaturedArticle {...props} />);
   }
 
   renderNews(props: NewsProps) {
@@ -38,5 +40,9 @@ export class TelegramViews {
 
   renderOnThisDay(props: OnThisDayProps) {
     return this.renderToString(<OnThisDay {...props} />);
+  }
+
+  renderMostRead(props: MostReadProps) {
+    return this.renderToString(<MostRead {...props} />);
   }
 }

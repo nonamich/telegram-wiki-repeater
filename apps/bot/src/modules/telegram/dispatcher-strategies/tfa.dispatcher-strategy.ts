@@ -1,21 +1,21 @@
-import { WikiArticle } from '~/modules/wiki/interfaces';
+import { WikiArticle } from '~/modules/wiki/types';
 
 import { TelegramShowTime } from '../telegram.show-time';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class TFADispatcherStrategy extends BaseDispatcherStrategy<WikiArticle> {
-  getSkipParams() {
+  getAdditionalSkipParams() {
     return {
-      ids: this.data.pageid,
+      ids: this.props.data.pageid,
       type: 'tfa' as const,
     };
   }
 
   async isSkip() {
-    return !TelegramShowTime.isFeaturedImage() || (await super.isSkip());
+    return !TelegramShowTime.isFeaturedArticle() || (await super.isSkip());
   }
 
   async send() {
-    await this.sender.sendFeaturedArticle(this.chatId, this.data);
+    await this.sender.sendFeaturedArticle(this.props.chatId, this.props.data);
   }
 }

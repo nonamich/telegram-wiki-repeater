@@ -1,8 +1,14 @@
 import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
 
 import { TelegramSender } from '../telegram.sender';
+import { TelegramSkipper } from '../telegram.skipper';
 import { ChatId, SkipParams } from '../telegram.types';
-import { TelegramSkipper } from '../with-i18n-context/telegram.skipper';
+
+type Props<T> = {
+  chatId: ChatId;
+  data: T;
+  lang: string;
+};
 
 export abstract class BaseDispatcherStrategy<T extends object = object> {
   public isSended = false;
@@ -10,28 +16,34 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
   constructor(
     readonly skipper: TelegramSkipper,
     readonly sender: TelegramSender,
-    readonly chatId: ChatId,
-    readonly data: T,
+    readonly props: Props<T>,
   ) {}
 
-  abstract getSkipParams(): Pick<SkipParams, 'ids' | 'type'>;
+  abstract getAdditionalSkipParams(): Pick<SkipParams, 'ids' | 'type'>;
 
   abstract send(): Promise<void>;
 
-  getBaseSkipParams(): SkipParams {
+  getBaseSlipParams() {
     return {
-      ...this.getSkipParams(),
-      chatId: this.chatId,
+      lang: this.props.lang,
+      chatId: this.props.chatId,
+    };
+  }
+
+  getSkipParams(): SkipParams {
+    return {
+      ...this.getAdditionalSkipParams(),
+      ...this.getBaseSlipParams(),
       expireInSec: DAY_IN_SEC * 2,
     };
   }
 
   async setSkip() {
-    await this.skipper.setSkipCache(this.getBaseSkipParams());
+    await this.skipper.setSkipCache(this.getSkipParams());
   }
 
   async isSkip() {
-    return await this.skipper.isSkip(this.getBaseSkipParams());
+    return await this.skipper.isSkip(this.getSkipParams());
   }
 
   async execute() {

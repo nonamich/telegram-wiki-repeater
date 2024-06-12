@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { useI18n } from '~/modules/i18n/i18n.utils';
 import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
 import { RedisService } from '~/modules/redis/redis.service';
 
-import { SkipParams } from '../telegram.types';
+import { SkipParams } from './telegram.types';
 
 @Injectable()
 export class TelegramSkipper {
@@ -21,14 +20,14 @@ export class TelegramSkipper {
     return Boolean(value);
   }
 
-  private getSkipCacheKey({ ids, type }: SkipParams) {
-    const { language } = useI18n();
-
+  private getSkipCacheKey({ ids, type, lang }: SkipParams) {
     if (!Array.isArray(ids)) {
       ids = [ids];
+    } else {
+      ids = ids.slice(0, 3);
     }
 
-    return `skip:${language}:${type}:${ids.join(',')}`;
+    return `skip:${lang}:${type}:${ids.join(',')}`;
   }
 
   public async setSkipCache({ expireInSec = DAY_IN_SEC, ...args }: SkipParams) {

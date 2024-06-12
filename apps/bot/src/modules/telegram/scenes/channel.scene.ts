@@ -2,9 +2,9 @@ import { Action, Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { DBService } from '~/modules/db/db.service';
 
-import { Context } from '../interfaces/telegram.interface';
 import { SCENES } from '../telegram.enums';
 import { TelegramScheduler } from '../telegram.scheduler';
+import { Context } from '../telegram.types';
 
 @Scene(SCENES.CHANNEL)
 export class ChannelScene {
@@ -43,6 +43,6 @@ export class ChannelScene {
       return;
     }
 
-    await this.scheduler.executeWithContext(channel.id, channel.lang);
+    await this.scheduler.executeWithI18nContext(channel.id, channel.lang);
   }
 }

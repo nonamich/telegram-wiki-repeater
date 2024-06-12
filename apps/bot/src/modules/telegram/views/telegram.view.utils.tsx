@@ -1,5 +1,3 @@
-import path from 'node:path';
-
 import sanitizeHtml from 'sanitize-html';
 import truncateHtml from 'truncate-html';
 
@@ -9,10 +7,11 @@ import {
   TELEGRAM_ALLOWED_TAGS,
   TELEGRAM_TAG_DANGEROUSLY_HTML,
 } from '~/modules/telegram/telegram.constants';
+import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
 export class TelegramViewsUtils {
   static getSanitizedHTML(html: string) {
-    const i18n = useI18n();
+    const { language } = useI18n();
 
     return sanitizeHtml(html, {
       allowedTags: TELEGRAM_ALLOWED_TAGS,
@@ -21,10 +20,9 @@ export class TelegramViewsUtils {
         a: (tagName, attribs) => {
           if (attribs.href && attribs.rel === 'mw:WikiLink') {
             const urlObj = new URL(
-              `https://${i18n.language}.m.wikipedia.org/wiki/`,
+              attribs.href,
+              WikiHelper.getBaseURL(language),
             );
-
-            urlObj.pathname = path.join(urlObj.pathname, attribs.href);
 
             attribs.href = urlObj.toString();
           }

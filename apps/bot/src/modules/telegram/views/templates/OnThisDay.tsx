@@ -2,10 +2,11 @@ import dayjs from 'dayjs';
 import { FunctionalComponent } from 'preact';
 
 import { useI18n } from '~/modules/i18n/i18n.utils';
-import { WikiOnThisDay } from '~/modules/wiki/interfaces';
+import { WikiOnThisDay } from '~/modules/wiki/types';
+import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
-import { BR, Description, HTags, Links, NewLine, Title } from '../components';
-import { Article } from './Article';
+import { BR, Description, Links, NewLine, Title } from '../components';
+import { Article } from '../components/Article';
 
 export type OnThisDayProps = {
   event: WikiOnThisDay;
@@ -16,14 +17,16 @@ const icon = '🏺';
 export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   event: { pages, text, year },
 }) => {
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const date = dayjs().locale(language).year(year);
-  const tags = ['on_this_day', date.format('DD MMMM')];
-
+  const link = {
+    text: t('more_events'),
+    url: WikiHelper.getOnThisDayURL(language),
+  };
   if (pages.length < 2) {
     const article = pages.at(0)!;
 
-    return <Article article={article} beforeTitle={icon} tags={tags} />;
+    return <Article article={article} beforeTitle={icon} link={link} />;
   }
 
   return (
@@ -42,14 +45,12 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
               title={page.titles.normalized}
               url={page.content_urls.mobile.page}
             />
-            <Description description={page.description} />;
+            <Description description={page.description} hyphen="-" />;
           </>
         );
       })}
       <BR />
-      <HTags tags={tags} />
-      <BR />
-      <Links />
+      <Links link={link} />
     </>
   );
 };

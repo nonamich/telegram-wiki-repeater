@@ -5,16 +5,14 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
 
 import { Utils } from '@repo/shared';
 
 import { HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
-import { OrderOfArticles, WikiLanguage, WikiRequest } from './interfaces';
-import {
-  FeaturedResponse,
-  FeaturedRequest,
-} from './interfaces/featured.interface';
+import { OrderOfArticles, WikiLanguage, WikiRequest } from './types';
+import { FeaturedResponse, FeaturedRequest } from './types/featured';
 import { WIKI_CACHE_ENCODING, WIKI_RETRY_MS } from './wiki.constants';
 
 @Injectable()
@@ -25,12 +23,17 @@ export class WikiService {
   ) {}
 
   getFeaturedRequestParams(lang: WikiLanguage) {
-    const date = new Date();
+    let date = dayjs();
+
+    if (date.hour() <= 9) {
+      date = date.subtract(1, 'day');
+    }
+
     const params: FeaturedRequest = {
       lang,
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
+      year: date.year(),
+      month: date.month() + 1,
+      day: date.date(),
     };
 
     return params;

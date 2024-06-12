@@ -6,7 +6,7 @@ import { Utils } from '@repo/shared';
 
 import { TelegramExceptionForbidden } from '~/modules/telegram/exceptions/telegram.exception.forbidden';
 
-import { Context } from '../interfaces/telegram.interface';
+import { Context } from '../telegram.types';
 
 @Catch()
 export class TelegramExceptionFilter implements ExceptionFilter {

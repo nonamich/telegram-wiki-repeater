@@ -11,35 +11,31 @@ import {
   WikiOnThisDay,
   WikiImage,
   WikiArticle,
-} from '~/modules/wiki/interfaces';
+} from '~/modules/wiki/types';
 
-import { TelegramSendByType } from './interfaces/telegram.interface';
 import { ChatId } from './telegram.types';
 import { TelegramUtils } from './telegram.utils';
-import { TelegramViews } from './with-i18n-context/views/telegram.view';
-import { ArticleProps } from './with-i18n-context/views/templates';
+import { TelegramViews } from './views/telegram.view';
 
 @Injectable()
-export class TelegramSender implements TelegramSendByType {
+export class TelegramSender {
   constructor(
     @InjectBot() private readonly bot: Telegraf,
     private readonly views: TelegramViews,
   ) {}
 
   async sendMostReadArticle(chatId: ChatId, article: WikiMostReadArticle) {
-    await this.sendArticle(chatId, {
-      article,
-      beforeTitle: '⚡',
-      tags: ['mostread'],
-    });
+    const html = this.views.renderMostRead({ article });
+    const image = TelegramUtils.getArticleImage(article);
+
+    await this.sendPost(chatId, html, image?.source);
   }
 
   async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
-    await this.sendArticle(chatId, {
-      article,
-      beforeTitle: '⭐️',
-      tags: ['tfa'],
-    });
+    const html = this.views.renderFeaturedArticle({ article });
+    const image = TelegramUtils.getArticleImage(article);
+
+    await this.sendPost(chatId, html, image?.source);
   }
 
   async sendFeaturedImage(chatId: ChatId, image: WikiFeaturedImage) {
@@ -64,13 +60,6 @@ export class TelegramSender implements TelegramSendByType {
     const html = this.views.renderOnThisDay({ event });
     const mainArticle = event.pages.at(0)!;
     const image = TelegramUtils.getArticleImage(mainArticle);
-
-    await this.sendPost(chatId, html, image?.source);
-  }
-
-  private async sendArticle(chatId: ChatId, props: ArticleProps) {
-    const html = this.views.renderArticle(props);
-    const image = TelegramUtils.getArticleImage(props.article);
 
     await this.sendPost(chatId, html, image?.source);
   }

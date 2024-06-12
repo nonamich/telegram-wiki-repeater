@@ -1,16 +1,16 @@
-import { WikiOnThisDay } from '~/modules/wiki/interfaces';
+import { WikiOnThisDay } from '~/modules/wiki/types';
 
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class OnThisDayDispatcherStrategy extends BaseDispatcherStrategy<WikiOnThisDay> {
-  getSkipParams() {
+  getAdditionalSkipParams() {
     return {
-      ids: this.data.pages.slice(0, 3).map(({ pageid }) => pageid),
+      ids: this.props.data.pages.map(({ pageid }) => pageid),
       type: 'onthisday' as const,
     };
   }
 
   async send() {
-    await this.sender.sendOnThisDay(this.chatId, this.data);
+    await this.sender.sendOnThisDay(this.props.chatId, this.props.data);
   }
 }

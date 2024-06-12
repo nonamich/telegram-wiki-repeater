@@ -1,13 +1,10 @@
 import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 
-import { WikiService } from '../wiki/wiki.service';
-import { Context } from './interfaces/telegram.interface';
 import { COMMANDS, SCENES } from './telegram.enums';
+import { Context } from './telegram.types';
 
 @Update()
 export class TelegramUpdate {
-  constructor(private readonly wiki: WikiService) {}
-
   @Start()
   async onStart(@Ctx() ctx: Context) {
     await ctx.telegram.deleteMyCommands();

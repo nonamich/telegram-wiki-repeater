@@ -9,6 +9,5 @@ export async function handler() {
   const scheduler = app.get(TelegramScheduler);
 
   await scheduler.execute();
-
   await app.close();
 }

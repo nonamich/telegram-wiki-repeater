@@ -1,35 +1,34 @@
-import { UseFilters } from '@nestjs/common';
-
 import { Update, Start, Ctx, Command } from 'nestjs-telegraf';
 
-import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
-import { SceneContext } from './interfaces/telegraf.interface';
-import { TelegramChatService } from './telegram.chat.service';
-import { COMMANDS, SCENE_IDS } from './telegram.enums';
-import { TelegramService } from './telegram.service';
+import { COMMANDS, SCENES } from './telegram.enums';
+import { Context } from './telegram.types';
 
 @Update()
-@UseFilters(new TelegrafExceptionFilter())
 export class TelegramUpdate {
-  constructor(
-    private readonly tg: TelegramService,
-    private readonly chatService: TelegramChatService,
-  ) {}
-
   @Start()
-  async onStart(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(SCENE_IDS.GREETER);
+  async onStart(@Ctx() ctx: Context) {
+    await ctx.telegram.deleteMyCommands();
+    await ctx.telegram.setMyCommands([
+      {
+        command: COMMANDS.TEST,
+        description: 'Enter to Test scene',
+      },
+      {
+        command: COMMANDS.CHANNEL,
+        description: 'Enter to Channel scene',
+      },
+    ]);
+
+    await ctx.reply(`Hello Admin! ${ctx.from?.first_name}`);
   }
 
-  @Command(COMMANDS.LANG)
-  async onLang(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(SCENE_IDS.GREETER);
+  @Command(COMMANDS.TEST)
+  async onTest(@Ctx() ctx: Context) {
+    await ctx.scene.enter(SCENES.TEST);
   }
 
-  @Command(COMMANDS.SHOW)
-  async onShow(@Ctx() ctx: SceneContext) {
-    const { chatId, lang } = this.chatService.getChatInfoFromContext(ctx);
-
-    await this.tg.inform(chatId, lang);
+  @Command(COMMANDS.CHANNEL)
+  async onChannel(@Ctx() ctx: Context) {
+    await ctx.scene.enter(SCENES.CHANNEL);
   }
 }

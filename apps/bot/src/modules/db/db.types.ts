@@ -1,4 +1,4 @@
-import { getDBClient, getInitDB } from '@repo/db';
+import { initDBClient, initORM } from '@repo/db';
 
-export type DB = ReturnType<typeof getInitDB>;
-export type DBClient = ReturnType<typeof getDBClient>;
+export type DB = ReturnType<typeof initORM>;
+export type DBClient = ReturnType<typeof initDBClient>;

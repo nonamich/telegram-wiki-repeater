@@ -21,6 +21,11 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "allowJs": true,
+    "jsx": "preserve",
+    "jsxImportSource": "preact",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "h",
     "paths": {
       "~/*": ["./src/*"],
     }

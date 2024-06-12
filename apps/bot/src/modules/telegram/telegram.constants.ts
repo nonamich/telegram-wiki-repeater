@@ -1,9 +1,6 @@
-export const RUN_PER_DAY = 4;
-export const MAX_CONTENT_MESSAGE = 3800;
-export const MAX_CONTENT_CAPTION = 850;
-export const BOT_NAME = 'wiki_repeater_bot';
-export const MAX_IMAGES_ON_GROUP = 3;
-
+export const MAX_CONTENT_LENGTH = 800;
+export const TELEGRAM_MAX_IMAGE_SIZE = 3000;
+export const TELEGRAM_MIN_IMAGE_SIZE = 200;
 export const TELEGRAM_ALLOWED_TAGS = [
   'b',
   'i',
@@ -20,3 +17,4 @@ export const TELEGRAM_ALLOWED_TAGS = [
   'strike',
   'tg-spoiler',
 ];
+export const TELEGRAM_TAG_DANGEROUSLY_HTML = 'body';

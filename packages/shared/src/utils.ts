@@ -15,8 +15,8 @@ export namespace Utils {
     }
   };
 
-  export const isBetween = (x: number, min: number, max: number) => {
-    return x >= min && x <= max;
+  export const isBetween = (x: number, start: number, end: number) => {
+    return x >= start && x <= end;
   };
 
   export const zeroPad = (num: number) => {

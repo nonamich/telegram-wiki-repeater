@@ -1,8 +1,8 @@
 import {
   Inject,
   Injectable,
-  OnApplicationShutdown,
   OnModuleInit,
+  OnModuleDestroy,
 } from '@nestjs/common';
 
 import { Redis, RedisOptions } from 'ioredis';
@@ -12,7 +12,7 @@ import { REDIS_OPTIONS } from './redis.constants';
 @Injectable()
 export class RedisService
   extends Redis
-  implements OnModuleInit, OnApplicationShutdown
+  implements OnModuleInit, OnModuleDestroy
 {
   constructor(@Inject(REDIS_OPTIONS) options: RedisOptions) {
     super({
@@ -25,7 +25,7 @@ export class RedisService
     await this.connect();
   }
 
-  async onApplicationShutdown() {
-    await this.disconnect();
+  onModuleDestroy() {
+    this.disconnect();
   }
 }

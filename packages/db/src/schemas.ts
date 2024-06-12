@@ -1,6 +1,9 @@
-import { pgTable, varchar, integer } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, boolean } from 'drizzle-orm/pg-core';
 
-export const chat = pgTable('chat', {
-  chatId: integer('chatId').primaryKey(),
-  lang: varchar('lang', { length: 2 }).notNull(),
+import { SUPPORT_LANGUAGES } from '@repo/shared';
+
+export const channels = pgTable('channels', {
+  id: varchar('id').primaryKey(),
+  lang: varchar('lang', { enum: SUPPORT_LANGUAGES }).unique().notNull(),
+  isDev: boolean('isDev').notNull().default(true),
 });

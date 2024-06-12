@@ -1,8 +1,9 @@
-export enum SCENE_IDS {
-  GREETER = 'greeter',
+export enum COMMANDS {
+  TEST = 'test',
+  CHANNEL = 'channel',
 }
 
-export enum COMMANDS {
-  SHOW = 'show',
-  LANG = 'lang',
+export enum SCENES {
+  TEST = 'test',
+  CHANNEL = 'channel',
 }

@@ -1,9 +1,10 @@
 import { DynamicModule, Global, Module, OnModuleDestroy } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
-import { getInitDB, getDBClient } from '@repo/db';
+import { initORM, initDBClient } from '@repo/db';
 
 import { DB_PROVIDER, DB_CLIENT_PROVIDER } from './db.constants';
+import { DBService } from './db.service';
 import { DBClient } from './db.types';
 
 @Global()
@@ -13,27 +14,28 @@ export class DBModule implements OnModuleDestroy {
 
   static forRoot(): DynamicModule {
     return {
-      exports: [DB_PROVIDER],
+      exports: [DB_PROVIDER, DBService],
       module: DBModule,
       providers: [
+        DBService,
         {
           provide: DB_CLIENT_PROVIDER,
-          useValue: getDBClient(),
+          useValue: initDBClient(),
         },
         {
           inject: [DB_CLIENT_PROVIDER],
           provide: DB_PROVIDER,
           useFactory(dbClient: DBClient) {
-            return getInitDB(dbClient);
+            return initORM(dbClient);
           },
         },
       ],
     };
   }
 
-  onModuleDestroy() {
-    const dbClient = this.moduleRef.get<DBClient>(DB_CLIENT_PROVIDER);
+  async onModuleDestroy() {
+    const db = this.moduleRef.get<DBClient>(DB_CLIENT_PROVIDER);
 
-    return dbClient.end();
+    await db.end();
   }
 }

@@ -1,6 +1,7 @@
 {
   "name": "telegram-wiki",
   "private": true,
+  "packageManager": "npm@10.2.3",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -11,6 +12,6 @@
     "bot:dev": "npm run bot -- --parallel dev"
   },
   "devDependencies": {
-    "turbo": "^1.11.3"
+    "turbo": "^2.0.3"
   }
 }

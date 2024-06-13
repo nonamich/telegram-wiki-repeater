@@ -5,7 +5,7 @@ import { AppModule } from './modules/app.module';
 import { TelegramExceptionFilter } from './modules/telegram/filters/telegram.exception.filter';
 import { AdminGuard } from './modules/telegram/guards/admin.guard';
 
-export const initApp = async () => {
+export const getLaunchedApp = async () => {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
 

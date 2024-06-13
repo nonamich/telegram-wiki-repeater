@@ -1,9 +1,7 @@
-import { createApp } from './app';
+import { initApp } from './app';
 
 handler();
 
 async function handler() {
-  const app = await createApp();
-
-  await app.init();
+  await initApp();
 }

@@ -23,11 +23,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
     text: t('more_events'),
     url: WikiHelper.getOnThisDayURL(language),
   };
-  if (pages.length < 2) {
-    const article = pages.at(0)!;
-
-    return <Article article={article} beforeTitle={icon} link={link} />;
-  }
+  const isSingle = pages.length === 1;
 
   return (
     <>
@@ -37,20 +33,25 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {' — '}
       {text}
       <BR />
-      {pages.map((page, index) => {
-        return (
-          <>
-            {index > 0 && <NewLine />}•{' '}
-            <Title
-              title={page.titles.normalized}
-              url={page.content_urls.desktop.page}
-            />
-            <Description description={page.description} hyphen="-" />;
-          </>
-        );
-      })}
-      <BR />
-      <Links link={link} />
+      {isSingle && <Article article={pages.at(0)!} link={link} />}
+      {!isSingle && (
+        <>
+          {pages.map((page, index) => {
+            return (
+              <>
+                {index > 0 && <NewLine />}•{' '}
+                <Title
+                  title={page.titles.normalized}
+                  url={page.content_urls.desktop.page}
+                />
+                <Description description={page.description} hyphen="-" />;
+              </>
+            );
+          })}
+          <BR />
+          <Links link={link} />
+        </>
+      )}
     </>
   );
 };

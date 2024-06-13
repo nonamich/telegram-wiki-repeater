@@ -25,7 +25,7 @@ export class RedisService
     await this.connect();
   }
 
-  onModuleDestroy() {
-    this.disconnect();
+  async onModuleDestroy() {
+    await this.quit();
   }
 }

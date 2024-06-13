@@ -1,8 +1,8 @@
-import { initApp } from './app';
+import { getLaunchedApp } from './app';
 import { TelegramScheduler } from './modules/telegram/telegram.scheduler';
 
 export async function handler() {
-  const app = await initApp();
+  const app = await getLaunchedApp();
 
   const scheduler = app.get(TelegramScheduler);
 

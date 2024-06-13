@@ -1,7 +1,7 @@
-import { initApp } from './app';
+import { getLaunchedApp } from './app';
 
 handler();
 
 async function handler() {
-  await initApp();
+  await getLaunchedApp();
 }

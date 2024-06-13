@@ -3,14 +3,14 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "typeCheck": true,
+    "deleteOutDir": true,
     "builder": {
       "type": "swc",
       "options": {
         "extensions": [".js", ".ts", ".jsx", ".tsx"]
       }
     },
-    "typeCheck": true,
-    "deleteOutDir": true,
     "assets": [
       {
         "include": "./modules/i18n/**/*.json",

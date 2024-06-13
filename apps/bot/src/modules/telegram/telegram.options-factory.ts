@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { TelegrafModuleOptions, TelegrafOptionsFactory } from 'nestjs-telegraf';
-import { session } from 'telegraf';
+import { Telegraf, session } from 'telegraf';
 
 import { TelegramSessionStore } from './telegram.session-store';
 
@@ -14,12 +14,14 @@ export class TelegramOptionsFactory implements TelegrafOptionsFactory {
   ) {}
 
   createTelegrafOptions(): TelegrafModuleOptions {
+    const launchOptions: Telegraf.LaunchOptions = {
+      dropPendingUpdates: true,
+    };
+
     const options: TelegrafModuleOptions = {
       token: this.config.getOrThrow('TELEGRAM_BOT_TOKEN'),
       middlewares: [session({ store: this.store })],
-      launchOptions: {
-        dropPendingUpdates: true,
-      },
+      launchOptions,
       options: {
         telegram: {
           webhookReply: false,

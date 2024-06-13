@@ -32,7 +32,7 @@ jobs:
         with:
           curl: ${{ secrets.TELEGRAM_WEB_HOOK_URL }}
 
-      - name: npm install
+      - name: npm ci
         run: npm ci -w bot --include-workspace-root
 
       - name: Build

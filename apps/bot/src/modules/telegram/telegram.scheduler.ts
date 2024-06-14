@@ -27,6 +27,8 @@ export class TelegramScheduler {
   ) {}
 
   async executeWithI18nContext(chatId: ChatId, lang: WikiLanguage) {
+    console.log(`executeWithI18nContext start ${lang}`);
+
     const args = [this.skipper, this.sender] as const;
     const featuredContent = await this.wiki.getFeaturedContentAsArray(lang);
 
@@ -54,13 +56,13 @@ export class TelegramScheduler {
               ...[...args, { ...baseProps, data }],
             );
             break;
-          case 'mostread':
-            strategy = new MostReadDispatcherStrategy(
+          case 'onthisday':
+            strategy = new OnThisDayDispatcherStrategy(
               ...[...args, { ...baseProps, data }],
             );
             break;
-          case 'onthisday':
-            strategy = new OnThisDayDispatcherStrategy(
+          case 'mostread':
+            strategy = new MostReadDispatcherStrategy(
               ...[...args, { ...baseProps, data }],
             );
             break;
@@ -69,14 +71,20 @@ export class TelegramScheduler {
         await strategy.execute();
 
         if (strategy.isSended) {
+          console.log(`isSended`, data);
+
           break;
         }
       }
     });
+
+    console.log('executeWithI18nContext end');
   }
 
   async execute() {
     const channels = await this.db.getChannels();
+
+    console.log('channels: ', channels);
 
     for (const channel of channels) {
       await this.executeWithI18nContext(channel.id, channel.lang);

@@ -8,6 +8,6 @@ export abstract class TelegramShowTime {
   }
 
   static isFeaturedArticle() {
-    return this.hour >= 15;
+    return this.hour >= 12;
   }
 }

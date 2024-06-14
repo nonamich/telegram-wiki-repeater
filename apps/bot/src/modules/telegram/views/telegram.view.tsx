@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { VNode } from 'preact';
-import { renderToString } from 'preact-render-to-string';
+import { renderToStringAsync } from 'preact-render-to-string';
 
 import { TelegramViewsUtils } from './telegram.view.utils';
 import {
@@ -19,8 +19,8 @@ import {
 
 @Injectable()
 export class TelegramViews {
-  renderToString(node: VNode) {
-    const unsanitizeHtml = renderToString(<>{node}</>);
+  async renderToString(node: VNode) {
+    const unsanitizeHtml = await renderToStringAsync(node);
     const html = TelegramViewsUtils.getSanitizedHTML(unsanitizeHtml);
 
     return html;

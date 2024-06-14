@@ -10,7 +10,6 @@ export type SkipParams = {
   ids: StringOrNumber | StringOrNumber[];
   chatId: ChatId;
   type: ArticleType;
-  lang: string;
   expireInSec?: number;
 };
 

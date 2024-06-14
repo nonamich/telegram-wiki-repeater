@@ -7,12 +7,9 @@ import { ChatId, SkipParams } from '../telegram.types';
 type Props<T> = {
   chatId: ChatId;
   data: T;
-  lang: string;
 };
 
 export abstract class BaseDispatcherStrategy<T extends object = object> {
-  public isSended = false;
-
   constructor(
     readonly skipper: TelegramSkipper,
     readonly sender: TelegramSender,
@@ -25,7 +22,6 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
 
   getBaseSlipParams() {
     return {
-      lang: this.props.lang,
       chatId: this.props.chatId,
     };
   }
@@ -48,12 +44,12 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
 
   async execute() {
     if (await this.isSkip()) {
-      return;
+      return false;
     }
 
     await this.send();
     await this.setSkip();
 
-    this.isSended = true;
+    return true;
   }
 }

@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { drizzle } from '@repo/db';
-
 import { DB } from './db.types';
 import { InjectDB } from './decorators/inject-db.decorator';
 
@@ -15,7 +13,7 @@ export class DBService {
         id: true,
         lang: true,
       },
-      where: (channel) => drizzle.eq(channel.isDev, true),
+      where: (channel, { eq }) => eq(channel.isDev, true),
     });
 
     return channels;
@@ -27,7 +25,7 @@ export class DBService {
         id: true,
         lang: true,
       },
-      where: (channel) => drizzle.eq(channel.isDev, false),
+      where: (channel, { eq }) => eq(channel.isDev, false),
     });
 
     return channels;
@@ -39,7 +37,7 @@ export class DBService {
         id: true,
         lang: true,
       },
-      where: (channel) => drizzle.eq(channel.id, id),
+      where: (channel, { eq }) => eq(channel.id, id),
     });
 
     return channels;

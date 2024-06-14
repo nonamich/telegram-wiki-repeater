@@ -25,7 +25,6 @@ export class MostReadDispatcherStrategy extends BaseDispatcherStrategy<WikiMostR
   getAdditionalSkipParams() {
     return {
       ids: this.props.data.pageid,
-      lang: this.props.lang,
       type: 'mostread' as const,
       expireInSec: DAY_IN_SEC * 5,
     };

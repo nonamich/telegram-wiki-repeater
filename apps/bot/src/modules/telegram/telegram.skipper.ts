@@ -20,14 +20,14 @@ export class TelegramSkipper {
     return Boolean(value);
   }
 
-  private getSkipCacheKey({ ids, type, lang }: SkipParams) {
+  private getSkipCacheKey({ ids, type, chatId }: SkipParams) {
     if (!Array.isArray(ids)) {
       ids = [ids];
     } else {
       ids = ids.slice(0, 3);
     }
 
-    return `skip:${lang}:${type}:${ids.join(',')}`;
+    return `skip:${chatId}:${type}:${ids.join(',')}`;
   }
 
   public async setSkipCache({ expireInSec = DAY_IN_SEC, ...args }: SkipParams) {

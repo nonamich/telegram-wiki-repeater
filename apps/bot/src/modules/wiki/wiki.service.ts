@@ -2,7 +2,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import zlib from 'zlib';
 
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
@@ -59,14 +59,14 @@ export class WikiService {
     const cacheKey = this.getCacheKey(url);
     const cacheAsBase64 = await this.redis.get(cacheKey);
 
-    if (cacheAsBase64) {
-      const buffer = Buffer.from(cacheAsBase64, WIKI_CACHE_ENCODING);
-      const json = zlib.brotliDecompressSync(buffer).toString('utf8');
-
-      return JSON.parse(json) as T;
+    if (!cacheAsBase64) {
+      return null;
     }
 
-    return null;
+    const buffer = Buffer.from(cacheAsBase64, WIKI_CACHE_ENCODING);
+    const json = zlib.brotliDecompressSync(buffer).toString('utf8');
+
+    return JSON.parse(json) as T;
   }
 
   private async setToCache<T extends object>(
@@ -104,8 +104,9 @@ export class WikiService {
     } catch (error) {
       if (error instanceof AxiosError) {
         await sleep(WIKI_RETRY_MS);
+        Logger.log(`Retry ${url}`);
 
-        return this.request<T>({
+        return await this.request<T>({
           url,
           expires,
         });

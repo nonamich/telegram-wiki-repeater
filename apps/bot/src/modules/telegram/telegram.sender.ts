@@ -25,27 +25,27 @@ export class TelegramSender {
   ) {}
 
   async sendMostReadArticle(chatId: ChatId, article: WikiMostReadArticle) {
-    const html = this.views.renderMostRead({ article });
+    const html = await this.views.renderMostRead({ article });
     const image = TelegramUtils.getArticleImage(article);
 
     await this.sendPost(chatId, html, image?.source);
   }
 
   async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
-    const html = this.views.renderFeaturedArticle({ article });
+    const html = await this.views.renderFeaturedArticle({ article });
     const image = TelegramUtils.getArticleImage(article);
 
     await this.sendPost(chatId, html, image?.source);
   }
 
   async sendFeaturedImage(chatId: ChatId, image: WikiFeaturedImage) {
-    const caption = this.views.renderFeaturedImage({ image });
+    const caption = await this.views.renderFeaturedImage({ image });
 
     await this.sendPost(chatId, caption, image.thumbnail.source);
   }
 
   async sendNews(chatId: ChatId, news: WikiNews) {
-    const html = this.views.renderNews({ news });
+    const html = await this.views.renderNews({ news });
     const articleWithImage = news.links.find(TelegramUtils.getArticleImage);
     let image: WikiImage | undefined;
 
@@ -57,7 +57,7 @@ export class TelegramSender {
   }
 
   async sendOnThisDay(chatId: ChatId, event: WikiOnThisDay) {
-    const html = this.views.renderOnThisDay({ event });
+    const html = await this.views.renderOnThisDay({ event });
     const mainArticle = event.pages.at(0)!;
     const image = TelegramUtils.getArticleImage(mainArticle);
 

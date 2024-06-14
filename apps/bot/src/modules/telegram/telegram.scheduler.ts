@@ -38,32 +38,28 @@ export class TelegramScheduler {
           lang,
         };
 
-        switch (type) {
-          case 'tfi':
-            strategy = new TFIDispatcherStrategy(
-              ...[...args, { ...baseProps, data }],
-            );
-            break;
-          case 'tfa':
-            strategy = new TFADispatcherStrategy(
-              ...[...args, { ...baseProps, data }],
-            );
-            break;
-          case 'news':
-            strategy = new NewsDispatcherStrategy(
-              ...[...args, { ...baseProps, data }],
-            );
-            break;
-          case 'onthisday':
-            strategy = new OnThisDayDispatcherStrategy(
-              ...[...args, { ...baseProps, data }],
-            );
-            break;
-          case 'mostread':
-            strategy = new MostReadDispatcherStrategy(
-              ...[...args, { ...baseProps, data }],
-            );
-            break;
+        if (type === 'tfi') {
+          strategy = new TFIDispatcherStrategy(
+            ...[...args, { ...baseProps, data }],
+          );
+        } else if (type === 'tfa') {
+          strategy = new TFADispatcherStrategy(
+            ...[...args, { ...baseProps, data }],
+          );
+        } else if (type === 'mostread') {
+          strategy = new MostReadDispatcherStrategy(
+            ...[...args, { ...baseProps, data }],
+          );
+        } else if (type === 'onthisday') {
+          strategy = new OnThisDayDispatcherStrategy(
+            ...[...args, { ...baseProps, data }],
+          );
+        } else if (type === 'news') {
+          strategy = new NewsDispatcherStrategy(
+            ...[...args, { ...baseProps, data }],
+          );
+        } else {
+          break;
         }
 
         if (await strategy.execute()) {

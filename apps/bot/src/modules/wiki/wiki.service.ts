@@ -138,15 +138,15 @@ export class WikiService {
       }
     }
 
-    if (news) {
-      for (const item of news) {
-        entityOfDataMixed.push(['news', item]);
-      }
-    }
-
     if (onthisday) {
       for (const item of onthisday) {
         entityOfDataMixed.push(['onthisday', item]);
+      }
+    }
+
+    if (news) {
+      for (const item of news) {
+        entityOfDataMixed.push(['news', item]);
       }
     }
 

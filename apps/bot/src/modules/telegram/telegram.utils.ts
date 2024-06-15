@@ -19,6 +19,7 @@ export abstract class TelegramUtils {
 
   static isValidImage(image: WikiImage) {
     return (
+      !/Flag_of_Russia/.test(image.source) &&
       Utils.isBetween(
         image.width,
         TELEGRAM_MIN_IMAGE_SIZE,

@@ -16,21 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@master
         with:
           node-version: '20'
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-
-      - name: curl
-        uses: enflo/curl-action@master
-        with:
-          curl: ${{ secrets.TELEGRAM_WEB_HOOK_URL }}
 
       - name: npm ci
         run: npm ci -w bot --include-workspace-root
@@ -43,7 +38,8 @@ jobs:
 
       - name: Archive
         run: |
-          zip -qq -9 -r deploy.zip .
-          du -sh deploy.zip
+          zip -qq -9 -r ${{ vars.DEPLOY_ZIP_FILE }} .
+          du -sh ${{ vars.DEPLOY_ZIP_FILE }}
+
       - name: Deploy
-        run: aws lambda update-function-code --function-name=telegram-wiki-repeater --zip-file=fileb://deploy.zip
+        run: aws lambda update-function-code --function-name=telegram-wiki-repeater --zip-file=fileb://${{ vars.DEPLOY_ZIP_FILE }}

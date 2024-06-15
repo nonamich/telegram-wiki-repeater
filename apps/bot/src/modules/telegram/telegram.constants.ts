@@ -1,5 +1,5 @@
 export const MAX_CONTENT_LENGTH = 800;
-export const TELEGRAM_MAX_IMAGE_SIZE = 3000;
+export const TELEGRAM_MAX_IMAGE_SIZE = 4000;
 export const TELEGRAM_MIN_IMAGE_SIZE = 200;
 export const TELEGRAM_ALLOWED_TAGS = [
   'b',

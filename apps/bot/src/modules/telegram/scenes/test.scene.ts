@@ -57,9 +57,10 @@ export class TestScene {
     await ctx.scene.leave();
 
     const lang: WikiLanguage = 'uk';
-
+    const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getFeaturedContent({
-      ...this.wiki.getFeaturedRequestParams(lang),
+      ...params,
+      day: 14,
     });
     const type = ctx.match.at(1)!;
 
@@ -88,7 +89,7 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(12)!,
+            featuredContent.onthisday!.at(13)!,
           );
 
           break;

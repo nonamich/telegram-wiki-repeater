@@ -25,7 +25,7 @@ export class WikiService {
   getFeaturedRequestParams(lang: WikiLanguage) {
     let date = dayjs();
 
-    if (date.hour() <= 9) {
+    if (date.hour() <= 6) {
       date = date.subtract(1, 'day');
     }
 

@@ -80,9 +80,7 @@ export class TelegramSender {
       media[0].caption = html;
       media[0].parse_mode = extra.parse_mode;
 
-      await this.bot.telegram.sendMediaGroup(chatId, media, {
-        disable_notification: extra.disable_notification,
-      });
+      await this.bot.telegram.sendMediaGroup(chatId, media);
     } else {
       await this.bot.telegram.sendMessage(chatId, html, extra);
     }

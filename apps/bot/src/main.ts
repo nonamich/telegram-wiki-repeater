@@ -1,7 +1,7 @@
-import { getLaunchedApp } from './app';
+import { createNestApp } from './app';
 
 handler();
 
 async function handler() {
-  await getLaunchedApp();
+  await createNestApp();
 }

@@ -12,7 +12,7 @@ export type OnThisDayProps = {
   event: WikiOnThisDay;
 };
 
-const icon = '🏺';
+const icon = '🏛️';
 
 export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   event: { pages, text, year },

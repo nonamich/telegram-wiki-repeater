@@ -36,7 +36,6 @@ export abstract class TelegramUtils {
     const extra = {
       parse_mode: 'HTML',
       disable_web_page_preview: true,
-      disable_notification: true,
     } satisfies ExtraReplyMessage;
 
     return extra;

@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "bot": "turbo run --filter=bot...",
-    "bot:build": "npm run bot -- --concurrency=1 build",
+    "bot:build": "npm run bot -- build",
     "bot:dev": "npm run bot -- --parallel dev"
   },
   "devDependencies": {
-    "turbo": "^2.0.3"
+    "turbo": "^2.0.4"
   }
 }

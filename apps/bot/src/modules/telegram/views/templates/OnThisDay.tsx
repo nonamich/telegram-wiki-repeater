@@ -6,7 +6,6 @@ import { WikiOnThisDay } from '~/modules/wiki/types';
 import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
 import { BR, Description, Links, NewLine, Title } from '../components';
-import { Article } from '../components/Article';
 
 export type OnThisDayProps = {
   event: WikiOnThisDay;
@@ -23,7 +22,6 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
     text: t('more_events'),
     url: WikiHelper.getOnThisDayURL(language),
   };
-  const isSingle = pages.length === 1;
 
   return (
     <>
@@ -33,25 +31,20 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {' — '}
       {text}
       <BR />
-      {isSingle && <Article article={pages.at(0)!} link={link} />}
-      {!isSingle && (
-        <>
-          {pages.map((page, index) => {
-            return (
-              <>
-                {index > 0 && <NewLine />}•{' '}
-                <Title
-                  title={page.titles.normalized}
-                  url={page.content_urls.desktop.page}
-                />
-                <Description description={page.description} hyphen="-" />;
-              </>
-            );
-          })}
-          <BR />
-          <Links link={link} />
-        </>
-      )}
+      {pages.map((page, index) => {
+        return (
+          <>
+            {index > 0 && <NewLine />}•{' '}
+            <Title
+              title={page.titles.normalized}
+              url={page.content_urls.desktop.page}
+            />
+            <Description description={page.description} hyphen="-" />;
+          </>
+        );
+      })}
+      <BR />
+      <Links link={link} />
     </>
   );
 };

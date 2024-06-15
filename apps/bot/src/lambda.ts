@@ -1,8 +1,8 @@
-import { getLaunchedApp } from './app';
+import { createNestApp } from './app';
 import { TelegramScheduler } from './modules/telegram/telegram.scheduler';
 
 export async function handler() {
-  const app = await getLaunchedApp();
+  const app = await createNestApp();
 
   const scheduler = app.get(TelegramScheduler);
 

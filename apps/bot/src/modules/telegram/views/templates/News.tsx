@@ -20,7 +20,7 @@ export const News: FunctionalComponent<NewsProps> = ({ news: { story } }) => {
 
   return (
     <>
-      {t('in_the_news')}
+      📰 {t('in_the_news')}
       {' — '}
       <TELEGRAM_TAG_DANGEROUSLY_HTML
         dangerouslySetInnerHTML={{ __html: story }}

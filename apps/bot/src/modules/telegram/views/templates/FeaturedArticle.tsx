@@ -19,5 +19,5 @@ export const FeaturedArticle: FunctionComponent<FeaturedArticleProps> = ({
     text: t('more_featured_articles'),
   };
 
-  return <Article article={article} link={link} />;
+  return <Article article={article} beforeTitle={'⭐️'} link={link} />;
 };

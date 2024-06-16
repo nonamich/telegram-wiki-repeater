@@ -2,7 +2,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import zlib from 'zlib';
 
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
@@ -104,7 +104,6 @@ export class WikiService {
     } catch (error) {
       if (error instanceof AxiosError) {
         await sleep(WIKI_RETRY_MS);
-        Logger.log(`Retry ${url}`);
 
         return await this.request<T>({
           url,

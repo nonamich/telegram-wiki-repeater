@@ -15,18 +15,18 @@ export class ChannelScene {
 
   @SceneEnter()
   async onSceneEnter(@Ctx() ctx: Context) {
-    const channels = await this.db.getDevChannels();
+    const channels = await this.db.getAllChannels();
 
     await ctx.sendMessage('Choose Channel', {
       reply_markup: {
-        inline_keyboard: [
-          channels.map(({ id, lang }) => {
-            return {
-              text: `${id} ${lang}`,
+        inline_keyboard: channels.map(({ id, lang, isDev }) => {
+          return [
+            {
+              text: `Lang: ${lang}, isDev: ${isDev}, ${id}`,
               callback_data: `channel-${id}`,
-            };
-          }),
-        ],
+            },
+          ];
+        }),
       },
     });
   }

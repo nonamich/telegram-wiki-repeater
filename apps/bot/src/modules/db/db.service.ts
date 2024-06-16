@@ -7,19 +7,19 @@ import { InjectDB } from './decorators/inject-db.decorator';
 export class DBService {
   constructor(@InjectDB() private readonly db: DB) {}
 
-  async getDevChannels() {
+  async getAllChannels() {
     const channels = await this.db.query.channels.findMany({
       columns: {
         id: true,
         lang: true,
+        isDev: true,
       },
-      where: (channel, { eq }) => eq(channel.isDev, true),
     });
 
     return channels;
   }
 
-  async getChannels() {
+  async getProdChannels() {
     const channels = await this.db.query.channels.findMany({
       columns: {
         id: true,

@@ -70,7 +70,7 @@ export class TelegramScheduler {
   }
 
   async execute() {
-    const channels = await this.db.getChannels();
+    const channels = await this.db.getProdChannels();
 
     for (const channel of channels) {
       await this.executeWithI18nContext(channel.id, channel.lang);

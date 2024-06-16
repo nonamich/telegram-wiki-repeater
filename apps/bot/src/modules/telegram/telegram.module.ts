@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { WikiModule } from '~/modules/wiki/wiki.module';
@@ -5,6 +6,7 @@ import { WikiModule } from '~/modules/wiki/wiki.module';
 import { ImagesModule } from '../images/images.module';
 import { ChannelScene } from './scenes/channel.scene';
 import { TestScene } from './scenes/test.scene';
+import { TelegramImages } from './telegram.images';
 import { TelegramOptionsFactory } from './telegram.options-factory';
 import { TelegramScheduler } from './telegram.scheduler';
 import { TelegramSender } from './telegram.sender';
@@ -14,7 +16,7 @@ import { TelegramUpdate } from './telegram.update';
 import { TelegramViews } from './views/telegram.view';
 
 @Module({
-  imports: [WikiModule, ImagesModule],
+  imports: [WikiModule, ImagesModule, HttpModule],
   providers: [
     TelegramOptionsFactory,
     TelegramScheduler,
@@ -25,6 +27,7 @@ import { TelegramViews } from './views/telegram.view';
     TelegramViews,
     TestScene,
     ChannelScene,
+    TelegramImages,
   ],
   exports: [TelegramSessionStore],
 })

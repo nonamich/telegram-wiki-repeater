@@ -14,6 +14,11 @@ export abstract class WikiHelper {
       featuredArticles: 'Вікіпедія:Вибрані_статті',
       featuredPictures: 'Вікіпедія:Зображення_дня',
     },
+    ru: {
+      currentEvents: 'Портал:Поточні_події',
+      featuredArticles: 'Вікіпедія:Вибрані_статті',
+      featuredPictures: 'Вікіпедія:Зображення_дня',
+    },
   };
 
   static getBaseURL(lang: string) {

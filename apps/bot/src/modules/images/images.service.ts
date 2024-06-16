@@ -13,7 +13,7 @@ export class ImagesService {
     return `https://${this.token}.cloudimg.io/v7/${url}`;
   }
 
-  resize(url: string, size: number) {
+  getResizedProxyURL(url: string, size: number) {
     const urlObj = new URL(this.getProxyURL(url));
 
     urlObj.searchParams.append('w', size.toString());

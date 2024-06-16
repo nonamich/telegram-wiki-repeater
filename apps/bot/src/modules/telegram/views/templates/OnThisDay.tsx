@@ -35,12 +35,12 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {pages.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST).map((page, index) => {
         return (
           <>
-            {index > 0 && <NewLine />}•{' '}
+            <>{index > 0 && <NewLine />}• </>
             <Title
               title={page.titles.normalized}
               url={page.content_urls.desktop.page}
             />
-            <Description description={page.description} hyphen="-" />;
+            <Description description={page.description} hyphen="-" end=";" />
           </>
         );
       })}

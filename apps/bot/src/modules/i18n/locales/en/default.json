@@ -1,1 +1,9 @@
-{"current_events":"Current Events","in_the_news":"In the news","more_events":"More Events","more_featured_articles":"More featured articles","more_featured_pictures":"More featured pictures","on_this_day":"On This Day","support_wikipedia":"Support Wikipedia","tags":{"image":"image","mostread":"most read","news":"news","on_this_day":"on this day","tfa":"featured article"}}
+{
+  "current_events": "Current Events",
+  "in_the_news": "In the news",
+  "more_events": "More Events",
+  "more_featured_articles": "More featured articles",
+  "more_featured_pictures": "More featured pictures",
+  "on_this_day": "On This Day",
+  "support_wikipedia": "Support Wikipedia"
+}

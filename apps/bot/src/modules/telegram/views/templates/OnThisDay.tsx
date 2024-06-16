@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import { FunctionalComponent } from 'preact';
 
+import { Utils } from '@repo/shared';
+
 import { useI18n } from '~/modules/i18n/i18n.utils';
 import { WikiOnThisDay } from '~/modules/wiki/types';
 import { WikiHelper } from '~/modules/wiki/wiki.helper';
@@ -11,8 +13,6 @@ import { BR, Description, Links, NewLine, Title } from '../components';
 export type OnThisDayProps = {
   event: WikiOnThisDay;
 };
-
-const icon = '🏛️';
 
 export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   event: { pages, text, year },
@@ -26,11 +26,9 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
 
   return (
     <>
-      <strong>
-        {icon} {date.format('DD MMMM YYYY')}
-      </strong>
+      {Utils.capitalizeFirstLetter(text)}
       {' — '}
-      {text}
+      {date.format('DD MMMM YYYY')}
       <BR />
       {pages.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST).map((page, index) => {
         return (

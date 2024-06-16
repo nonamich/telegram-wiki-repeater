@@ -26,4 +26,8 @@ export namespace Utils {
   export const truthy = <T>(value: T): value is Truthy<T> => {
     return !!value;
   };
+
+  export const capitalizeFirstLetter = (text: string) => {
+    return text[0].toUpperCase() + text.slice(1);
+  };
 }

@@ -9,5 +9,5 @@ export type MostReadProps = {
 };
 
 export const MostRead: FunctionComponent<MostReadProps> = ({ article }) => {
-  return <Article article={article} beforeTitle={'⚡'} />;
+  return <Article article={article} />;
 };

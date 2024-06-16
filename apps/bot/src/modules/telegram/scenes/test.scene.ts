@@ -56,9 +56,9 @@ export class TestScene {
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'ru';
+    const lang: WikiLanguage = 'uk';
     const params = this.wiki.getFeaturedRequestParams(lang);
-    const featuredContent = await this.wiki.getFeaturedContent({
+    const featuredContent = await this.wiki.getContent({
       ...params,
       day: 16,
     });
@@ -68,30 +68,24 @@ export class TestScene {
       switch (type) {
         case 'tfi':
           await this.sender.sendFeaturedImage(chat.id, featuredContent.image!);
-
           break;
         case 'tfa':
           await this.sender.sendFeaturedArticle(chat.id, featuredContent.tfa!);
-
           break;
-
         case 'news':
           await this.sender.sendNews(chat.id, featuredContent.news!.at(1)!);
-
           break;
         case 'mostread':
           await this.sender.sendMostReadArticle(
             chat.id,
             featuredContent.mostread!.at(0)!,
           );
-
           break;
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(1)!,
+            featuredContent.onthisday!.at(0)!,
           );
-
           break;
       }
     });

@@ -12,6 +12,8 @@ import { Utils } from '@repo/shared';
 import { HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
 import {
+  OnThisDayRequest,
+  OnThisDayResponse,
   OrderOfArticles,
   WikiLanguage,
   WikiOnThisDay,
@@ -39,22 +41,45 @@ export class WikiService {
     return params;
   }
 
-  getUrlFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
+  getURLOnThisDay({ lang, month, day }: OnThisDayRequest) {
+    return `/${lang}/onthisday/events/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`;
+  }
+
+  getURLFeaturedContent({ lang, year, month, day }: FeaturedRequest) {
     return `/${lang}/featured/${year}/${Utils.zeroPad(month)}/${Utils.zeroPad(day)}`;
+  }
+
+  async getEvents(params: OnThisDayRequest) {
+    const response = await this.request<OnThisDayResponse>({
+      url: this.getURLOnThisDay(params),
+    });
+
+    return response.events;
   }
 
   async getFeaturedContent(params: FeaturedRequest) {
     const response = await this.request<FeaturedResponse>({
-      url: this.getUrlFeaturedContent(params),
+      url: this.getURLFeaturedContent(params),
     });
 
-    if (response.onthisday) {
-      for (const onthisday of response.onthisday) {
-        this.deleteUselessPage(onthisday);
-      }
+    return response;
+  }
+
+  async getContent(params: FeaturedRequest) {
+    const featured = await this.getFeaturedContent(params);
+    const events = await this.getEvents(params);
+
+    if (!featured.onthisday) {
+      featured.onthisday = [];
     }
 
-    return { ...response, mostread: response?.mostread?.articles };
+    featured.onthisday.push(...events);
+
+    for (const onthisday of featured.onthisday) {
+      this.deleteUselessPage(onthisday);
+    }
+
+    return { ...featured, mostread: featured?.mostread?.articles };
   }
 
   private getCacheKey(url: string) {
@@ -98,10 +123,10 @@ export class WikiService {
     await this.redis.setex(cacheKey, expires, cache);
   }
 
-  private async request<T extends object>({
-    url,
-    expires,
-  }: WikiRequest): Promise<T> {
+  private async request<T extends object, D = object>(
+    { url, expires }: WikiRequest,
+    filter?: (data: D) => T,
+  ): Promise<T> {
     const cache = await this.getCacheResponse<T>(url);
 
     if (cache) {
@@ -109,9 +134,14 @@ export class WikiService {
     }
 
     try {
-      const { data, status } = await this.http.axiosRef.get<T>(url);
+      const res = await this.http.axiosRef.get<T>(url);
+      let { data } = res;
 
-      if (status === 200) {
+      if (filter) {
+        data = filter(data as unknown as D);
+      }
+
+      if (res.status === 200) {
         await this.setToCache(data, {
           url,
           expires,
@@ -123,10 +153,13 @@ export class WikiService {
       if (error instanceof AxiosError) {
         await sleep(WIKI_RETRY_MS);
 
-        return await this.request<T>({
-          url,
-          expires,
-        });
+        return await this.request(
+          {
+            url,
+            expires,
+          },
+          filter,
+        );
       }
 
       throw error;
@@ -134,9 +167,7 @@ export class WikiService {
   }
 
   async getFeaturedContentAsArray(lang: WikiLanguage) {
-    const response = await this.getFeaturedContent(
-      this.getFeaturedRequestParams(lang),
-    );
+    const response = await this.getContent(this.getFeaturedRequestParams(lang));
     const { image, mostread, news, onthisday, tfa } = response;
     const entityOfData: OrderOfArticles = [];
     const entityOfDataMixed: OrderOfArticles = [];

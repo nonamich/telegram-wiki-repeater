@@ -14,6 +14,8 @@ export type OnThisDayProps = {
   event: WikiOnThisDay;
 };
 
+const icon = '🏛️';
+
 export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   event: { pages, text, year },
 }) => {
@@ -26,7 +28,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
 
   return (
     <>
-      {Utils.capitalizeFirstLetter(text)}
+      {icon} {Utils.capitalizeFirstLetter(text)}
       {' — '}
       {date.format('DD MMMM YYYY')}
       <BR />

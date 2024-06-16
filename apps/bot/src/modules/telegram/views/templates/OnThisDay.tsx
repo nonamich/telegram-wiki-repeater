@@ -5,6 +5,7 @@ import { useI18n } from '~/modules/i18n/i18n.utils';
 import { WikiOnThisDay } from '~/modules/wiki/types';
 import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
+import { TELEGRAM_MAX_ARTICLES_PER_POST } from '../../telegram.constants';
 import { BR, Description, Links, NewLine, Title } from '../components';
 
 export type OnThisDayProps = {
@@ -31,7 +32,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {' — '}
       {text}
       <BR />
-      {pages.map((page, index) => {
+      {pages.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST).map((page, index) => {
         return (
           <>
             {index > 0 && <NewLine />}•{' '}

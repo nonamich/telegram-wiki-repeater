@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DBService } from '~/modules/db/db.service';
 import { I18nContext } from '~/modules/i18n/i18n.context';
-import { WikiLanguage, WikiOnThisDay } from '~/modules/wiki/types';
+import { WikiLanguage } from '~/modules/wiki/types';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
@@ -25,18 +25,6 @@ export class TelegramScheduler {
     private readonly sender: TelegramSender,
     private readonly skipper: TelegramSkipper,
   ) {}
-
-  deleteUselessPage({ pages, year }: WikiOnThisDay) {
-    const findIndex = pages.findIndex(({ titles: { normalized: title } }) => {
-      return new RegExp(`^${year} `).test(title);
-    });
-
-    if (findIndex === -1) {
-      return;
-    }
-
-    pages.splice(findIndex, 1);
-  }
 
   async executeWithI18nContext(chatId: ChatId, lang: WikiLanguage) {
     const args = [this.skipper, this.sender] as const;
@@ -63,8 +51,6 @@ export class TelegramScheduler {
             ...[...args, { ...baseProps, data }],
           );
         } else if (type === 'onthisday') {
-          this.deleteUselessPage(data);
-
           strategy = new OnThisDayDispatcherStrategy(
             ...[...args, { ...baseProps, data }],
           );

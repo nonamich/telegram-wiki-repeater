@@ -11,7 +11,12 @@ import { Utils } from '@repo/shared';
 
 import { HOUR_IN_SEC } from '../redis/redis.constants';
 import { RedisService } from '../redis/redis.service';
-import { OrderOfArticles, WikiLanguage, WikiRequest } from './types';
+import {
+  OrderOfArticles,
+  WikiLanguage,
+  WikiOnThisDay,
+  WikiRequest,
+} from './types';
 import { FeaturedResponse, FeaturedRequest } from './types/featured';
 import { WIKI_CACHE_ENCODING, WIKI_RETRY_MS } from './wiki.constants';
 
@@ -43,6 +48,12 @@ export class WikiService {
       url: this.getUrlFeaturedContent(params),
     });
 
+    if (response.onthisday) {
+      for (const onthisday of response.onthisday) {
+        this.deleteUselessPage(onthisday);
+      }
+    }
+
     return { ...response, mostread: response?.mostread?.articles };
   }
 
@@ -62,6 +73,18 @@ export class WikiService {
     const json = zlib.brotliDecompressSync(buffer).toString('utf8');
 
     return JSON.parse(json) as T;
+  }
+
+  deleteUselessPage({ pages, year }: WikiOnThisDay) {
+    const findIndex = pages.findIndex(({ titles: { normalized: title } }) => {
+      return new RegExp(`^${year} `).test(title);
+    });
+
+    if (findIndex === -1) {
+      return;
+    }
+
+    pages.splice(findIndex, 1);
   }
 
   private async setToCache<T extends object>(

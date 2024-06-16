@@ -28,9 +28,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
 
   return (
     <>
-      {icon} {Utils.capitalizeFirstLetter(text)}
-      {' — '}
-      {date.format('DD MMMM YYYY')}
+      {icon} {Utils.capitalizeFirstLetter(text)} ({date.format('DD MMMM YYYY')})
       <BR />
       {pages.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST).map((page, index) => {
         return (

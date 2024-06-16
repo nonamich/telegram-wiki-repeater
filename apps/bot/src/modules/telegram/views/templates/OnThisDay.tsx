@@ -28,8 +28,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
 
   return (
     <>
-      {icon}
-      {Utils.capitalizeFirstLetter(text)}
+      {icon} {Utils.capitalizeFirstLetter(text)}
       {' — '}
       {date.format('DD MMMM YYYY')}
       <BR />

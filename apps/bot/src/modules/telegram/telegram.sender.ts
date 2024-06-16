@@ -51,7 +51,21 @@ export class TelegramSender {
     await this.sendPost(chatId, html, image);
   }
 
+  deleteUselessPage({ pages, year }: WikiOnThisDay) {
+    const findIndex = pages.findIndex(({ titles: { normalized: title } }) => {
+      return new RegExp(`^${year} `).test(title);
+    });
+
+    if (findIndex === -1) {
+      return;
+    }
+
+    pages.splice(findIndex, 1);
+  }
+
   async sendOnThisDay(chatId: ChatId, event: WikiOnThisDay) {
+    this.deleteUselessPage(event);
+
     const html = await this.views.renderOnThisDay({ event });
     const image = await this.images.getFirstImageFromArticles(event.pages);
 

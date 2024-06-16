@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 
-import { WikiSiteData } from './types';
+import { WikiLanguage, WikiSiteData } from './types';
 
 export abstract class WikiHelper {
-  static pathnames: Record<string, WikiSiteData> = {
+  static pathnames: Record<WikiLanguage, WikiSiteData> = {
     en: {
       currentEvents: 'Portal:Current_events',
       featuredArticles: 'Wikipedia:Featured_articles',
@@ -15,33 +15,33 @@ export abstract class WikiHelper {
       featuredPictures: 'Вікіпедія:Зображення_дня',
     },
     ru: {
-      currentEvents: 'Портал:Поточні_події',
-      featuredArticles: 'Вікіпедія:Вибрані_статті',
-      featuredPictures: 'Вікіпедія:Зображення_дня',
+      currentEvents: 'Портал:Текущие_события',
+      featuredArticles: 'Википедия:Избранные_статьи',
+      featuredPictures: 'Википедия:Изображение_дня',
     },
   };
 
-  static getBaseURL(lang: string) {
+  static getBaseURL(lang: WikiLanguage) {
     return `https://${lang}.wikipedia.org/wiki/`;
   }
 
-  static getCurrentEventsURL(lang: string) {
+  static getCurrentEventsURL(lang: WikiLanguage) {
     return this.getURLByType(lang, 'currentEvents');
   }
 
-  static getFeaturedPicturesURL(lang: string) {
+  static getFeaturedPicturesURL(lang: WikiLanguage) {
     return this.getURLByType(lang, 'featuredPictures');
   }
 
-  static getFeaturedArticlesURL(lang: string) {
+  static getFeaturedArticlesURL(lang: WikiLanguage) {
     return this.getURLByType(lang, 'featuredArticles');
   }
 
-  static getURLByType(lang: string, type: keyof WikiSiteData) {
+  static getURLByType(lang: WikiLanguage, type: keyof WikiSiteData) {
     return `${this.getBaseURL(lang)}${this.pathnames[lang][type]}`;
   }
 
-  static getOnThisDayURL(lang: string) {
+  static getOnThisDayURL(lang: WikiLanguage) {
     const pathname = dayjs()
       .locale(lang)
       .format('DD MMMM')

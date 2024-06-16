@@ -18,22 +18,23 @@ export class TelegramImages {
     readonly http: HttpService,
   ) {}
 
+  async getResizedURL(url: string) {
+    const { headers } = await this.http.axiosRef.head(url);
+    const contentLength = Number(headers['content-length']);
+
+    if (contentLength >= TELEGRAM_MAX_IMAGE_BYTES) {
+      return this.imagesService.getResizedProxyURL(url, TELEGRAM_IMAGE_SIZE);
+    }
+
+    return url;
+  }
+
   async getImageURLByArticle({ originalimage: image }: WikiArticle) {
     if (!image || this.isInBackList(image)) {
       return;
     }
 
-    const { headers } = await this.http.axiosRef.head(image.source);
-    const contentLength = Number(headers['content-length']);
-
-    if (contentLength >= TELEGRAM_MAX_IMAGE_BYTES) {
-      return this.imagesService.getResizedProxyURL(
-        image.source,
-        TELEGRAM_IMAGE_SIZE,
-      );
-    }
-
-    return image.source;
+    return await this.getResizedURL(image.source);
   }
 
   isInBackList(image: WikiImage) {

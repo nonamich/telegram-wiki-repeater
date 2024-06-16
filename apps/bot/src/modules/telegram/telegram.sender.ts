@@ -40,8 +40,9 @@ export class TelegramSender {
 
   async sendFeaturedImage(chatId: ChatId, image: WikiFeaturedImage) {
     const caption = await this.views.renderFeaturedImage({ image });
+    const imageURL = await this.images.getResizedURL(image.thumbnail.source);
 
-    await this.sendPost(chatId, caption, image.thumbnail.source);
+    await this.sendPost(chatId, caption, imageURL);
   }
 
   async sendNews(chatId: ChatId, news: WikiNews) {

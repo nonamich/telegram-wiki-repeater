@@ -31,14 +31,27 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {icon} {Utils.capitalizeFirstLetter(text)} ({date.format('DD MMMM YYYY')})
       <BR />
       {pages.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST).map((page, index) => {
+        const semicolon = ';';
+        const title = page.titles.normalized;
+        let titleEnd = '';
+        let descriptionEnd = '';
+
+        if (!page.description) {
+          titleEnd += semicolon;
+        } else {
+          descriptionEnd += semicolon;
+        }
+
         return (
           <>
             <>{index > 0 && <NewLine />}• </>
-            <Title
-              title={page.titles.normalized}
-              url={page.content_urls.desktop.page}
+            <Title title={title} url={page.content_urls.desktop.page} />
+            {titleEnd}
+            <Description
+              description={page.description}
+              hyphen="-"
+              end={descriptionEnd}
             />
-            <Description description={page.description} hyphen="-" end=";" />
           </>
         );
       })}

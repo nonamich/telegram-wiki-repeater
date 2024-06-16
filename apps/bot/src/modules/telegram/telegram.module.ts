@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { WikiModule } from '~/modules/wiki/wiki.module';
 
+import { ImagesModule } from '../images/images.module';
 import { ChannelScene } from './scenes/channel.scene';
 import { TestScene } from './scenes/test.scene';
 import { TelegramOptionsFactory } from './telegram.options-factory';
@@ -13,7 +14,7 @@ import { TelegramUpdate } from './telegram.update';
 import { TelegramViews } from './views/telegram.view';
 
 @Module({
-  imports: [WikiModule],
+  imports: [WikiModule, ImagesModule],
   providers: [
     TelegramOptionsFactory,
     TelegramScheduler,

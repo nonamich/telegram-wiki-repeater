@@ -8,7 +8,7 @@ import { BR, Content, Description, Links, LinksProps, Title } from '.';
 type ArticleProps = {
   article: WikiArticle;
   beforeTitle?: JSXInternal.Element | string;
-  link?: LinksProps['link'];
+  link?: LinksProps['links'];
 };
 
 export const Article: FunctionComponent<ArticleProps> = ({
@@ -27,7 +27,7 @@ export const Article: FunctionComponent<ArticleProps> = ({
       <BR />
       <Content content={article.extract_html} />
       <BR />
-      <Links link={link} />
+      <Links links={link} />
     </>
   );
 };

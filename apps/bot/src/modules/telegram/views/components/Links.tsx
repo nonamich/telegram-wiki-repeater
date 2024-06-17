@@ -11,10 +11,10 @@ type Link = {
 };
 
 export type LinksProps = {
-  link?: Link;
+  links?: Link | Link[];
 };
 
-export const Links: FunctionalComponent<LinksProps> = ({ link }) => {
+export const Links: FunctionalComponent<LinksProps> = ({ links: link }) => {
   const { t, language } = useI18n();
   const links = [
     {
@@ -24,7 +24,11 @@ export const Links: FunctionalComponent<LinksProps> = ({ link }) => {
   ];
 
   if (link) {
-    links.push(link);
+    if (!Array.isArray(link)) {
+      link = [link];
+    }
+
+    links.push(...link);
   }
 
   return (

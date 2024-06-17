@@ -9,8 +9,9 @@ import dayjs from 'dayjs';
 
 import { Utils } from '@repo/shared';
 
-import { HOUR_IN_SEC } from '../redis/redis.constants';
-import { RedisService } from '../redis/redis.service';
+import { HOUR_IN_SEC } from '~/modules/redis/redis.constants';
+import { RedisService } from '~/modules/redis/redis.service';
+
 import {
   OnThisDayRequest,
   OnThisDayResponse,
@@ -20,7 +21,11 @@ import {
   WikiRequest,
 } from './types';
 import { FeaturedResponse, FeaturedRequest } from './types/featured';
-import { WIKI_CACHE_ENCODING, WIKI_RETRY_MS } from './wiki.constants';
+import {
+  WIKI_CACHE_ENCODING,
+  WIKI_MAX_PAGE_ON_THIS_DAY,
+  WIKI_RETRY_MS,
+} from './wiki.constants';
 
 @Injectable()
 export class WikiService {
@@ -101,15 +106,17 @@ export class WikiService {
   }
 
   deleteUselessPage({ pages, year }: WikiOnThisDay) {
-    const findIndex = pages.findIndex(({ titles: { normalized: title } }) => {
-      return new RegExp(`^${year} `).test(title);
-    });
+    const yearPageIndex = pages.findIndex(
+      ({ titles: { normalized: title } }) => {
+        return new RegExp(`^${year} `).test(title);
+      },
+    );
 
-    if (findIndex === -1) {
-      return;
+    if (yearPageIndex !== -1) {
+      pages.splice(yearPageIndex, 1);
     }
 
-    pages.splice(findIndex, 1);
+    pages.splice(WIKI_MAX_PAGE_ON_THIS_DAY);
   }
 
   private async setToCache<T extends object>(
@@ -123,10 +130,8 @@ export class WikiService {
     await this.redis.setex(cacheKey, expires, cache);
   }
 
-  private async request<T extends object, D = object>(
-    { url, expires }: WikiRequest,
-    filter?: (data: D) => T,
-  ): Promise<T> {
+  private async request<T extends object>(params: WikiRequest): Promise<T> {
+    const { url } = params;
     const cache = await this.getCacheResponse<T>(url);
 
     if (cache) {
@@ -134,18 +139,10 @@ export class WikiService {
     }
 
     try {
-      const res = await this.http.axiosRef.get<T>(url);
-      let { data } = res;
+      const { data, status } = await this.http.axiosRef.get<T>(url);
 
-      if (filter) {
-        data = filter(data as unknown as D);
-      }
-
-      if (res.status === 200) {
-        await this.setToCache(data, {
-          url,
-          expires,
-        });
+      if (status === 200) {
+        await this.setToCache(data, params);
       }
 
       return data;
@@ -153,13 +150,7 @@ export class WikiService {
       if (error instanceof AxiosError) {
         await sleep(WIKI_RETRY_MS);
 
-        return await this.request(
-          {
-            url,
-            expires,
-          },
-          filter,
-        );
+        return await this.request(params);
       }
 
       throw error;

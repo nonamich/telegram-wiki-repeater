@@ -26,7 +26,7 @@ export const FeaturedImage: FunctionComponent<FeaturedImageProps> = ({
       <BR />
       <Content content={image.description.html} source={image.file_page} />
       <BR />
-      <Links link={link} />
+      <Links links={link} />
     </>
   );
 };

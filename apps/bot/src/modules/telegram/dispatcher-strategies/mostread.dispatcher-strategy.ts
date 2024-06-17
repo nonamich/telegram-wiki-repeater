@@ -5,12 +5,26 @@ import { SkipParams } from '../telegram.types';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class MostReadDispatcherStrategy extends BaseDispatcherStrategy<WikiMostReadArticle> {
+  static isSkipTotal = new Set<string | number>();
+
   async setSkipTotal() {
+    MostReadDispatcherStrategy.isSkipTotal.add(this.props.chatId);
+
     await this.skipper.setSkipCache(this.getTotalSkipParams());
   }
 
   async isSkipTotal() {
-    return await this.skipper.isSkip(this.getTotalSkipParams());
+    if (MostReadDispatcherStrategy.isSkipTotal.has(this.props.chatId)) {
+      return true;
+    }
+
+    const isSkipped = await this.skipper.isSkip(this.getTotalSkipParams());
+
+    if (isSkipped) {
+      MostReadDispatcherStrategy.isSkipTotal.add(this.props.chatId);
+    }
+
+    return isSkipped;
   }
 
   getTotalSkipParams(): SkipParams {

@@ -7,7 +7,6 @@ import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 import {
   TELEGRAM_BLACK_LIST_OF_IMAGE,
   TELEGRAM_IMAGE_SIZE,
-  TELEGRAM_MAX_ARTICLES_PER_POST,
   TELEGRAM_MAX_IMAGE_BYTES,
 } from './telegram.constants';
 
@@ -44,7 +43,7 @@ export class TelegramImages {
   }
 
   async getFirstImageFromArticles(articles: WikiArticle[]) {
-    for (const article of articles.slice(0, TELEGRAM_MAX_ARTICLES_PER_POST)) {
+    for (const article of articles) {
       const image = await this.getImageURLByArticle(article);
 
       if (!image) {

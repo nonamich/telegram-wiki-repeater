@@ -10,13 +10,16 @@ export class ImagesService {
   }
 
   getProxyURL(url: string) {
-    return `https://${this.token}.cloudimg.io/v7/${url}`;
+    return `https://${this.token}.cloudimg.io/v7/${url}?org_if_sml=1&func=bound`;
   }
 
-  getResizedProxyURL(url: string, size: number) {
+  getResizedProxyURL(url: string, width: number) {
     const urlObj = new URL(this.getProxyURL(url));
 
-    urlObj.searchParams.append('w', size.toString());
+    const height = width * 1.5;
+
+    urlObj.searchParams.append('w', width.toString());
+    urlObj.searchParams.append('h', height.toString());
 
     return urlObj.toString();
   }

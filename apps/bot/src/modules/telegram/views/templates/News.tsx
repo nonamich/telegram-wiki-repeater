@@ -26,7 +26,7 @@ export const News: FunctionalComponent<NewsProps> = ({ news: { story } }) => {
         dangerouslySetInnerHTML={{ __html: story }}
       />
       <BR />
-      <Links link={link} />
+      <Links links={link} />
     </>
   );
 };

@@ -40,7 +40,7 @@ export class MostReadDispatcherStrategy extends BaseDispatcherStrategy<WikiMostR
     return {
       ids: this.props.data.pageid,
       type: 'mostread' as const,
-      expireInSec: DAY_IN_SEC * 5,
+      expireInSec: DAY_IN_SEC * 40,
     };
   }
 

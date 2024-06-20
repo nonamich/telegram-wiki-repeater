@@ -1,4 +1,4 @@
-export const MAX_CONTENT_LENGTH = 800;
+export const MAX_CONTENT_LENGTH = 500;
 export const TELEGRAM_IMAGE_SIZE = 1200;
 export const TELEGRAM_MAX_IMAGE_BYTES = 3_000_000;
 export const TELEGRAM_ALLOWED_TAGS = [

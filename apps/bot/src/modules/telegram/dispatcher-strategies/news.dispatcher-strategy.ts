@@ -1,3 +1,5 @@
+import crypto from 'node:crypto';
+
 import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
 import { WikiNews } from '~/modules/wiki/types';
 
@@ -6,7 +8,7 @@ import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 export class NewsDispatcherStrategy extends BaseDispatcherStrategy<WikiNews> {
   getAdditionalSkipParams() {
     return {
-      ids: this.props.data.links.map(({ pageid }) => pageid),
+      ids: crypto.createHash('md5').update(this.props.data.story).digest('hex'),
       type: 'news' as const,
       expireInSec: DAY_IN_SEC * 3,
     };

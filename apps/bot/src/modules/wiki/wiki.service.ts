@@ -84,6 +84,8 @@ export class WikiService {
       this.deleteUselessPage(onthisday);
     }
 
+    featured.onthisday = featured.onthisday.filter(({ pages }) => pages.length);
+
     return { ...featured, mostread: featured?.mostread?.articles };
   }
 

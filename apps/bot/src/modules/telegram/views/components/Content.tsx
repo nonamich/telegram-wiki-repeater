@@ -1,5 +1,6 @@
 import { FunctionalComponent } from 'preact';
 
+import { useI18n } from '~/modules/i18n/i18n.utils';
 import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '~/modules/telegram/telegram.constants';
 import { TelegramViewsUtils } from '~/modules/telegram/views/telegram.view.utils';
 
@@ -8,8 +9,21 @@ export type ContentProps = {
   source?: string;
 };
 
-export const Content: FunctionalComponent<ContentProps> = ({ content }) => {
-  content = TelegramViewsUtils.getPreparedContent(content);
+const getEllipsis = (source?: string) => {
+  if (source) {
+    const { t } = useI18n();
+
+    return `... <a href=${source}>[${t('read_more').toLocaleLowerCase()}]</a>`;
+  }
+
+  return '...';
+};
+
+export const Content: FunctionalComponent<ContentProps> = ({
+  content,
+  source,
+}) => {
+  content = TelegramViewsUtils.truncateHtml(content, getEllipsis(source));
 
   return (
     <TELEGRAM_TAG_DANGEROUSLY_HTML

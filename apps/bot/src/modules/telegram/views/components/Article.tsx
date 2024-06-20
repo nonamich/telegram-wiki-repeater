@@ -25,7 +25,10 @@ export const Article: FunctionComponent<ArticleProps> = ({
       />
       <Description description={article.description} />
       <BR />
-      <Content content={article.extract_html} />
+      <Content
+        content={article.extract_html}
+        source={article.content_urls.desktop.page}
+      />
       <BR />
       <Links links={link} />
     </>

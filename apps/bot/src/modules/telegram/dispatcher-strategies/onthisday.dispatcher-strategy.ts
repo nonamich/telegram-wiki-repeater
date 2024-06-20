@@ -5,7 +5,7 @@ import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 export class OnThisDayDispatcherStrategy extends BaseDispatcherStrategy<WikiOnThisDay> {
   getAdditionalSkipParams() {
     return {
-      ids: this.props.data.pages.map(({ pageid }) => pageid),
+      ids: this.props.data.pages.slice(0, 1).map(({ pageid }) => pageid),
       type: 'onthisday' as const,
     };
   }

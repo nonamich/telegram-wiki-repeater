@@ -36,7 +36,7 @@ export class TelegramViewsUtils {
     });
   }
 
-  static getPreparedContent(content: string, ellipsis = '...') {
+  static truncateHtml(content: string, ellipsis = '...') {
     return truncateHtml(content, {
       keepWhitespaces: true,
       length: MAX_CONTENT_LENGTH,

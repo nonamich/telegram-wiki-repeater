@@ -7,8 +7,7 @@ import { useI18n } from '~/modules/i18n/i18n.utils';
 import { WikiOnThisDay } from '~/modules/wiki/types';
 import { WikiHelper } from '~/modules/wiki/wiki.helper';
 
-import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '../../telegram.constants';
-import { BR, Description, Links, NewLine, Title } from '../components';
+import { BR, Content, Description, Links, NewLine, Title } from '../components';
 
 export type OnThisDayProps = {
   event: WikiOnThisDay;
@@ -46,8 +45,9 @@ const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
             )}
             {isHtml && (
               <>
-                <TELEGRAM_TAG_DANGEROUSLY_HTML
-                  dangerouslySetInnerHTML={{ __html: page.extract_html }}
+                <Content
+                  content={page.extract_html}
+                  source={page.content_urls.desktop.page}
                 />
               </>
             )}

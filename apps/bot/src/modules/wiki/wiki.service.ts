@@ -70,6 +70,22 @@ export class WikiService {
     return response;
   }
 
+  deleteUselessOnthisday(events: WikiOnThisDay[]) {
+    const ids = new Set<number>();
+
+    for (const [index, { pages }] of events.entries()) {
+      for (const page of pages) {
+        if (ids.has(page.pageid)) {
+          events.splice(index, 1);
+
+          break;
+        }
+
+        ids.add(page.pageid);
+      }
+    }
+  }
+
   async getContent(params: FeaturedRequest) {
     const featured = await this.getFeaturedContent(params);
     const events = await this.getEvents(params);
@@ -83,6 +99,8 @@ export class WikiService {
     for (const onthisday of featured.onthisday) {
       this.deleteUselessPage(onthisday);
     }
+
+    this.deleteUselessOnthisday(featured.onthisday);
 
     return { ...featured, mostread: featured?.mostread?.articles };
   }

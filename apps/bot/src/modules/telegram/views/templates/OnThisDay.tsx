@@ -81,8 +81,12 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   return (
     <>
       {icon} {Utils.capitalizeFirstLetter(text)} ({date.format('DD MMMM YYYY')})
-      <BR />
-      <Events pages={pages} />
+      {Boolean(pages.length) && (
+        <>
+          <BR />
+          <Events pages={pages} />
+        </>
+      )}
       <BR />
       <Links links={links} />
     </>

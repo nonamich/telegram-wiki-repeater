@@ -28,9 +28,9 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
 
   getSkipParams(): SkipParams {
     return {
+      expireInSec: DAY_IN_SEC * 2,
       ...this.getAdditionalSkipParams(),
       ...this.getBaseSlipParams(),
-      expireInSec: DAY_IN_SEC * 2,
     };
   }
 

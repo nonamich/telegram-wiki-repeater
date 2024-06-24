@@ -60,7 +60,7 @@ export class TestScene {
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
-      day: 21,
+      day: 23,
     });
     const type = ctx.match.at(1)!;
 

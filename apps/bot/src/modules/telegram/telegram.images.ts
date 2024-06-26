@@ -37,9 +37,11 @@ export class TelegramImages {
   }
 
   isInBackList(image: WikiImage) {
-    return TELEGRAM_BLACK_LIST_OF_IMAGE.some((word) =>
-      new RegExp(word, 'i').test(image.source),
-    );
+    const url = decodeURI(image.source);
+
+    return TELEGRAM_BLACK_LIST_OF_IMAGE.some((word) => {
+      return new RegExp(word, 'i').test(url);
+    });
   }
 
   async getFirstImageFromArticles(articles: WikiArticle[]) {

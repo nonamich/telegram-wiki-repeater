@@ -53,6 +53,12 @@ export class TestScene {
 
   @Action(/test-(\w+)/)
   async onTest(@Ctx() ctx: Context, @CurrentChat() chat: Chat) {
+    const type = ctx.match.at(1);
+
+    if (!type) {
+      return;
+    }
+
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
@@ -60,9 +66,8 @@ export class TestScene {
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
-      day: 23,
+      day: 26,
     });
-    const type = ctx.match.at(1)!;
 
     await I18nContext.create(lang, async () => {
       switch (type) {
@@ -84,7 +89,7 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(1)!,
+            featuredContent.onthisday!.at(8)!,
           );
           break;
       }

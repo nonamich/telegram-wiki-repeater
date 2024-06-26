@@ -25,5 +25,5 @@ export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Flag_of_Russia',
   'Flag_of_the_Soviet',
   'Russian_Imperial_Army',
-  'Flag_of_Germany_(1935–1945)',
+  'Flag_of_Germany_\\(1935–1945\\)',
 ];

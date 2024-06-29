@@ -23,8 +23,12 @@ export const FeaturedImage: FunctionComponent<FeaturedImageProps> = ({
   return (
     <>
       🖼️ <Title title={title} url={image.file_page} />
-      <BR />
-      <Content content={image.description.html} source={image.file_page} />
+      {image.description && (
+        <>
+          <BR />
+          <Content content={image.description.html} source={image.file_page} />
+        </>
+      )}
       <BR />
       <Links links={link} />
     </>

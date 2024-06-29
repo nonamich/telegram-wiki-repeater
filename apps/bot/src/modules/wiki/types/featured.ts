@@ -26,9 +26,7 @@ export interface WikiFeaturedImage {
   thumbnail: WikiImage;
   file_page: string;
   wb_entity_id: string;
-  description: {
+  description?: {
     html: string;
-    text: string;
-    lang: string;
   };
 }

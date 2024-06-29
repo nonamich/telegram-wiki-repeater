@@ -62,11 +62,11 @@ export class TestScene {
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'uk';
+    const lang: WikiLanguage = 'en';
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
-      day: 26,
+      day: 29,
     });
 
     await I18nContext.create(lang, async () => {

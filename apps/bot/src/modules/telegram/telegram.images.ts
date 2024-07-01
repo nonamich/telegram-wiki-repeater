@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
@@ -17,11 +19,20 @@ export class TelegramImages {
     readonly http: HttpService,
   ) {}
 
-  async getResizedURL(url: string) {
+  async getContentLength(url: string) {
     const { headers } = await this.http.axiosRef.head(url);
     const contentLength = Number(headers['content-length']);
 
-    if (contentLength >= TELEGRAM_MAX_IMAGE_BYTES) {
+    return contentLength;
+  }
+
+  async getResizedURL(url: string) {
+    const { ext } = path.parse(url);
+
+    if (
+      ext === '.svg' ||
+      (await this.getContentLength(url)) >= TELEGRAM_MAX_IMAGE_BYTES
+    ) {
       return this.imagesService.getResizedProxyURL(url, TELEGRAM_IMAGE_SIZE);
     }
 

@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -10,7 +12,18 @@ export class ImagesService {
   }
 
   getProxyURL(url: string) {
-    return `https://${this.token}.cloudimg.io/v7/${url}?org_if_sml=1&func=bound`;
+    const { ext } = path.parse(url);
+    const obj = new URL(`https://${this.token}.cloudimg.io/v7/${url}`);
+
+    obj.searchParams.append('org_if_sml', '1');
+    obj.searchParams.append('func', 'bound');
+
+    if (ext === '.svg') {
+      obj.searchParams.append('force_format', 'jpeg');
+      obj.searchParams.append('q', '85');
+    }
+
+    return obj.toString();
   }
 
   getResizedProxyURL(url: string, width: number) {

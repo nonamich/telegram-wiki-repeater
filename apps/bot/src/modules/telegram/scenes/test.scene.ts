@@ -66,7 +66,6 @@ export class TestScene {
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
-      day: 29,
     });
 
     await I18nContext.create(lang, async () => {

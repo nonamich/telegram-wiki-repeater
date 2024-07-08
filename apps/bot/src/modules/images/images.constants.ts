@@ -1,0 +1,1 @@
+export const IMAGE_MAX_SIZE_TO_RESIZE = 10_000_000;

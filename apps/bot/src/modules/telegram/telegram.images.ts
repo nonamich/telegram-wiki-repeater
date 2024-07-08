@@ -1,11 +1,11 @@
 import path from 'node:path';
 
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { ImagesService } from '~/modules/images/images.service';
 import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 
+import { ImageExceptionResizeForbidden } from '../images/exceptions/image.exception.resize-forbidden';
 import {
   TELEGRAM_BLACK_LIST_OF_IMAGE,
   TELEGRAM_IMAGE_SIZE,
@@ -14,40 +14,43 @@ import {
 
 @Injectable()
 export class TelegramImages {
-  constructor(
-    readonly imagesService: ImagesService,
-    readonly http: HttpService,
-  ) {}
-
-  async getContentLength(url: string) {
-    const { headers } = await this.http.axiosRef.head(url);
-    const contentLength = Number(headers['content-length']);
-
-    return contentLength;
-  }
+  constructor(readonly imagesService: ImagesService) {}
 
   async getResizedURL(url: string) {
     const { ext } = path.parse(url);
+    const contentLength = await this.imagesService.getContentLength(url);
 
-    if (
-      ext === '.svg' ||
-      (await this.getContentLength(url)) >= TELEGRAM_MAX_IMAGE_BYTES
-    ) {
-      return this.imagesService.getResizedProxyURL(url, TELEGRAM_IMAGE_SIZE);
+    if (ext === '.svg' || contentLength >= TELEGRAM_MAX_IMAGE_BYTES) {
+      return await this.imagesService.getResizedProxyURL(
+        url,
+        TELEGRAM_IMAGE_SIZE,
+      );
     }
 
     return url;
   }
 
-  async getImageURLByArticle({ originalimage: image }: WikiArticle) {
-    if (!image || this.isInBackList(image)) {
+  async getImageURLByArticle({ originalimage, thumbnail }: WikiArticle) {
+    if (!originalimage || !thumbnail || this.isInBlackList(originalimage)) {
       return;
     }
 
-    return await this.getResizedURL(image.source);
+    const images = [originalimage, thumbnail];
+
+    for (const image of images) {
+      try {
+        return await this.getResizedURL(image.source);
+      } catch (error) {
+        if (error instanceof ImageExceptionResizeForbidden) {
+          continue;
+        }
+
+        throw error;
+      }
+    }
   }
 
-  isInBackList(image: WikiImage) {
+  isInBlackList(image: WikiImage) {
     const url = decodeURI(image.source);
 
     return TELEGRAM_BLACK_LIST_OF_IMAGE.some((word) => {

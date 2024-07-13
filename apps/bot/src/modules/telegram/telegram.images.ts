@@ -14,13 +14,18 @@ import {
 
 @Injectable()
 export class TelegramImages {
+  TRANSFORM_EXP = ['svg', 'tif'];
+
   constructor(readonly imagesService: ImagesService) {}
 
   async getResizedURL(url: string) {
-    const { ext } = path.parse(url);
+    const ext = path.parse(url).ext.replace('.', '');
     const contentLength = await this.imagesService.getContentLength(url);
 
-    if (ext === '.svg' || contentLength >= TELEGRAM_MAX_IMAGE_BYTES) {
+    if (
+      this.TRANSFORM_EXP.includes(ext) ||
+      contentLength >= TELEGRAM_MAX_IMAGE_BYTES
+    ) {
       return await this.imagesService.getResizedProxyURL(
         url,
         TELEGRAM_IMAGE_SIZE,

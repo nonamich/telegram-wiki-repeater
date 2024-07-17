@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { Injectable } from '@nestjs/common';
 
-import axios, { Axios, AxiosHeaders } from 'axios';
+import axios from 'axios';
 
 import { ImagesService } from '~/modules/images/images.service';
 import { WikiImage, WikiArticle } from '~/modules/wiki/types';

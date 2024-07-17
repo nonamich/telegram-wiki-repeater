@@ -2,6 +2,8 @@ import path from 'node:path';
 
 import { Injectable } from '@nestjs/common';
 
+import axios, { Axios, AxiosHeaders } from 'axios';
+
 import { ImagesService } from '~/modules/images/images.service';
 import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 
@@ -46,7 +48,10 @@ export class TelegramImages {
       try {
         return await this.getResizedURL(image.source);
       } catch (error) {
-        if (error instanceof ImageExceptionResizeForbidden) {
+        if (
+          error instanceof ImageExceptionResizeForbidden ||
+          axios.isAxiosError(error)
+        ) {
           continue;
         }
 

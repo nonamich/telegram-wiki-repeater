@@ -7,7 +7,6 @@ import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
   BaseDispatcherStrategy,
-  MostReadDispatcherStrategy,
   NewsDispatcherStrategy,
   OnThisDayDispatcherStrategy,
   TFADispatcherStrategy,
@@ -44,10 +43,6 @@ export class TelegramScheduler {
           );
         } else if (type === 'tfa') {
           strategy = new TFADispatcherStrategy(
-            ...[...args, { ...baseProps, data }],
-          );
-        } else if (type === 'mostread') {
-          strategy = new MostReadDispatcherStrategy(
             ...[...args, { ...baseProps, data }],
           );
         } else if (type === 'onthisday') {

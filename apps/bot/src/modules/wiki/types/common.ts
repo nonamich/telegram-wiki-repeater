@@ -1,6 +1,5 @@
 import { WIKI_LANGUAGES } from '../wiki.constants';
 import { WikiFeaturedImage } from './featured';
-import { WikiMostReadArticle } from './most-read';
 import { WikiNews } from './news';
 import { WikiOnThisDay } from './on-this-day';
 
@@ -35,14 +34,13 @@ interface Titles {
   normalized: string;
 }
 
-export type ArticleType = 'tfi' | 'tfa' | 'mostread' | 'news' | 'onthisday';
+export type ArticleType = 'tfi' | 'tfa' | 'news' | 'onthisday';
 
 export type OrderOfArticle<T extends ArticleType, D extends object> = [T, D];
 
 export type OrderOfArticles = Array<
   | OrderOfArticle<'tfi', WikiFeaturedImage>
   | OrderOfArticle<'tfa', WikiArticle>
-  | OrderOfArticle<'mostread', WikiMostReadArticle>
   | OrderOfArticle<'news', WikiNews>
   | OrderOfArticle<'onthisday', WikiOnThisDay>
 >;

@@ -11,8 +11,6 @@ import {
   NewsProps,
   OnThisDay,
   OnThisDayProps,
-  MostReadProps,
-  MostRead,
   FeaturedArticle,
   FeaturedArticleProps,
 } from './templates';
@@ -40,9 +38,5 @@ export class TelegramViews {
 
   renderOnThisDay(props: OnThisDayProps) {
     return this.renderToString(<OnThisDay {...props} />);
-  }
-
-  renderMostRead(props: MostReadProps) {
-    return this.renderToString(<MostRead {...props} />);
   }
 }

@@ -102,7 +102,7 @@ export class WikiService {
 
     featured.onthisday = this.filterUselessOnthisday(featured.onthisday);
 
-    return { ...featured, mostread: featured?.mostread?.articles };
+    return { ...featured };
   }
 
   private getCacheKey(url: string) {
@@ -177,7 +177,7 @@ export class WikiService {
 
   async getFeaturedContentAsArray(lang: WikiLanguage) {
     const response = await this.getContent(this.getFeaturedRequestParams(lang));
-    const { image, mostread, news, onthisday, tfa } = response;
+    const { image, news, onthisday, tfa } = response;
     const entityOfData: OrderOfArticles = [];
     const entityOfDataMixed: OrderOfArticles = [];
 
@@ -187,12 +187,6 @@ export class WikiService {
 
     if (tfa) {
       entityOfData.push(['tfa', tfa]);
-    }
-
-    if (mostread) {
-      for (const item of mostread) {
-        entityOfDataMixed.push(['mostread', item]);
-      }
     }
 
     if (onthisday) {

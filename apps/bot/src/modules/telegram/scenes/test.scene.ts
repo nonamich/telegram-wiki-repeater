@@ -38,10 +38,6 @@ export class TestScene {
           ],
           [
             {
-              text: 'Most Read',
-              callback_data: 'test-mostread',
-            },
-            {
               text: 'On This Day',
               callback_data: 'test-on_this_day',
             },
@@ -62,7 +58,7 @@ export class TestScene {
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'en';
+    const lang: WikiLanguage = 'uk';
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
@@ -78,12 +74,6 @@ export class TestScene {
           break;
         case 'news':
           await this.sender.sendNews(chat.id, featuredContent.news!.at(1)!);
-          break;
-        case 'mostread':
-          await this.sender.sendMostReadArticle(
-            chat.id,
-            featuredContent.mostread!.at(0)!,
-          );
           break;
         case 'on_this_day':
           await this.sender.sendOnThisDay(

@@ -5,7 +5,6 @@ import { Telegraf } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
 import {
-  WikiMostReadArticle,
   WikiFeaturedImage,
   WikiNews,
   WikiOnThisDay,
@@ -23,13 +22,6 @@ export class TelegramSender {
     readonly views: TelegramViews,
     readonly images: TelegramImages,
   ) {}
-
-  async sendMostReadArticle(chatId: ChatId, article: WikiMostReadArticle) {
-    const html = await this.views.renderMostRead({ article });
-    const image = await this.images.getImageURLByArticle(article);
-
-    await this.sendPost(chatId, html, image);
-  }
 
   async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
     const html = await this.views.renderFeaturedArticle({ article });

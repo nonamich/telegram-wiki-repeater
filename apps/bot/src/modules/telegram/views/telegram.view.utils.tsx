@@ -3,7 +3,7 @@ import truncateHtml from 'truncate-html';
 
 import { useI18n } from '~/modules/i18n/i18n.utils';
 import {
-  MAX_CONTENT_LENGTH,
+  TELEGRAM_MAX_CONTENT_LENGTH,
   TELEGRAM_ALLOWED_TAGS,
   TELEGRAM_TAG_DANGEROUSLY_HTML,
 } from '~/modules/telegram/telegram.constants';
@@ -39,7 +39,7 @@ export class TelegramViewsUtils {
   static truncateHtml(content: string, ellipsis = '...') {
     return truncateHtml(content, {
       keepWhitespaces: true,
-      length: MAX_CONTENT_LENGTH,
+      length: TELEGRAM_MAX_CONTENT_LENGTH,
       ellipsis,
     });
   }

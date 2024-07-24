@@ -11,6 +11,7 @@ import { ImageExceptionResizeForbidden } from '../images/exceptions/image.except
 import {
   TELEGRAM_BLACK_LIST_OF_IMAGE,
   TELEGRAM_IMAGE_SIZE,
+  TELEGRAM_IMAGE_WIDTH,
   TELEGRAM_MAX_IMAGE_BYTES,
 } from './telegram.constants';
 
@@ -20,21 +21,25 @@ export class TelegramImages {
 
   constructor(readonly imagesService: ImagesService) {}
 
-  async getResizedURL(url: string) {
-    const ext = path.parse(url).ext.replace('.', '');
-    const contentLength = await this.imagesService.getContentLength(url);
+  async getResizedURL(image: WikiImage) {
+    const ext = path.parse(image.source).ext.replace('.', '');
+    const contentLength = await this.imagesService.getContentLength(
+      image.source,
+    );
 
     if (
       this.TRANSFORM_EXP.includes(ext) ||
-      contentLength >= TELEGRAM_MAX_IMAGE_BYTES
+      contentLength >= TELEGRAM_MAX_IMAGE_BYTES ||
+      image.width >= TELEGRAM_IMAGE_WIDTH ||
+      image.height >= TELEGRAM_IMAGE_WIDTH
     ) {
       return await this.imagesService.getResizedProxyURL(
-        url,
+        image.source,
         TELEGRAM_IMAGE_SIZE,
       );
     }
 
-    return url;
+    return image.source;
   }
 
   async getImageURLByArticle({ originalimage, thumbnail }: WikiArticle) {
@@ -46,7 +51,7 @@ export class TelegramImages {
 
     for (const image of images) {
       try {
-        return await this.getResizedURL(image.source);
+        return await this.getResizedURL(image);
       } catch (error) {
         if (
           error instanceof ImageExceptionResizeForbidden ||

@@ -19,7 +19,7 @@ export const Links: FunctionalComponent<LinksProps> = ({ links: link }) => {
   const links = [
     {
       text: `💸 ${t('support_wikipedia')}`,
-      url: `${WikiHelper.getDonationURL()}/${language}`,
+      url: WikiHelper.sites[language].donate,
     },
   ];
 

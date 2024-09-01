@@ -49,4 +49,5 @@ export type WikiSiteData = {
   currentEvents: string;
   featuredArticles: string;
   featuredPictures: string;
+  donate: string;
 };

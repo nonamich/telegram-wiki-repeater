@@ -13,3 +13,6 @@ node_modules
 # devs
 *.development
 .tmp
+
+# prods
+.env

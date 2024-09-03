@@ -11,7 +11,7 @@
     "generate:types:env": "npx gen-env-types .env.example -o src/@types/env.d.ts"
   },
   "dependencies": {
-    "dotenv": "^16.4.1",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.10",
     "postgres": "^3.4.4"
   },

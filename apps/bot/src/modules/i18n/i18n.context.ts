@@ -4,18 +4,18 @@ import i18next, { i18n as I18n } from 'i18next';
 
 import { WikiLanguage } from '../wiki/types';
 
-type CustomI18n = I18n & {
+type CustomI18nType = I18n & {
   language: WikiLanguage;
 };
 
 export class I18nContext {
-  static storage = new AsyncLocalStorage<CustomI18n>();
+  static storage = new AsyncLocalStorage<CustomI18nType>();
 
   static async create(
     lang: WikiLanguage,
     next: (...args: any[]) => Promise<void> | void,
   ) {
-    const i18n = i18next.cloneInstance() as CustomI18n;
+    const i18n = i18next.cloneInstance() as CustomI18nType;
 
     await i18n.changeLanguage(lang);
 

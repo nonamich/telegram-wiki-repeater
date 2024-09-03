@@ -7,7 +7,7 @@ const { parsed: envs } = config({
 });
 
 if (!envs) {
-  throw new Error('NOT_FOUND_DOTENV_ENVIRONMENT');
+  throw new Error('Cannot parse env for an unknown reason');
 }
 
 Sentry.init({

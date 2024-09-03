@@ -17,7 +17,7 @@ export class ImagesService {
     readonly http: HttpService,
     readonly config: ConfigService,
   ) {
-    this.token = this.config.getOrThrow('CLOUDIMAGE_TOKEN');
+    this.token = this.config.getOrThrow('CLOUD_IMAGE_ID');
   }
 
   async getContentLength(url: string) {

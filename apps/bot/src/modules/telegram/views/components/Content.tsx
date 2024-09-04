@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 
-import { useI18n } from '~/modules/i18n/i18n.utils';
-import { TELEGRAM_TAG_DANGEROUSLY_HTML } from '~/modules/telegram/telegram.constants';
+import { useI18n } from '~/modules/telegram/views/hooks';
+import { TELEGRAM_DANGEROUSLY_HTML_TAG } from '~/modules/telegram/telegram.constants';
 import { TelegramViewsUtils } from '~/modules/telegram/views/telegram.view.utils';
 
 export type ContentProps = {
@@ -26,7 +26,7 @@ export const Content: FunctionalComponent<ContentProps> = ({
   content = TelegramViewsUtils.truncateHtml(content, getEllipsis(source));
 
   return (
-    <TELEGRAM_TAG_DANGEROUSLY_HTML
+    <TELEGRAM_DANGEROUSLY_HTML_TAG
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

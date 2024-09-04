@@ -1,4 +1,4 @@
-import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
+import { REDIS_DAY_IN_SEC } from '~/modules/redis/redis.constants';
 
 import { TelegramSender } from '../telegram.sender';
 import { TelegramSkipper } from '../telegram.skipper';
@@ -10,6 +10,8 @@ type Props<T> = {
 };
 
 export abstract class BaseDispatcherStrategy<T extends object = object> {
+  isExecuted = false;
+
   constructor(
     readonly skipper: TelegramSkipper,
     readonly sender: TelegramSender,
@@ -28,7 +30,7 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
 
   getSkipParams(): SkipParams {
     return {
-      expireInSec: DAY_IN_SEC * 2,
+      expireInSec: REDIS_DAY_IN_SEC * 2,
       ...this.getAdditionalSkipParams(),
       ...this.getBaseSlipParams(),
     };
@@ -39,17 +41,17 @@ export abstract class BaseDispatcherStrategy<T extends object = object> {
   }
 
   async isSkip() {
-    return await this.skipper.isSkip(this.getSkipParams());
+    return this.isExecuted || (await this.skipper.isSkip(this.getSkipParams()));
   }
 
   async execute() {
     if (await this.isSkip()) {
-      return false;
+      return;
     }
 
     await this.send();
     await this.setSkip();
 
-    return true;
+    this.isExecuted = true;
   }
 }

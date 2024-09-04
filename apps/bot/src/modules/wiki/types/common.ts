@@ -5,49 +5,43 @@ import { WikiOnThisDay } from './on-this-day';
 
 export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
 
-export interface WikiArticle {
-  content_urls: ContentUrls;
+export type WikiArticle = {
+  content_urls: {
+    desktop: {
+      page: string;
+    };
+  };
   description?: string;
   extract_html: string;
   originalimage?: WikiImage;
   thumbnail?: WikiImage;
   pageid: number;
-  titles: Titles;
-}
+  titles: {
+    normalized: string;
+  };
+};
 
-export interface WikiImage {
+export type WikiImage = {
   source: string;
   width: number;
   height: number;
-}
-
-interface ContentUrls {
-  desktop: ContentUrl;
-  mobile: ContentUrl;
-}
-
-interface ContentUrl {
-  page: string;
-}
-
-interface Titles {
-  normalized: string;
-}
+};
 
 export type ArticleType = 'tfi' | 'tfa' | 'news' | 'onthisday';
 
-export type OrderOfArticle<T extends ArticleType, D extends object> = [T, D];
-
 export type OrderOfArticles = Array<
-  | OrderOfArticle<'tfi', WikiFeaturedImage>
-  | OrderOfArticle<'tfa', WikiArticle>
-  | OrderOfArticle<'news', WikiNews>
-  | OrderOfArticle<'onthisday', WikiOnThisDay>
+  | ['tfi', WikiFeaturedImage]
+  | ['tfa', WikiArticle]
+  | ['onthisday', WikiOnThisDay]
+  | ['news', WikiNews]
 >;
 
 export type WikiSiteData = {
-  currentEvents: string;
-  featuredArticles: string;
-  featuredPictures: string;
-  donate: string;
+  pathnames: {
+    currentEvents: string;
+    featuredArticles: string;
+    featuredPictures: string;
+  };
+  isRTL?: true;
+  donateURL: string;
 };

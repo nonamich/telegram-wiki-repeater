@@ -2,43 +2,58 @@ import dayjs from 'dayjs';
 
 import { WikiLanguage, WikiSiteData } from './types';
 
-export abstract class WikiHelper {
+const baseDonateURL = 'https://donate.wikipedia.org/wiki/Ways_to_Give';
+
+export abstract class WikiUtils {
   static sites: Record<WikiLanguage, WikiSiteData> = {
     en: {
-      currentEvents: 'Portal:Current_events',
-      featuredArticles: 'Wikipedia:Featured_articles',
-      featuredPictures: 'Wikipedia:Featured_pictures',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
+      pathnames: {
+        currentEvents: 'Portal:Current_events',
+        featuredArticles: 'Wikipedia:Featured_articles',
+        featuredPictures: 'Wikipedia:Featured_pictures',
+      },
+      donateURL: baseDonateURL,
     },
     uk: {
-      currentEvents: 'Портал:Поточні_події',
-      featuredArticles: 'Вікіпедія:Вибрані_статті',
-      featuredPictures: 'Вікіпедія:Зображення_дня',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give/uk',
+      pathnames: {
+        currentEvents: 'Портал:Поточні_події',
+        featuredArticles: 'Вікіпедія:Вибрані_статті',
+        featuredPictures: 'Вікіпедія:Зображення_дня',
+      },
+      donateURL: `${baseDonateURL}/uk`,
     },
     ru: {
-      currentEvents: 'Портал:Текущие_события',
-      featuredArticles: 'Википедия:Избранные_статьи',
-      featuredPictures: 'Википедия:Изображение_дня',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give/ru',
+      pathnames: {
+        currentEvents: 'Портал:Текущие_события',
+        featuredArticles: 'Википедия:Избранные_статьи',
+        featuredPictures: 'Википедия:Изображение_дня',
+      },
+      donateURL: `${baseDonateURL}/ru`,
     },
     ar: {
-      currentEvents: 'ويكيبيديا:في_هذا_اليوم',
-      featuredArticles: 'ويكيبيديا:مقالات_مختارة',
-      featuredPictures: 'ويكيبيديا:صور_مختارة',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give',
+      pathnames: {
+        currentEvents: 'ويكيبيديا:في_هذا_اليوم',
+        featuredArticles: 'ويكيبيديا:مقالات_مختارة',
+        featuredPictures: 'ويكيبيديا:صور_مختارة',
+      },
+      donateURL: baseDonateURL,
+      isRTL: true,
     },
     es: {
-      currentEvents: 'Portal:Actualidad',
-      featuredArticles: 'Wikipedia:Artículo_destacado_en_portada',
-      featuredPictures: 'Wikipedia:Recurso_del_día',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give/es',
+      pathnames: {
+        currentEvents: 'Portal:Actualidad',
+        featuredArticles: 'Wikipedia:Artículo_destacado_en_portada',
+        featuredPictures: 'Wikipedia:Recurso_del_día',
+      },
+      donateURL: `${baseDonateURL}/es`,
     },
     pt: {
-      currentEvents: 'Portal:Eventos_atuais',
-      featuredArticles: 'Wikipédia:Artigos_destacados',
-      featuredPictures: 'Wikipédia:Imagem_em_destaque',
-      donate: 'https://donate.wikipedia.org/wiki/Ways_to_Give/pt',
+      pathnames: {
+        currentEvents: 'Portal:Eventos_atuais',
+        featuredArticles: 'Wikipédia:Artigos_destacados',
+        featuredPictures: 'Wikipédia:Imagem_em_destaque',
+      },
+      donateURL: `${baseDonateURL}/pt`,
     },
   };
 
@@ -47,32 +62,28 @@ export abstract class WikiHelper {
   }
 
   static getCurrentEventsURL(lang: WikiLanguage) {
-    return this.getURLByType(lang, 'currentEvents');
+    return this.getSpecificPageURL(lang, 'currentEvents');
   }
 
   static getFeaturedPicturesURL(lang: WikiLanguage) {
-    return this.getURLByType(lang, 'featuredPictures');
+    return this.getSpecificPageURL(lang, 'featuredPictures');
   }
 
   static getFeaturedArticlesURL(lang: WikiLanguage) {
-    return this.getURLByType(lang, 'featuredArticles');
+    return this.getSpecificPageURL(lang, 'featuredArticles');
   }
 
-  static getURLByType(lang: WikiLanguage, type: keyof WikiSiteData) {
-    const value = this.sites[lang][type];
-
-    if (!value || typeof value !== 'string') {
-      throw new TypeError();
-    }
+  static getSpecificPageURL(
+    lang: WikiLanguage,
+    type: keyof WikiSiteData['pathnames'],
+  ) {
+    const value = this.sites[lang].pathnames[type];
 
     return `${this.getBaseURL(lang)}${value}`;
   }
 
   static getOnThisDayURL(lang: WikiLanguage) {
-    const pathname = dayjs()
-      .locale(lang)
-      .format('DD MMMM')
-      .replaceAll(' ', '_');
+    const pathname = dayjs().locale(lang).format('D MMMM').replaceAll(' ', '_');
 
     return `${this.getBaseURL(lang)}${pathname}`;
   }

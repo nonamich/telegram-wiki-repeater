@@ -25,7 +25,6 @@ module.exports = {
           'bootstrap',
           'type',
           'builtin',
-          '@nestjs',
           'external',
           '@repo',
           'internal-type',
@@ -37,7 +36,6 @@ module.exports = {
         ],
         'custom-groups': {
           value: {
-            '@nestjs': ['@nestjs/**'],
             'bootstrap': ['dotenv', 'dotenv*', './bootstrap*', './instrument*'],
             '@repo': ['@repo/*'],
           },

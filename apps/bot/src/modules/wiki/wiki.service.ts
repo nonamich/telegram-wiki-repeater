@@ -1,15 +1,14 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import zlib from 'zlib';
+import zlib from 'node:zlib';
 
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 
 import { Utils } from '@repo/shared';
 
-import { HOUR_IN_SEC } from '~/modules/redis/redis.constants';
+import { REDIS_HOUR_IN_SEC } from '~/modules/redis/redis.constants';
 import { RedisService } from '~/modules/redis/redis.service';
 
 import {
@@ -19,8 +18,9 @@ import {
   WikiLanguage,
   WikiOnThisDay,
   WikiRequest,
+  FeaturedResponse,
+  FeaturedRequest,
 } from './types';
-import { FeaturedResponse, FeaturedRequest } from './types/featured';
 import {
   WIKI_CACHE_ENCODING,
   WIKI_MAX_PAGE_ON_THIS_DAY,
@@ -63,46 +63,41 @@ export class WikiService {
   }
 
   async getFeaturedContent(params: FeaturedRequest) {
-    const response = await this.request<FeaturedResponse>({
+    return await this.request<FeaturedResponse>({
       url: this.getURLFeaturedContent(params),
     });
-
-    return response;
   }
 
-  filterUselessOnthisday(onthisday: WikiOnThisDay[]) {
-    const pageIds = new Set<number>();
+  deleteUselessOnthisday(events: WikiOnThisDay[]) {
+    const ids = new Set<number>();
 
-    return onthisday.filter(({ pages }) => {
-      for (const { pageid } of pages) {
-        if (pageIds.has(pageid)) {
-          return false;
+    for (const event of events) {
+      for (const [index, { pageid }] of event.pages.entries()) {
+        if (ids.has(pageid)) {
+          events.slice(index, 1);
+
+          continue;
         }
 
-        pageIds.add(pageid);
+        ids.add(pageid);
       }
-
-      return true;
-    });
+    }
   }
 
   async getContent(params: FeaturedRequest) {
-    const featured = await this.getFeaturedContent(params);
+    const content = await this.getFeaturedContent(params);
     const events = await this.getEvents(params);
 
-    if (!featured.onthisday) {
-      featured.onthisday = [];
+    if (!content.onthisday) {
+      content.onthisday = [];
     }
 
-    featured.onthisday.push(...events);
+    content.onthisday.push(...events);
 
-    for (const onthisday of featured.onthisday) {
-      this.deleteUselessPage(onthisday);
-    }
+    this.deleteUselessPage(content.onthisday);
+    this.deleteUselessOnthisday(content.onthisday);
 
-    featured.onthisday = this.filterUselessOnthisday(featured.onthisday);
-
-    return { ...featured };
+    return content;
   }
 
   private getCacheKey(url: string) {
@@ -111,35 +106,37 @@ export class WikiService {
 
   private async getCacheResponse<T>(url: string) {
     const cacheKey = this.getCacheKey(url);
-    const cacheAsBase64 = await this.redis.get(cacheKey);
+    const base64Cache = await this.redis.get(cacheKey);
 
-    if (!cacheAsBase64) {
+    if (!base64Cache) {
       return null;
     }
 
-    const buffer = Buffer.from(cacheAsBase64, WIKI_CACHE_ENCODING);
+    const buffer = Buffer.from(base64Cache, WIKI_CACHE_ENCODING);
     const json = zlib.brotliDecompressSync(buffer).toString('utf8');
 
     return JSON.parse(json) as T;
   }
 
-  deleteUselessPage({ pages, year }: WikiOnThisDay) {
-    const yearPageIndex = pages.findIndex(
-      ({ titles: { normalized: title } }) => {
-        return new RegExp(`^${year} `).test(title);
-      },
-    );
+  deleteUselessPage(onthisday: WikiOnThisDay[]) {
+    for (const { pages, year } of onthisday) {
+      const yearPageIndex = pages.findIndex(
+        ({ titles: { normalized: title } }) => {
+          return new RegExp(`^${year} `).test(title);
+        },
+      );
 
-    if (yearPageIndex !== -1) {
-      pages.splice(yearPageIndex, 1);
+      if (yearPageIndex !== -1) {
+        pages.splice(yearPageIndex, 1);
+      }
+
+      pages.splice(WIKI_MAX_PAGE_ON_THIS_DAY);
     }
-
-    pages.splice(WIKI_MAX_PAGE_ON_THIS_DAY);
   }
 
   private async setToCache<T extends object>(
     data: T,
-    { url, expires = HOUR_IN_SEC * 5 }: WikiRequest,
+    { url, expires = REDIS_HOUR_IN_SEC * 5 }: WikiRequest,
   ) {
     const cacheKey = this.getCacheKey(url);
     const input = JSON.stringify(data);
@@ -176,8 +173,9 @@ export class WikiService {
   }
 
   async getFeaturedContentAsArray(lang: WikiLanguage) {
-    const response = await this.getContent(this.getFeaturedRequestParams(lang));
-    const { image, news, onthisday, tfa } = response;
+    const { image, news, onthisday, tfa } = await this.getContent(
+      this.getFeaturedRequestParams(lang),
+    );
     const entityOfData: OrderOfArticles = [];
     const entityOfDataMixed: OrderOfArticles = [];
 

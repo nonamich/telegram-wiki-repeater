@@ -1,17 +1,16 @@
 import path from 'node:path';
 
 import { Injectable } from '@nestjs/common';
-
 import axios from 'axios';
 
 import { ImagesService } from '~/modules/images/images.service';
 import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 
-import { ImageExceptionResizeForbidden } from '../images/exceptions/image.exception.resize-forbidden';
+import { ImageExceptionForbiddenResize } from '../images/exceptions/image.exception.resize-forbidden';
 import {
   TELEGRAM_BLACK_LIST_OF_IMAGE,
-  TELEGRAM_IMAGE_SIZE,
-  TELEGRAM_IMAGE_WIDTH,
+  TELEGRAM_PREFER_IMAGE_WIDTH,
+  TELEGRAM_MAX_IMAGE_DIMENSIONS,
   TELEGRAM_MAX_IMAGE_BYTES,
 } from './telegram.constants';
 
@@ -30,12 +29,12 @@ export class TelegramImages {
     if (
       this.TRANSFORM_EXP.includes(ext) ||
       contentLength >= TELEGRAM_MAX_IMAGE_BYTES ||
-      image.width >= TELEGRAM_IMAGE_WIDTH ||
-      image.height >= TELEGRAM_IMAGE_WIDTH
+      image.width >= TELEGRAM_MAX_IMAGE_DIMENSIONS ||
+      image.height >= TELEGRAM_MAX_IMAGE_DIMENSIONS
     ) {
-      return await this.imagesService.getResizedProxyURL(
+      return await this.imagesService.getResizeURL(
         image.source,
-        TELEGRAM_IMAGE_SIZE,
+        TELEGRAM_PREFER_IMAGE_WIDTH,
       );
     }
 
@@ -54,7 +53,7 @@ export class TelegramImages {
         return await this.getResizedURL(image);
       } catch (error) {
         if (
-          error instanceof ImageExceptionResizeForbidden ||
+          error instanceof ImageExceptionForbiddenResize ||
           axios.isAxiosError(error)
         ) {
           continue;

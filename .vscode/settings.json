@@ -1,15 +1,8 @@
 {
   "cSpell.words": [
-    "keepWhitespaces",
+    "Cacheable",
     "onthisday",
     "originalimage",
-    "pageid",
-    "setex",
-    "sparticuz",
-    "telegram-wiki"
-  ],
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-  }
+    "pageid"
+  ]
 }

@@ -1,5 +1,4 @@
 import { ModuleMetadata } from '@nestjs/common';
-
 import { RedisOptions } from 'ioredis';
 
 export interface DBOptionsAsync extends Pick<ModuleMetadata, 'imports'> {

@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 import i18next, { i18n as I18n } from 'i18next';
 
-import { WikiLanguage } from '../wiki/types';
+import { WikiLanguage } from '~/modules/wiki/types';
 
 type CustomI18nType = I18n & {
   language: WikiLanguage;

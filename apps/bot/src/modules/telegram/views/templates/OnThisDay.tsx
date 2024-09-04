@@ -3,9 +3,9 @@ import { FunctionalComponent } from 'preact';
 
 import { Utils } from '@repo/shared';
 
-import { useI18n } from '~/modules/i18n/i18n.utils';
+import { useI18n, useSite } from '~/modules/telegram/views/hooks';
 import { WikiOnThisDay } from '~/modules/wiki/types';
-import { WikiHelper } from '~/modules/wiki/wiki.helper';
+import { WikiUtils } from '~/modules/wiki/wiki.helper';
 
 import { BR, Content, Description, Links, NewLine, Title } from '../components';
 
@@ -15,27 +15,28 @@ export type OnThisDayProps = {
 
 type EventsProps = Pick<WikiOnThisDay, 'pages'>;
 
-const semicolon = ';';
 const icon = '🏛️';
 
 const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
+  const { isRTL } = useSite();
   const isSingle = pages.length === 1;
+  const semicolon = isRTL ? '؛' : ';';
 
   return (
     <>
       {pages.map((page, index) => {
-        const isHtml = isSingle && !page.description;
+        const isContent = isSingle && !page.description;
 
         return (
           <>
             {!isSingle && <>{index > 0 && <NewLine />}• </>}
-            {!isHtml && (
+            {!isContent && (
               <Title
                 title={page.titles.normalized}
                 url={page.content_urls.desktop.page}
               />
             )}
-            {!isSingle && !page.description && semicolon}
+            {!isSingle && !page.description && <>{semicolon}</>}
             {page.description && (
               <Description
                 description={page.description}
@@ -43,13 +44,11 @@ const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
                 end={semicolon}
               />
             )}
-            {isHtml && (
-              <>
-                <Content
-                  content={page.extract_html}
-                  source={page.content_urls.desktop.page}
-                />
-              </>
+            {isContent && (
+              <Content
+                content={page.extract_html}
+                source={page.content_urls.desktop.page}
+              />
             )}
           </>
         );
@@ -66,7 +65,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   const links = [
     {
       text: t('more_events'),
-      url: WikiHelper.getOnThisDayURL(language),
+      url: WikiUtils.getOnThisDayURL(language),
     },
   ];
   const isSingle = pages.length === 1 && !pages[0].description;

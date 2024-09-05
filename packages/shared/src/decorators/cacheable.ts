@@ -4,7 +4,7 @@ export function CacheableAsync() {
   return function (
     target: object,
     methodName: string,
-    descriptor: TypedPropertyDescriptor<(...args: any) => Promise<any>>,
+    descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>,
   ) {
     const { value: originalValue } = descriptor;
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-import { VNode } from 'preact';
+import { Attributes, VNode, h } from 'preact';
 import { renderToStringAsync } from 'preact-render-to-string';
 
 import { TelegramViewsUtils } from './telegram.view.utils';
@@ -17,26 +16,26 @@ import {
 
 @Injectable()
 export class TelegramViews {
-  async renderToString(node: VNode) {
-    const unsanitizeHtml = await renderToStringAsync(node);
+  async renderToString<T>(vNode: VNode<Attributes & T>) {
+    const unsanitizeHtml = await renderToStringAsync(vNode);
     const html = TelegramViewsUtils.getSanitizedHTML(unsanitizeHtml);
 
     return html;
   }
 
   renderFeaturedImage(props: FeaturedImageProps) {
-    return this.renderToString(<FeaturedImage {...props} />);
+    return this.renderToString(h(FeaturedImage, props));
   }
 
   renderFeaturedArticle(props: FeaturedArticleProps) {
-    return this.renderToString(<FeaturedArticle {...props} />);
+    return this.renderToString(h(FeaturedArticle, props));
   }
 
   renderNews(props: NewsProps) {
-    return this.renderToString(<News {...props} />);
+    return this.renderToString(h(News, props));
   }
 
   renderOnThisDay(props: OnThisDayProps) {
-    return this.renderToString(<OnThisDay {...props} />);
+    return this.renderToString(h(OnThisDay, props));
   }
 }

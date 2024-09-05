@@ -1,8 +1,7 @@
-import { FunctionalComponent } from 'preact';
-import { JSXInternal } from 'preact/src/jsx';
+import { FunctionalComponent, JSX } from 'preact';
 
 export type TitleProps = {
-  beforeTitle?: JSXInternal.Element | string;
+  beforeTitle?: JSX.Element | string;
   title: string;
   url: string;
 };

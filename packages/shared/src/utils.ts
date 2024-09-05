@@ -1,33 +1,23 @@
+import crypto from 'node:crypto';
+
 import { Truthy } from './types';
 
-export namespace Utils {
-  export const isDev = process.env.NODE_ENV !== 'production';
+export class Utils {
+  static isDev = process.env.NODE_ENV !== 'production';
 
-  export const isLambda = 'AWS_LAMBDA_FUNCTION_VERSION' in process.env;
-
-  export const isCorrectUrl = (url: string) => {
-    try {
-      const { protocol } = new URL(url);
-
-      return 'https:' === protocol;
-    } catch {
-      return false;
-    }
-  };
-
-  export const isBetween = (x: number, start: number, end: number) => {
-    return x >= start && x <= end;
-  };
-
-  export const zeroPad = (num: number) => {
+  static zeroPad(num: number) {
     return num.toString().padStart(2, '0');
-  };
+  }
 
-  export const truthy = <T>(value: T): value is Truthy<T> => {
+  static truthy<T>(value: T): value is Truthy<T> {
     return !!value;
-  };
+  }
 
-  export const capitalizeFirstLetter = (text: string) => {
+  static capitalizeFirstLetter(text: string) {
     return text[0].toUpperCase() + text.slice(1);
-  };
+  }
+
+  static creteMD5Hash(string: string) {
+    return crypto.createHash('md5').update(string).digest('hex');
+  }
 }

@@ -1,6 +1,6 @@
 export const TELEGRAM_MAX_CONTENT_LENGTH = 500;
-export const TELEGRAM_IMAGE_WIDTH = 4000;
-export const TELEGRAM_IMAGE_SIZE = 1200;
+export const TELEGRAM_MAX_IMAGE_DIMENSIONS = 4000;
+export const TELEGRAM_PREFER_IMAGE_WIDTH = 1200;
 export const TELEGRAM_MAX_IMAGE_BYTES = 3_000_000;
 export const TELEGRAM_ALLOWED_TAGS = [
   'b',
@@ -18,7 +18,7 @@ export const TELEGRAM_ALLOWED_TAGS = [
   'strike',
   'tg-spoiler',
 ];
-export const TELEGRAM_TAG_DANGEROUSLY_HTML = 'body';
+export const TELEGRAM_DANGEROUSLY_HTML_TAG = 'body';
 export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Путін',
   'Путин',
@@ -27,4 +27,5 @@ export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Flag_of_the_Soviet',
   'Russian_Imperial_Army',
   'Flag_of_Germany_\\(1935–1945\\)',
+  'Hitler',
 ];

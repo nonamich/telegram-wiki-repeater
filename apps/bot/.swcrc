@@ -9,6 +9,8 @@
       "tsx": true
     },
     "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
       "react": {
         "pragma": "h",
         "pragmaFrag": "Fragment",

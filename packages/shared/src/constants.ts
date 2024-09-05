@@ -1,1 +1,8 @@
-export const SUPPORT_LANGUAGES = ['en', 'uk', 'ru', 'ar', 'pt', 'es'] as const;
+export const SUPPORTED_LANGUAGES = [
+  'en',
+  'uk',
+  'ru',
+  'ar',
+  'pt',
+  'es',
+] as const;

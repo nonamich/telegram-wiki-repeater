@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DBService } from '~/modules/db/db.service';
 import { I18nContext } from '~/modules/i18n/i18n.context';
-import { WikiLanguage } from '~/modules/wiki/types';
+import { OrderOfArticles, WikiLanguage } from '~/modules/wiki/types';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
@@ -26,42 +26,53 @@ export class TelegramScheduler {
   ) {}
 
   async executeWithI18nContext(chatId: ChatId, lang: WikiLanguage) {
-    const args = [this.skipper, this.sender] as const;
     const featuredContent = await this.wiki.getFeaturedContentAsArray(lang);
 
-    await I18nContext.create(lang, async () => {
-      for (const [type, data] of featuredContent) {
-        let strategy: BaseDispatcherStrategy;
-        const baseProps = {
-          chatId,
-          lang,
-        };
+    for (const item of featuredContent) {
+      const strategy = this.getDispatcherStrategy(chatId, lang, item);
 
-        if (type === 'tfi') {
-          strategy = new TFIDispatcherStrategy(
-            ...[...args, { ...baseProps, data }],
-          );
-        } else if (type === 'tfa') {
-          strategy = new TFADispatcherStrategy(
-            ...[...args, { ...baseProps, data }],
-          );
-        } else if (type === 'onthisday') {
-          strategy = new OnThisDayDispatcherStrategy(
-            ...[...args, { ...baseProps, data }],
-          );
-        } else if (type === 'news') {
-          strategy = new NewsDispatcherStrategy(
-            ...[...args, { ...baseProps, data }],
-          );
-        } else {
-          break;
-        }
+      await I18nContext.create(lang, async () => {
+        await strategy.execute();
+      });
 
-        if (await strategy.execute()) {
-          break;
-        }
+      if (strategy.isExecuted) {
+        break;
       }
-    });
+    }
+  }
+
+  getDispatcherStrategy(
+    chatId: ChatId,
+    lang: WikiLanguage,
+    [type, data]: OrderOfArticles[number],
+  ): BaseDispatcherStrategy {
+    const baseProps = {
+      chatId,
+      lang,
+    };
+
+    switch (type) {
+      case 'tfi':
+        return new TFIDispatcherStrategy(this.skipper, this.sender, {
+          ...baseProps,
+          data,
+        });
+      case 'tfa':
+        return new TFADispatcherStrategy(this.skipper, this.sender, {
+          ...baseProps,
+          data,
+        });
+      case 'onthisday':
+        return new OnThisDayDispatcherStrategy(this.skipper, this.sender, {
+          ...baseProps,
+          data,
+        });
+      case 'news':
+        return new NewsDispatcherStrategy(this.skipper, this.sender, {
+          ...baseProps,
+          data,
+        });
+    }
   }
 
   async execute() {

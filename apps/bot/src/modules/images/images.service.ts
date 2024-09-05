@@ -4,10 +4,10 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ImageExceptionResizeForbidden } from './exceptions/image.exception.resize-forbidden';
-import { IMAGE_MAX_SIZE_TO_RESIZE } from './images.constants';
+import { CacheableAsync } from '@repo/shared';
 
-const contentLengthCache = new Map<string, number>();
+import { ImageExceptionForbiddenResize } from './exceptions/image.exception.resize-forbidden';
+import { IMAGE_MAX_SIZE_TO_RESIZE_IN_BYTES } from './images.constants';
 
 @Injectable()
 export class ImagesService {
@@ -17,22 +17,14 @@ export class ImagesService {
     readonly http: HttpService,
     readonly config: ConfigService,
   ) {
-    this.token = this.config.getOrThrow('CLOUDIMAGE_TOKEN');
+    this.token = this.config.getOrThrow('CLOUD_IMAGE_ID');
   }
 
+  @CacheableAsync()
   async getContentLength(url: string) {
-    let value = contentLengthCache.get(url);
+    const { headers } = await this.http.axiosRef.head(url);
 
-    if (!value) {
-      const { headers } = await this.http.axiosRef.head(url);
-      const contentLength = Number(headers['content-length']);
-
-      value = contentLength;
-
-      contentLengthCache.set(url, value);
-    }
-
-    return value;
+    return +headers['content-length'];
   }
 
   getProxyURL(url: string) {
@@ -50,15 +42,14 @@ export class ImagesService {
     return obj.toString();
   }
 
-  async getResizedProxyURL(url: string, width: number) {
+  async getResizeURL(url: string, width: number) {
     const contentLength = await this.getContentLength(url);
 
-    if (contentLength >= IMAGE_MAX_SIZE_TO_RESIZE) {
-      throw new ImageExceptionResizeForbidden();
+    if (contentLength >= IMAGE_MAX_SIZE_TO_RESIZE_IN_BYTES) {
+      throw new ImageExceptionForbiddenResize();
     }
 
     const urlObj = new URL(this.getProxyURL(url));
-
     const height = width * 1.5;
 
     urlObj.searchParams.append('w', width.toString());

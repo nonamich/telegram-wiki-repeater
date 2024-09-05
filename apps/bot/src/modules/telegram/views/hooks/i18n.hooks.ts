@@ -1,5 +1,5 @@
-import { I18nException } from './exceptions/i18n.exception';
-import { I18nContext } from './i18n.context';
+import { I18nException } from '~/modules/i18n/exceptions/i18n.exception';
+import { I18nContext } from '~/modules/i18n/i18n.context';
 
 export const useI18n = () => {
   const i18n = I18nContext.current();

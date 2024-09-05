@@ -1,7 +1,6 @@
 import { FunctionalComponent } from 'preact';
 
-import { useI18n } from '~/modules/i18n/i18n.utils';
-import { WikiHelper } from '~/modules/wiki/wiki.helper';
+import { useI18n, useSite } from '~/modules/telegram/views/hooks';
 
 import { List } from './List';
 
@@ -15,11 +14,12 @@ export type LinksProps = {
 };
 
 export const Links: FunctionalComponent<LinksProps> = ({ links: link }) => {
-  const { t, language } = useI18n();
+  const { t } = useI18n();
+  const { donateURL } = useSite();
   const links = [
     {
       text: `💸 ${t('support_wikipedia')}`,
-      url: WikiHelper.sites[language].donate,
+      url: donateURL,
     },
   ];
 

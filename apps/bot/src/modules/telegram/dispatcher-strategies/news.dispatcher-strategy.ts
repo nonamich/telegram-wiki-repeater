@@ -1,15 +1,16 @@
-import { DAY_IN_SEC } from '~/modules/redis/redis.constants';
+import { Utils } from '@repo/shared';
+
+import { REDIS_DAY_IN_SEC } from '~/modules/redis/redis.constants';
 import { WikiNews } from '~/modules/wiki/types';
-import { getMD5FromString } from '~/utils';
 
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class NewsDispatcherStrategy extends BaseDispatcherStrategy<WikiNews> {
   getAdditionalSkipParams() {
     return {
-      ids: getMD5FromString(this.props.data.story),
+      ids: Utils.creteMD5Hash(this.props.data.story),
       type: 'news' as const,
-      expireInSec: DAY_IN_SEC * 3,
+      expireInSec: REDIS_DAY_IN_SEC * 3,
     };
   }
 

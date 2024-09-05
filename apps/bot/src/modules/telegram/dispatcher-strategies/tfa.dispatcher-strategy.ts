@@ -1,6 +1,5 @@
 import { WikiArticle } from '~/modules/wiki/types';
 
-import { TelegramShowTime } from '../telegram.show-time';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class TFADispatcherStrategy extends BaseDispatcherStrategy<WikiArticle> {
@@ -11,8 +10,12 @@ export class TFADispatcherStrategy extends BaseDispatcherStrategy<WikiArticle> {
     };
   }
 
+  isShowTime() {
+    return new Date().getHours() >= 12;
+  }
+
   async isSkip() {
-    return !TelegramShowTime.isFeaturedArticle() || (await super.isSkip());
+    return !this.isShowTime() || (await super.isSkip());
   }
 
   async send() {

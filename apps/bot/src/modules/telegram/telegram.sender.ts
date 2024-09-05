@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
@@ -52,10 +51,7 @@ export class TelegramSender {
   }
 
   async sendPost(chatId: ChatId, html: string, media?: string) {
-    const extra = {
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-    } satisfies ExtraReplyMessage;
+    const extra = this.getDefaultExtra();
 
     if (media) {
       await this.bot.telegram.sendPhoto(chatId, media, {
@@ -65,5 +61,12 @@ export class TelegramSender {
     } else {
       await this.bot.telegram.sendMessage(chatId, html, extra);
     }
+  }
+
+  getDefaultExtra() {
+    return {
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    } satisfies ExtraReplyMessage;
   }
 }

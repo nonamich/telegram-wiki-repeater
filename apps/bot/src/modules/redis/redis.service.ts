@@ -4,7 +4,6 @@ import {
   OnModuleInit,
   OnModuleDestroy,
 } from '@nestjs/common';
-
 import { Redis, RedisOptions } from 'ioredis';
 
 import { REDIS_OPTIONS } from './redis.constants';

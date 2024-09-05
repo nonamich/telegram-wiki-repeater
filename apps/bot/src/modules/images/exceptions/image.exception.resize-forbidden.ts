@@ -1,1 +1,1 @@
-export class ImageExceptionResizeForbidden extends Error {}
+export class ImageExceptionForbiddenResize extends Error {}

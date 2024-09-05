@@ -20,11 +20,11 @@ export class ImagesService {
     this.token = this.config.getOrThrow('CLOUD_IMAGE_ID');
   }
 
-  @CacheableAsync
+  @CacheableAsync()
   async getContentLength(url: string) {
     const { headers } = await this.http.axiosRef.head(url);
 
-    return Number(headers['content-length']);
+    return +headers['content-length'];
   }
 
   getProxyURL(url: string) {

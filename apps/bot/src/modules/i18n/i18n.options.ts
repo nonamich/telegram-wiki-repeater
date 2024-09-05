@@ -11,7 +11,7 @@ export const i18nextOptions: InitOptions = {
   defaultNS: 'default',
   preload: I18N_LANGS,
   backend: {
-    loadPath: path.join(process.cwd(), 'locales/{{lng}}/{{ns}}.json'),
+    loadPath: path.resolve(__dirname, '../../../locales/{{lng}}/{{ns}}.json'),
   },
   interpolation: {
     escapeValue: false,

@@ -7,7 +7,7 @@ import {
   TELEGRAM_DANGEROUSLY_HTML_TAG,
 } from '~/modules/telegram/telegram.constants';
 import { useI18n } from '~/modules/telegram/views/hooks';
-import { WikiUtils } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.helper';
 
 export class TelegramViewsUtils {
   static getSanitizedHTML(html: string) {
@@ -21,7 +21,7 @@ export class TelegramViewsUtils {
           if (attribs.href && attribs.rel === 'mw:WikiLink') {
             const urlObj = new URL(
               attribs.href,
-              WikiUtils.getBaseURL(language),
+              WikiSites.getBaseURL(language),
             );
 
             attribs.href = urlObj.toString();

@@ -6,6 +6,7 @@ import { OrderOfArticles, WikiLanguage } from '~/modules/wiki/types';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
+  BaseDispatcherStrategy,
   NewsDispatcherStrategy,
   OnThisDayDispatcherStrategy,
   TFADispatcherStrategy,
@@ -44,7 +45,7 @@ export class TelegramScheduler {
     chatId: ChatId,
     lang: WikiLanguage,
     [type, data]: OrderOfArticles[number],
-  ) {
+  ): BaseDispatcherStrategy {
     const baseProps = {
       chatId,
       lang,

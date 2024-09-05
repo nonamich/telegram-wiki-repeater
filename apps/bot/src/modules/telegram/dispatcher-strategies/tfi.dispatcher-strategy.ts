@@ -1,6 +1,5 @@
 import { WikiFeaturedImage } from '~/modules/wiki/types';
 
-import { TelegramShowTime } from '../telegram.show-time';
 import { BaseDispatcherStrategy } from './base.dispatcher-strategy';
 
 export class TFIDispatcherStrategy extends BaseDispatcherStrategy<WikiFeaturedImage> {
@@ -11,8 +10,12 @@ export class TFIDispatcherStrategy extends BaseDispatcherStrategy<WikiFeaturedIm
     };
   }
 
+  getShowTime() {
+    return new Date().getHours() >= 12;
+  }
+
   async isSkip() {
-    return !TelegramShowTime.isFeaturedImage() || (await super.isSkip());
+    return !this.getShowTime() || (await super.isSkip());
   }
 
   async send() {

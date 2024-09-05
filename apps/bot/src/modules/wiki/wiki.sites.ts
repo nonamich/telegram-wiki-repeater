@@ -4,7 +4,7 @@ import { WikiLanguage, WikiSiteData } from './types';
 
 const baseDonateURL = 'https://donate.wikipedia.org/wiki/Ways_to_Give';
 
-export abstract class WikiUtils {
+export abstract class WikiSites {
   static sites: Record<WikiLanguage, WikiSiteData> = {
     en: {
       pathnames: {

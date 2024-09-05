@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 
 import { WIKI_BASE_URL } from './wiki.constants';
 import { WikiService } from './wiki.service';
+import { WikiValidator } from './wiki.validator';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { WikiService } from './wiki.service';
       baseURL: WIKI_BASE_URL,
     }),
   ],
-  providers: [WikiService],
+  providers: [WikiService, WikiValidator],
   exports: [WikiService],
 })
 export class WikiModule {}

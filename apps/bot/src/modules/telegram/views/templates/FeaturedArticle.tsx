@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 
 import { useI18n } from '~/modules/telegram/views/hooks';
 import { WikiArticle } from '~/modules/wiki/types';
-import { WikiUtils } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.helper';
 
 import { Article } from '../components/Article';
 
@@ -15,7 +15,7 @@ export const FeaturedArticle: FunctionComponent<FeaturedArticleProps> = ({
 }) => {
   const { language, t } = useI18n();
   const link = {
-    url: WikiUtils.getFeaturedArticlesURL(language),
+    url: WikiSites.getFeaturedArticlesURL(language),
     text: t('more_featured_articles'),
   };
 

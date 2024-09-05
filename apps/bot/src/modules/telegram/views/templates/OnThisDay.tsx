@@ -5,7 +5,7 @@ import { Utils } from '@repo/shared';
 
 import { useI18n, useSite } from '~/modules/telegram/views/hooks';
 import { WikiOnThisDay } from '~/modules/wiki/types';
-import { WikiUtils } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.helper';
 
 import { BR, Content, Description, Links, NewLine, Title } from '../components';
 
@@ -65,7 +65,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   const links = [
     {
       text: t('more_events'),
-      url: WikiUtils.getOnThisDayURL(language),
+      url: WikiSites.getOnThisDayURL(language),
     },
   ];
   const isSingle = pages.length === 1 && !pages[0].description;

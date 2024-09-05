@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 
 import { useI18n } from '~/modules/telegram/views/hooks';
 import { WikiFeaturedImage } from '~/modules/wiki/types';
-import { WikiSites } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.sites';
 
 import { BR, Content, Links, Title } from '../components';
 

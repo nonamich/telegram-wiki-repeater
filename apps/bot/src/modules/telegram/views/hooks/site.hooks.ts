@@ -1,4 +1,4 @@
-import { WikiSites } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.sites';
 
 import { useI18n } from '.';
 

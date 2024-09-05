@@ -7,7 +7,7 @@ import {
   TELEGRAM_DANGEROUSLY_HTML_TAG,
 } from '~/modules/telegram/telegram.constants';
 import { useI18n } from '~/modules/telegram/views/hooks';
-import { WikiSites } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.sites';
 
 export class TelegramViewsUtils {
   static getSanitizedHTML(html: string) {

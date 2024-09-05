@@ -2,7 +2,7 @@ import { FunctionalComponent } from 'preact';
 
 import { TELEGRAM_DANGEROUSLY_HTML_TAG } from '~/modules/telegram/telegram.constants';
 import { WikiNews } from '~/modules/wiki/types';
-import { WikiSites } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.sites';
 
 import { BR, Links } from '../components';
 import { useI18n } from '../hooks';

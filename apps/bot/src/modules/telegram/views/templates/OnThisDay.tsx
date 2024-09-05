@@ -5,7 +5,7 @@ import { Utils } from '@repo/shared';
 
 import { useI18n, useSite } from '~/modules/telegram/views/hooks';
 import { WikiOnThisDay } from '~/modules/wiki/types';
-import { WikiSites } from '~/modules/wiki/wiki.helper';
+import { WikiSites } from '~/modules/wiki/wiki.sites';
 
 import { BR, Content, Description, Links, NewLine, Title } from '../components';
 

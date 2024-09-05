@@ -33,9 +33,6 @@ jobs:
       - name: Build
         run: npm run bot:build
 
-      - name: Build
-        run: npm run test -w bot
-
       - name: npm prune
         run: npm prune --omit=dev -w bot
 

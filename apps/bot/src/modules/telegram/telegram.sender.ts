@@ -40,14 +40,17 @@ export class TelegramSender {
     const html = await this.views.renderNews({ news });
     const image = await this.images.getFirstImageFromArticles(news.links);
 
-    await this.sendPost(chatId, html, image);
+    await this.sendPost(chatId, html, image?.url);
   }
 
   async sendOnThisDay(chatId: ChatId, event: WikiOnThisDay) {
-    const html = await this.views.renderOnThisDay({ event });
     const image = await this.images.getFirstImageFromArticles(event.pages);
+    const html = await this.views.renderOnThisDay({
+      event,
+      pageIdWithImage: image?.pageId,
+    });
 
-    await this.sendPost(chatId, html, image);
+    await this.sendPost(chatId, html, image?.url);
   }
 
   async sendPost(chatId: ChatId, html: string, media?: string) {

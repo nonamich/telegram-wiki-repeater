@@ -11,14 +11,20 @@ import { BR, Content, Description, Links, NewLine, Title } from '../components';
 
 export type OnThisDayProps = {
   event: WikiOnThisDay;
+  pageIdWithImage?: number;
 };
 
-type EventsProps = Pick<WikiOnThisDay, 'pages'>;
+type EventsProps = Pick<WikiOnThisDay, 'pages'> &
+  Pick<OnThisDayProps, 'pageIdWithImage'>;
 
 const icon = '🏛️';
 
-const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
+const Events: FunctionalComponent<EventsProps> = ({
+  pages,
+  pageIdWithImage,
+}) => {
   const { isRTL } = useSite();
+  const { t } = useI18n();
   const isSingle = pages.length === 1;
   const semicolon = isRTL ? '؛' : ';';
 
@@ -26,6 +32,11 @@ const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
     <>
       {pages.map((page, index) => {
         const isContent = isSingle && !page.description;
+        const isTitleImage = page.pageid === pageIdWithImage;
+
+        if (!isSingle && isTitleImage) {
+          page.description = `${page.description ? `${page.description}. ` : ''}[${t('picture').toLowerCase()}]`;
+        }
 
         return (
           <>
@@ -59,6 +70,7 @@ const Events: FunctionalComponent<EventsProps> = ({ pages }) => {
 
 export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
   event: { pages, text, year },
+  pageIdWithImage,
 }) => {
   const { language, t } = useI18n();
   const date = dayjs().locale(language).year(year);
@@ -83,7 +95,7 @@ export const OnThisDay: FunctionalComponent<OnThisDayProps> = ({
       {Boolean(pages.length) && (
         <>
           <BR />
-          <Events pages={pages} />
+          <Events pages={pages} pageIdWithImage={pageIdWithImage} />
         </>
       )}
       <BR />

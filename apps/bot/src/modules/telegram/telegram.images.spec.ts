@@ -50,7 +50,7 @@ describe('TelegramImages', () => {
     ]);
 
     expect(image).toBeDefined();
-    expect(typeof image).toEqual('string');
+    expect(typeof image?.url).toEqual('string');
   });
 
   it('isInBlackList', () => {

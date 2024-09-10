@@ -58,7 +58,7 @@ export class TestScene {
     await ctx.deleteMessage();
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'ar';
+    const lang: WikiLanguage = 'ru';
     const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,

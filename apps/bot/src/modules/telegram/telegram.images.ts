@@ -74,13 +74,16 @@ export class TelegramImages {
 
   async getFirstImageFromArticles(articles: WikiArticle[]) {
     for (const article of articles) {
-      const image = await this.getImageURLByArticle(article);
+      const url = await this.getImageURLByArticle(article);
 
-      if (!image) {
+      if (!url) {
         continue;
       }
 
-      return image;
+      return {
+        url,
+        pageId: article.pageid,
+      };
     }
   }
 }

@@ -10,6 +10,8 @@
 - <img src="https://swc.rs/favicon/favicon-32x32.png" width="12" height="12"> [SWC](https://swc.rs/)
 - <img src="https://github.com/get-icon/geticon/raw/master/icons/sentry.svg" width="12" height="12"> [Sentry](https://docs.sentry.io/platforms/javascript/guides/node/)
 - <img src="https://github.com/get-icon/geticon/raw/master/icons/jest.svg" width="12" height="12"> [Jest](https://jestjs.io/)
+- <img src="https://github.com/get-icon/geticon/raw/master/icons/aws-lambda.svg" width="12" height="12"> [AWS Lambda](https://aws.amazon.com/lambda/)
+- <img src="https://github.com/get-icon/geticon/raw/master/icons/github-icon.svg" width="12" height="12"> [GitHub Actions](https://aws.amazon.com/lambda/)
 
 ## Installation
 

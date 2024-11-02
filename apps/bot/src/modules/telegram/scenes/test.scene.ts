@@ -1,68 +1,111 @@
-import { Action, Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {
+  Action,
+  Ctx,
+  Message,
+  On,
+  TelegrafException,
+  Wizard,
+  WizardStep,
+} from 'nestjs-telegraf';
+import { Markup } from 'telegraf';
 import { Chat } from 'telegraf/types';
 
 import { I18nContext } from '~/modules/i18n/i18n.context';
+import { CurrentChat } from '~/modules/telegram/decorators/current-chat.decorator';
+import { SCENES } from '~/modules/telegram/telegram.enums';
+import { TelegramSender } from '~/modules/telegram/telegram.sender';
+import { Context } from '~/modules/telegram/telegram.types';
 import { WikiLanguage } from '~/modules/wiki/types';
+import { WIKI_LANGUAGES } from '~/modules/wiki/wiki.constants';
 import { WikiService } from '~/modules/wiki/wiki.service';
 
-import { CurrentChat } from '../decorators/current-chat.decorator';
-import { SCENES } from '../telegram.enums';
-import { TelegramSender } from '../telegram.sender';
-import { Context } from '../telegram.types';
+dayjs.extend(customParseFormat);
 
-@Scene(SCENES.TEST)
+const dataFormat = 'DD-MM-YYYY';
+
+@Wizard(SCENES.TEST)
 export class TestScene {
   constructor(
     private sender: TelegramSender,
     private wiki: WikiService,
   ) {}
 
-  @SceneEnter()
+  @WizardStep(1)
   async onSceneEnter(@Ctx() ctx: Context) {
-    await ctx.sendMessage('Enter Test Data', {
+    ctx.wizard.next();
+
+    await ctx.sendMessage(
+      `Send me date as  ${dayjs().format(dataFormat)} format`,
+    );
+  }
+
+  @On('text')
+  @WizardStep(2)
+  async selectDate(@Ctx() ctx: Context, @Message('text') msg: string) {
+    const date = dayjs(msg, dataFormat, true);
+
+    if (!date.isValid()) {
+      throw new TelegrafException('date not valid');
+    }
+
+    ctx.wizard.state['date'] = msg;
+    ctx.wizard.next();
+
+    await ctx.sendMessage('What we will testing?', {
       reply_markup: {
         inline_keyboard: [
           [
-            {
-              text: 'Featured Image',
-              callback_data: 'test-tfi',
-            },
-            {
-              text: 'Featured Article',
-              callback_data: 'test-tfa',
-            },
-            {
-              text: 'News',
-              callback_data: 'test-news',
-            },
+            Markup.button.callback('Featured Image', 'type-tfi'),
+            Markup.button.callback('Featured Article', 'type-tfa'),
+            Markup.button.callback('News', 'type-news'),
           ],
-          [
-            {
-              text: 'On This Day',
-              callback_data: 'test-on_this_day',
-            },
-          ],
+          [Markup.button.callback('On This Day', 'type-on_this_day')],
         ],
       },
     });
   }
 
-  @Action(/test-(\w+)/)
-  async onTest(@Ctx() ctx: Context, @CurrentChat() chat: Chat) {
+  @Action(/type-(\w+)/)
+  @WizardStep(3)
+  async onType(@Ctx() ctx: Context) {
     const type = ctx.match.at(1);
 
-    if (!type) {
-      return;
-    }
+    await ctx.answerCbQuery();
 
-    await ctx.deleteMessage();
+    ctx.wizard.state['type'] = type;
+
+    await ctx.editMessageText('Choose lang', {
+      reply_markup: {
+        inline_keyboard: [
+          WIKI_LANGUAGES.map((lang) =>
+            Markup.button.callback(lang, `lang-${lang}`),
+          ),
+        ],
+      },
+    });
+
+    ctx.wizard.next();
+  }
+
+  @WizardStep(4)
+  @Action(/lang-(\w\w)/)
+  async onTest(@Ctx() ctx: Context, @CurrentChat() chat: Chat) {
+    const type: string = ctx.wizard.state['type'];
+    const lang = ctx.match.at(1)! as WikiLanguage;
+    const params = this.wiki.getFeaturedRequestParams(lang);
+
+    await ctx.editMessageText('Loading...');
+
     await ctx.scene.leave();
 
-    const lang: WikiLanguage = 'ru';
-    const params = this.wiki.getFeaturedRequestParams(lang);
     const featuredContent = await this.wiki.getContent({
       ...params,
     });
+
+    await ctx.deleteMessage();
+    await ctx.answerCbQuery();
 
     await I18nContext.create(lang, async () => {
       switch (type) {

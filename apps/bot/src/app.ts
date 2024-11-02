@@ -10,5 +10,5 @@ export const createNestApp = async () => {
 
   app.useGlobalGuards(new AdminGuard(configService));
 
-  return await app.init();
+  return app;
 };

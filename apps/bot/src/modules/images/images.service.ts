@@ -31,8 +31,8 @@ export class ImagesService {
     const { ext } = path.parse(url);
     const obj = new URL(`https://${this.token}.cloudimg.io/v7/${url}`);
 
-    obj.searchParams.append('org_if_sml', '1');
-    obj.searchParams.append('func', 'bound');
+    obj.searchParams.append('org_if_sml', '1'); //https://docs.cloudimage.io/transformations/image-operations/prevent-enlargement
+    obj.searchParams.append('func', 'bound'); //https://docs.cloudimage.io/transformations/image-operations/bound#examples
 
     if (ext === '.svg') {
       obj.searchParams.append('force_format', 'jpeg');

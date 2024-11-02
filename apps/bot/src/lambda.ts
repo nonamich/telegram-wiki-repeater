@@ -7,6 +7,9 @@ import { TelegramScheduler } from './modules/telegram/telegram.scheduler';
 
 export const handler = Sentry.wrapHandler(async () => {
   const app = await createNestApp();
+
+  await app.init();
+
   const scheduler = app.get(TelegramScheduler);
 
   await scheduler.execute();

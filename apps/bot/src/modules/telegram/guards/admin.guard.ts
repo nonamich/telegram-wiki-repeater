@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TelegrafExecutionContext } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 
-import { TelegramExceptionForbidden } from '../exceptions/telegram.exception.forbidden';
+import { TelegramForbiddenException } from '../exceptions/telegram-forbidden.exception';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -18,7 +18,7 @@ export class AdminGuard implements CanActivate {
     const isAdmin = this.adminId === ctx.from?.id;
 
     if (!isAdmin) {
-      throw new TelegramExceptionForbidden();
+      throw new TelegramForbiddenException();
     }
 
     return true;

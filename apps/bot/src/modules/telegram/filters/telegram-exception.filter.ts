@@ -6,7 +6,6 @@ import { Context } from '../telegram.types';
 
 @Catch(TelegrafException)
 export class TelegramExceptionFilter extends BaseExceptionFilter {
-  // 2
   async catch(exception: TelegrafException, host: ArgumentsHost) {
     Logger.error(exception.message);
 

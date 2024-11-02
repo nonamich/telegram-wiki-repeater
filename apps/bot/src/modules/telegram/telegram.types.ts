@@ -17,4 +17,4 @@ interface BaseContext {
   match: RegExpMatchArray;
 }
 
-export interface Context extends Scenes.SceneContext, BaseContext {}
+export interface Context extends Scenes.WizardContext, BaseContext {}

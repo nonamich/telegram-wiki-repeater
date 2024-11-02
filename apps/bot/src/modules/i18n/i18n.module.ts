@@ -1,11 +1,10 @@
-import { Global, Module, OnModuleInit } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 
 import { I18N_LANGS } from './i18n.constants';
 import { i18nextOptions } from './i18n.options';
 
-@Global()
 @Module({})
 export class I18nModule implements OnModuleInit {
   async onModuleInit() {

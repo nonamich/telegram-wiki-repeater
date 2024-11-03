@@ -22,6 +22,8 @@ export const TELEGRAM_DANGEROUSLY_HTML_TAG = 'body';
 export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Путін',
   'Путин',
+  'Император_Николай_II',
+  'Петра_I',
   'Putin',
   'Flag_of_Russia',
   'Flag_of_the_Soviet',
@@ -29,4 +31,5 @@ export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Forces_of_the_Russian',
   'Flag_of_Germany_\\(1935–1945\\)',
   'Hitler',
+  'arms_of_Russia',
 ];

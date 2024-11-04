@@ -6,8 +6,6 @@ import { TelegramViewsUtils } from './telegram.view.utils';
 import {
   FeaturedImage,
   FeaturedImageProps,
-  News,
-  NewsProps,
   OnThisDay,
   OnThisDayProps,
   FeaturedArticle,
@@ -29,10 +27,6 @@ export class TelegramViews {
 
   renderFeaturedArticle(props: FeaturedArticleProps) {
     return this.renderToString(h(FeaturedArticle, props));
-  }
-
-  renderNews(props: NewsProps) {
-    return this.renderToString(h(News, props));
   }
 
   renderOnThisDay(props: OnThisDayProps) {

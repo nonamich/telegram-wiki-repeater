@@ -19,6 +19,7 @@ export const TELEGRAM_ALLOWED_TAGS = [
   'tg-spoiler',
 ];
 export const TELEGRAM_DANGEROUSLY_HTML_TAG = 'body';
+export const TELEGRAM_TAGS_TO_UNWRAP = [TELEGRAM_DANGEROUSLY_HTML_TAG];
 export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Путін',
   'Путин',
@@ -33,3 +34,4 @@ export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Hitler',
   'arms_of_Russia',
 ];
+export const TELEGRAM_MAX_ON_THIS_DAY_TEXT = 600;

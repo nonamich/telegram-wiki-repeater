@@ -5,8 +5,8 @@
   "scripts": {
     "build": "nest build",
     "dev": "npm run start:debug",
-    "format": "prettier --write \"{src,test}/**/*.ts\"",
-    "lint": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"{src,test}/**/*.{ts,tsx}\"",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "start:debug": "npm run start -- --debug 9229 -w",
     "start:prod": "node dist/main",
     "start": "nest start",

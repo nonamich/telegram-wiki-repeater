@@ -1,6 +1,5 @@
 import { WIKI_LANGUAGES } from '../wiki.constants';
 import { WikiFeaturedImage } from './featured';
-import { WikiNews } from './news';
 import { WikiOnThisDay } from './on-this-day';
 
 export type WikiLanguage = (typeof WIKI_LANGUAGES)[number];
@@ -27,13 +26,12 @@ export type WikiImage = {
   height: number;
 };
 
-export type ArticleType = 'tfi' | 'tfa' | 'news' | 'onthisday';
+export type ArticleType = 'tfi' | 'tfa' | 'onthisday';
 
 export type OrderOfArticles = Array<
   | ['tfi', WikiFeaturedImage]
   | ['tfa', WikiArticle]
   | ['onthisday', WikiOnThisDay]
-  | ['news', WikiNews]
 >;
 
 export type WikiSiteData = {

@@ -1,10 +1,4 @@
-import {
-  WikiArticle,
-  WikiImage,
-  WikiLanguage,
-  WikiNews,
-  WikiOnThisDay,
-} from '.';
+import { WikiArticle, WikiImage, WikiLanguage, WikiOnThisDay } from '.';
 
 export interface FeaturedRequest {
   year: number;
@@ -17,7 +11,6 @@ export interface FeaturedResponse {
   tfa?: WikiArticle;
   image?: WikiFeaturedImage;
   onthisday?: WikiOnThisDay[];
-  news?: WikiNews[];
 }
 
 export interface WikiFeaturedImage {

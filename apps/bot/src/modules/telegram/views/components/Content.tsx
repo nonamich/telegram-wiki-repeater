@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 
-import { useI18n } from '~/modules/telegram/views/hooks';
 import { TELEGRAM_DANGEROUSLY_HTML_TAG } from '~/modules/telegram/telegram.constants';
+import { useI18n } from '~/modules/telegram/views/hooks';
 import { TelegramViewsUtils } from '~/modules/telegram/views/telegram.view.utils';
 
 export type ContentProps = {

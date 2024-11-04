@@ -5,11 +5,11 @@ import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
 import {
   WikiFeaturedImage,
-  WikiNews,
   WikiOnThisDay,
   WikiArticle,
 } from '~/modules/wiki/types';
 
+import { TELEGRAM_MAX_ON_THIS_DAY_TEXT } from './telegram.constants';
 import { TelegramImages } from './telegram.images';
 import { ChatId } from './telegram.types';
 import { TelegramViews } from './views/telegram.view';
@@ -36,14 +36,11 @@ export class TelegramSender {
     await this.sendPost(chatId, caption, imageURL);
   }
 
-  async sendNews(chatId: ChatId, news: WikiNews) {
-    const html = await this.views.renderNews({ news });
-    const image = await this.images.getFirstImageFromArticles(news.links);
-
-    await this.sendPost(chatId, html, image?.url);
-  }
-
   async sendOnThisDay(chatId: ChatId, event: WikiOnThisDay) {
+    if (event.text.length >= TELEGRAM_MAX_ON_THIS_DAY_TEXT) {
+      event.pages.splice(0);
+    }
+
     const image = await this.images.getFirstImageFromArticles(event.pages);
     const html = await this.views.renderOnThisDay({
       event,

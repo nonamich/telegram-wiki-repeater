@@ -7,7 +7,6 @@ import { WikiService } from '~/modules/wiki/wiki.service';
 
 import {
   BaseDispatcherStrategy,
-  NewsDispatcherStrategy,
   OnThisDayDispatcherStrategy,
   TFADispatcherStrategy,
   TFIDispatcherStrategy,
@@ -64,11 +63,6 @@ export class TelegramScheduler {
         });
       case 'onthisday':
         return new OnThisDayDispatcherStrategy(this.skipper, this.sender, {
-          ...baseProps,
-          data,
-        });
-      case 'news':
-        return new NewsDispatcherStrategy(this.skipper, this.sender, {
           ...baseProps,
           data,
         });

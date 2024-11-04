@@ -30,7 +30,7 @@ export class WikiService {
     private readonly utils: WikiUtils,
   ) {}
 
-  getFeaturedRequestParams(lang: WikiLanguage) {
+  getTodayFeaturedRequestParams(lang: WikiLanguage) {
     const date = dayjs();
     const params: FeaturedRequest = {
       lang,
@@ -137,8 +137,8 @@ export class WikiService {
   }
 
   async getFeaturedContentAsArray(lang: WikiLanguage) {
-    const { image, news, onthisday, tfa } = await this.getContent(
-      this.getFeaturedRequestParams(lang),
+    const { image, onthisday, tfa } = await this.getContent(
+      this.getTodayFeaturedRequestParams(lang),
     );
     const entityOfData: OrderOfArticles = [];
     const entityOfDataMixed: OrderOfArticles = [];
@@ -154,12 +154,6 @@ export class WikiService {
     if (onthisday) {
       for (const item of onthisday) {
         entityOfDataMixed.push(['onthisday', item]);
-      }
-    }
-
-    if (news) {
-      for (const item of news) {
-        entityOfDataMixed.push(['news', item]);
       }
     }
 

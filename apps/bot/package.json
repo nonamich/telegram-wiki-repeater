@@ -5,8 +5,8 @@
   "scripts": {
     "build": "nest build",
     "dev": "npm run start:debug",
-    "format": "prettier --write \"{src,test}/**/*.ts\"",
-    "lint": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"{src,test}/**/*.{ts,tsx}\"",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "start:debug": "npm run start -- --debug 9229 -w",
     "start:prod": "node dist/main",
     "start": "nest start",
@@ -24,7 +24,6 @@
     "@telegraf/session": "^2.0.0-beta.7",
     "axios": "^1.7.1",
     "dayjs": "^1.11.10",
-    "dotenv": "^16.4.5",
     "i18next": "^23.8.2",
     "i18next-fs-backend": "^2.3.1",
     "ioredis": "^5.3.2",

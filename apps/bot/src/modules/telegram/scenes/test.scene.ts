@@ -56,11 +56,8 @@ export class TestScene {
     await ctx.sendMessage('What we will testing?', {
       reply_markup: {
         inline_keyboard: [
-          [
-            Markup.button.callback('Featured Image', 'type-tfi'),
-            Markup.button.callback('Featured Article', 'type-tfa'),
-            Markup.button.callback('News', 'type-news'),
-          ],
+          [Markup.button.callback('Featured Image', 'type-tfi')],
+          [Markup.button.callback('Featured Article', 'type-tfa')],
           [Markup.button.callback('On This Day', 'type-on_this_day')],
         ],
       },
@@ -93,8 +90,15 @@ export class TestScene {
   @Action(/lang-(\w\w)/)
   async onTest(@Ctx() ctx: Context, @CurrentChat() chat: Chat) {
     const type: string = ctx.wizard.state['type'];
+    const dateString: string = ctx.wizard.state['date'];
+    const date = dayjs(dateString, dataFormat, true);
     const lang = ctx.match.at(1)! as WikiLanguage;
-    const params = this.wiki.getFeaturedRequestParams(lang);
+    const params = {
+      lang,
+      year: date.year(),
+      month: date.month() + 1,
+      day: date.date(),
+    };
 
     await ctx.editMessageText('Loading...');
 
@@ -115,13 +119,10 @@ export class TestScene {
         case 'tfa':
           await this.sender.sendFeaturedArticle(chat.id, featuredContent.tfa!);
           break;
-        case 'news':
-          await this.sender.sendNews(chat.id, featuredContent.news!.at(1)!);
-          break;
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(1)!,
+            featuredContent.onthisday!.at(0)!,
           );
           break;
       }

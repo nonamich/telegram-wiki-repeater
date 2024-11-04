@@ -8,7 +8,7 @@ import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 
 import { ImageExceptionForbiddenResize } from '../images/exceptions/image.exception.resize-forbidden';
 import {
-  TELEGRAM_BLACK_LIST_OF_IMAGE,
+  TELEGRAM_IMAGE_BLACK_LIST,
   TELEGRAM_PREFER_IMAGE_WIDTH,
   TELEGRAM_MAX_IMAGE_DIMENSIONS,
   TELEGRAM_MAX_IMAGE_BYTES,
@@ -67,7 +67,7 @@ export class TelegramImages {
   isInBlackList(image: WikiImage) {
     const url = decodeURI(image.source);
 
-    return TELEGRAM_BLACK_LIST_OF_IMAGE.some((word) => {
+    return TELEGRAM_IMAGE_BLACK_LIST.some((word) => {
       return new RegExp(word, 'i').test(url);
     });
   }

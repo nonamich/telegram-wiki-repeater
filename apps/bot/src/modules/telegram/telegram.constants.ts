@@ -20,7 +20,7 @@ export const TELEGRAM_ALLOWED_TAGS = [
 ];
 export const TELEGRAM_DANGEROUSLY_HTML_TAG = 'body';
 export const TELEGRAM_TAGS_TO_UNWRAP = [TELEGRAM_DANGEROUSLY_HTML_TAG];
-export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
+export const TELEGRAM_IMAGE_BLACK_LIST = [
   'Путін',
   'Путин',
   'Император_Николай_II',
@@ -32,6 +32,14 @@ export const TELEGRAM_BLACK_LIST_OF_IMAGE = [
   'Forces_of_the_Russian',
   'Flag_of_Germany_\\(1935–1945\\)',
   'Hitler',
+  'Flag_of_Moscow',
   'arms_of_Russia',
+  'arms_of_the_Russian',
+  'Coat_of_arms_of_the_Soviet_Union',
+  'Сенат_Російської_імперії',
+  'Emblem_of_the_Ukrainian_SSR',
+  'Flag_of_the_Ukrainian_Soviet_Socialist_Republic',
+  'Coat_of_arms_of_Moscow',
+  'Emblema_NKVD',
 ];
 export const TELEGRAM_MAX_ON_THIS_DAY_TEXT = 600;

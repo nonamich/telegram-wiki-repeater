@@ -7,22 +7,37 @@ import { WIKI_MAX_PAGE_ON_THIS_DAY } from './wiki.constants';
 
 @Injectable()
 export class WikiValidator {
+  getEventSimilarity(eventA: WikiOnThisDay, eventB: WikiOnThisDay) {
+    return stringSimilarity(eventA.text, eventB.text);
+  }
+
+  checkEventSimilarity(similarity: number) {
+    return similarity >= 0.7;
+  }
+
   deleteUselessOnthisday(events: WikiOnThisDay[]) {
-    return events.reduce<WikiOnThisDay[]>((acc, eventA) => {
-      const duplicate = acc.find((eventB) => {
-        const likely = stringSimilarity(eventA.text, eventB.text);
+    return events
+      .filter((eventA, index) => {
+        return events.findIndex(({ text }) => eventA.text === text) === index;
+      })
+      .reduce<WikiOnThisDay[]>((acc, eventA) => {
+        const similarityEvent = acc.find((eventB) =>
+          this.checkEventSimilarity(this.getEventSimilarity(eventA, eventB)),
+        );
 
-        return likely >= 0.7;
-      });
+        if (similarityEvent) {
+          Sentry.captureMessage('Similarity', {
+            extra: {
+              a: eventA.text,
+              b: similarityEvent.text,
+            },
+          });
+        } else {
+          acc.push(eventA);
+        }
 
-      if (!duplicate) {
-        acc.push(eventA);
-      } else {
-        Sentry.captureMessage(`${eventA.text} ${duplicate.text}`);
-      }
-
-      return acc;
-    }, []);
+        return acc;
+      }, []);
   }
 
   deleteUselessPage(onthisday: WikiOnThisDay[]) {

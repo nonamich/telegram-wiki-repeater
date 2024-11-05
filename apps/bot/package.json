@@ -32,6 +32,7 @@
     "preact-render-to-string": "^6.4.2",
     "reflect-metadata": "^0.1.13",
     "sanitize-html": "^2.11.0",
+    "string-similarity-js": "^2.1.4",
     "telegraf": "^4.15.3",
     "truncate-html": "^1.0.4"
   },

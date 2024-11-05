@@ -8,11 +8,17 @@ import { WikiImage, WikiArticle } from '~/modules/wiki/types';
 
 import { ImageExceptionForbiddenResize } from '../images/exceptions/image.exception.resize-forbidden';
 import {
-  TELEGRAM_IMAGE_BLACK_LIST,
+  TELEGRAM_IMAGE_BLACK_LIST_ENCODED,
   TELEGRAM_PREFER_IMAGE_WIDTH,
   TELEGRAM_MAX_IMAGE_DIMENSIONS,
   TELEGRAM_MAX_IMAGE_BYTES,
 } from './telegram.constants';
+
+const telegramImageBlackList = TELEGRAM_IMAGE_BLACK_LIST_ENCODED.map(
+  (expression) => {
+    return decodeURIComponent(atob(expression));
+  },
+);
 
 @Injectable()
 export class TelegramImages {
@@ -67,7 +73,7 @@ export class TelegramImages {
   isInBlackList(image: WikiImage) {
     const url = decodeURI(image.source);
 
-    return TELEGRAM_IMAGE_BLACK_LIST.some((word) => {
+    return telegramImageBlackList.some((word) => {
       return new RegExp(word, 'i').test(url);
     });
   }

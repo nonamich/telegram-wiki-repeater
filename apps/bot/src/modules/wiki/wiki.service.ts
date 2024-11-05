@@ -78,8 +78,11 @@ export class WikiService {
 
     content.onthisday.push(...events);
 
-    this.validator.deleteUselessPage(content.onthisday);
-    this.validator.deleteUselessOnthisday(content.onthisday);
+    content.onthisday = this.validator.deleteUselessPage(content.onthisday);
+
+    content.onthisday = this.validator.deleteUselessOnthisday(
+      content.onthisday,
+    );
 
     return content;
   }

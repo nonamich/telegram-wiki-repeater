@@ -12,7 +12,7 @@ export class WikiValidator {
   }
 
   checkEventSimilarity(similarity: number) {
-    return similarity >= 0.7;
+    return similarity >= 0.75;
   }
 
   deleteUselessOnthisday(events: WikiOnThisDay[]) {

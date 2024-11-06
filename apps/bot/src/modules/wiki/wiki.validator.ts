@@ -4,6 +4,7 @@ import { stringSimilarity } from 'string-similarity-js';
 
 import { WikiArticle, WikiOnThisDay } from './types';
 import { WIKI_MAX_PAGE_ON_THIS_DAY } from './wiki.constants';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class WikiValidator {
@@ -26,7 +27,7 @@ export class WikiValidator {
         );
 
         if (similarityEvent) {
-          Sentry.captureMessage('Similarity', {
+          Sentry.captureMessage(`Similarity ${randomUUID()}`, {
             extra: {
               a: eventA.text,
               b: similarityEvent.text,

@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import * as Sentry from '@sentry/aws-serverless';
 import { stringSimilarity } from 'string-similarity-js';
 
 import { WikiArticle, WikiOnThisDay } from './types';
 import { WIKI_MAX_PAGE_ON_THIS_DAY } from './wiki.constants';
-import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class WikiValidator {
@@ -26,14 +24,7 @@ export class WikiValidator {
           this.checkEventSimilarity(this.getEventSimilarity(eventA, eventB)),
         );
 
-        if (similarityEvent) {
-          Sentry.captureMessage(`Similarity ${randomUUID()}`, {
-            extra: {
-              a: eventA.text,
-              b: similarityEvent.text,
-            },
-          });
-        } else {
+        if (!similarityEvent) {
           acc.push(eventA);
         }
 

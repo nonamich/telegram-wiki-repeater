@@ -36,4 +36,4 @@ npm run start:prod -w bot
 ```
 
 ## Live example
-https://t.me/onthisday_uk
+[https://t.me/onthisday_uk](https://t.me/+25_BSJAPmPg1NjYy)

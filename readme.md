@@ -13,6 +13,9 @@
 - <img src="https://github.com/get-icon/geticon/raw/master/icons/aws-lambda.svg" width="12" height="12"> [AWS Lambda](https://aws.amazon.com/lambda/)
 - <img src="https://github.com/get-icon/geticon/raw/master/icons/github-icon.svg" width="12" height="12"> [GitHub Actions](https://aws.amazon.com/lambda/)
 
+## Live example
+[https://t.me/onthisday_uk](https://t.me/+25_BSJAPmPg1NjYy)
+
 ## Installation
 
 ```bash
@@ -34,6 +37,3 @@ npm run bot:build
 ```bash
 npm run start:prod -w bot
 ```
-
-## Live example
-https://t.me/onthisday_uk

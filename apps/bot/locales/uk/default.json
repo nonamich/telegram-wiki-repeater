@@ -1,1 +1,12 @@
-{"current_events":"Поточні події","in_the_news":"У новинах","more_events":"Усі події цього дня","more_featured_articles":"Усі вибрані статті","more_featured_pictures":"Усі вибрані світлини","on_this_day":"Цього дня","picture":"малюнок","read_more":"читати далі","source":"Джерело","support_wikipedia":"Підтримуйте Вікіпедію"}
+{
+  "current_events": "Поточні події",
+  "in_the_news": "В новинах",
+  "more_events": "Більше подій",
+  "more_featured_articles": "Більше тематичних статей",
+  "more_featured_pictures": "Більше фотографій",
+  "on_this_day": "Цього Дня",
+  "picture": "Зображення",
+  "read_more": "Читати далі",
+  "source": "Джерело",
+  "support_wikipedia": "Підтримайте Вікіпедію"
+}

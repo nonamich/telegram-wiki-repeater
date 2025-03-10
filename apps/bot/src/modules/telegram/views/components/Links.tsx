@@ -36,7 +36,7 @@ export const Links: FunctionalComponent<LinksProps> = ({ links: link }) => {
       items={links}
       separator=" | "
       each={({ text, url }, index) => (
-        <a key={index} href={url}>
+        <a key={index} href={encodeURI(url)}>
           {text}
         </a>
       )}

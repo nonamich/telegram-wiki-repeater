@@ -104,9 +104,7 @@ export class TestScene {
 
     await ctx.scene.leave();
 
-    const featuredContent = await this.wiki.getContent({
-      ...params,
-    });
+    const featuredContent = await this.wiki.getContent(params);
 
     await ctx.deleteMessage();
     await ctx.answerCbQuery();
@@ -122,7 +120,7 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(0)!,
+            featuredContent.onthisday!.at(14)!,
           );
           break;
       }

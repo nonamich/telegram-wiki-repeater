@@ -10,8 +10,7 @@
     "start:debug": "npm run start -- --debug 9229 -w",
     "start:prod": "node dist/main",
     "start": "nest start",
-    "test": "jest",
-    "translate:pull": "npx i18nexus-cli pull --path ./locales/"
+    "test": "jest"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.2",

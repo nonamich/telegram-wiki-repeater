@@ -1,1 +1,12 @@
-{"current_events":"الأحداث الجارية","in_the_news":"في الأخبار","more_events":"المزيد من الأحداث","more_featured_articles":"المزيد من المقالات المميزة","more_featured_pictures":"المزيد من الصور المميزة","on_this_day":"في هذا اليوم","picture":"صورة","read_more":"اقرأ المزيد","source":"مصدر","support_wikipedia":"ادعم ويكيبيديا"}
+{
+  "current_events": "الأحداث الجارية",
+  "in_the_news": "في الأخبار",
+  "more_events": "المزيد من الفعاليات",
+  "more_featured_articles": "المزيد من المقالات المميزة",
+  "more_featured_pictures": "المزيد من الصور المميزة",
+  "on_this_day": "في مثل هذا اليوم",
+  "picture": "صورة",
+  "read_more": "قراءة المزيد",
+  "source": "المصدر",
+  "support_wikipedia": "دعم ويكيبيديا"
+}

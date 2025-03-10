@@ -1,1 +1,12 @@
-{"current_events":"Eventos atuais","in_the_news":"Nas notícias","more_events":"Mais eventos","more_featured_articles":"Mais artigos em destaque","more_featured_pictures":"Mais fotos em destaque","on_this_day":"Neste dia","picture":"Foto","read_more":"leia mais","source":"Fonte","support_wikipedia":"Apoie a Wikipédia"}
+{
+  "current_events": "Eventos actuais",
+  "in_the_news": "Nas notícias",
+  "more_events": "Mais eventos",
+  "more_featured_articles": "Mais artigos em destaque",
+  "more_featured_pictures": "Mais imagens em destaque",
+  "on_this_day": "Neste dia",
+  "picture": "Imagem",
+  "read_more": "Ler mais",
+  "source": "Fonte",
+  "support_wikipedia": "Apoio à Wikipédia"
+}

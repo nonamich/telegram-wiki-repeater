@@ -45,13 +45,13 @@ export class WikiService {
   getURLOnThisDay(params: OnThisDayRequest) {
     const { lang, month, day } = this.utils.prepareParams(params);
 
-    return `/${lang}/onthisday/events/${month}/${day}`;
+    return `${this.getBaseURL(lang)}/onthisday/events/${month}/${day}`;
   }
 
   getURLFeaturedContent(params: FeaturedRequest) {
     const { lang, year, month, day } = this.utils.prepareParams(params);
 
-    return `/${lang}/featured/${year}/${month}/${day}`;
+    return `${this.getBaseURL(lang)}/featured/${year}/${month}/${day}`;
   }
 
   async getEvents(params: OnThisDayRequest) {
@@ -129,7 +129,7 @@ export class WikiService {
 
       return data;
     } catch (error) {
-      if (error instanceof AxiosError) {
+      if (error instanceof AxiosError && error.response?.status !== 404) {
         await sleep(WIKI_RETRY_MS);
 
         return await this.request(params);
@@ -161,5 +161,9 @@ export class WikiService {
     }
 
     return [...entityOfData, ...entityOfDataMixed];
+  }
+
+  getBaseURL(lang: string) {
+    return `https://${lang}.wikipedia.org/api/rest_v1/feed`;
   }
 }

@@ -73,7 +73,9 @@ export class TelegramScheduler {
     const channels = await this.db.getProdChannels();
 
     for (const channel of channels) {
-      await this.executeWithI18nContext(channel.id, channel.lang);
+      try {
+        await this.executeWithI18nContext(channel.id, channel.lang);
+      } catch {}
     }
   }
 }

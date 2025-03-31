@@ -3,6 +3,7 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
+import { ImagesService } from '~/modules/images/images.service';
 import {
   WikiFeaturedImage,
   WikiOnThisDay,
@@ -19,19 +20,23 @@ export class TelegramSender {
   constructor(
     @InjectBot() readonly bot: Telegraf,
     readonly views: TelegramViews,
-    readonly images: TelegramImages,
+    readonly telegramImagesService: TelegramImages,
+    readonly imagesService: ImagesService,
   ) {}
 
   async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
     const html = await this.views.renderFeaturedArticle({ article });
-    const image = await this.images.getImageURLByArticle(article);
+    const image =
+      await this.telegramImagesService.getImageURLByArticle(article);
 
     await this.sendPost(chatId, html, image);
   }
 
   async sendFeaturedImage(chatId: ChatId, image: WikiFeaturedImage) {
     const caption = await this.views.renderFeaturedImage({ image });
-    const imageURL = await this.images.getResizedURL(image.thumbnail);
+    const imageURL = await this.telegramImagesService.getResizedURL(
+      image.thumbnail,
+    );
 
     await this.sendPost(chatId, caption, imageURL);
   }
@@ -41,7 +46,9 @@ export class TelegramSender {
       event.pages.splice(0);
     }
 
-    const image = await this.images.getFirstImageFromArticles(event.pages);
+    const image = await this.telegramImagesService.getFirstImageFromArticles(
+      event.pages,
+    );
     const html = await this.views.renderOnThisDay({
       event,
       pageIdWithImage: image?.pageId,
@@ -50,17 +57,24 @@ export class TelegramSender {
     await this.sendPost(chatId, html, image?.url);
   }
 
-  async sendPost(chatId: ChatId, html: string, media?: string) {
+  async sendPost(chatId: ChatId, html: string, photoURL?: string) {
     const extra = this.getDefaultExtra();
 
-    if (media) {
-      await this.bot.telegram.sendPhoto(chatId, media, {
-        ...extra,
-        caption: html,
-      });
-    } else {
-      await this.bot.telegram.sendMessage(chatId, html, extra);
+    if (photoURL) {
+      const isImageContentType =
+        await this.imagesService.isImageContentType(photoURL);
+
+      if (isImageContentType) {
+        await this.bot.telegram.sendPhoto(chatId, photoURL, {
+          ...extra,
+          caption: html,
+        });
+
+        return;
+      }
     }
+
+    await this.bot.telegram.sendMessage(chatId, html, extra);
   }
 
   getDefaultExtra() {

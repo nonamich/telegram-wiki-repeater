@@ -21,6 +21,17 @@ export class ImagesService {
   }
 
   @CacheableAsync()
+  async isImageContentType(url: string) {
+    try {
+      const { headers } = await this.http.axiosRef.head(encodeURI(url));
+
+      return headers['content-type'].split('/').at(0) === 'image';
+    } catch {
+      return false;
+    }
+  }
+
+  @CacheableAsync()
   async getContentLength(url: string) {
     const { headers } = await this.http.axiosRef.head(url);
 

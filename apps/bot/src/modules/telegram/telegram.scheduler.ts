@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import * as Sentry from '@sentry/aws-serverless';
+
+import { Utils } from '@repo/shared';
 
 import { DBService } from '~/modules/db/db.service';
 import { I18nContext } from '~/modules/i18n/i18n.context';
@@ -75,7 +78,11 @@ export class TelegramScheduler {
     for (const channel of channels) {
       try {
         await this.executeWithI18nContext(channel.id, channel.lang);
-      } catch {}
+      } catch (err) {
+        if (!Utils.isDev) {
+          Sentry.captureException(err);
+        }
+      }
     }
   }
 }

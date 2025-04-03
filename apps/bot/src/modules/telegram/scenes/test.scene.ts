@@ -120,7 +120,7 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(14)!,
+            featuredContent.onthisday!.at(5)!,
           );
           break;
       }

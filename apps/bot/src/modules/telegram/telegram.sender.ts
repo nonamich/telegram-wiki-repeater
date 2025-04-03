@@ -61,17 +61,12 @@ export class TelegramSender {
     const extra = this.getDefaultExtra();
 
     if (photoURL) {
-      const isImageContentType =
-        await this.imagesService.isImageContentType(photoURL);
+      await this.bot.telegram.sendPhoto(chatId, photoURL, {
+        ...extra,
+        caption: html,
+      });
 
-      if (isImageContentType) {
-        await this.bot.telegram.sendPhoto(chatId, photoURL, {
-          ...extra,
-          caption: html,
-        });
-
-        return;
-      }
+      return;
     }
 
     await this.bot.telegram.sendMessage(chatId, html, extra);

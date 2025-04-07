@@ -27,16 +27,9 @@ export class ImagesService {
     return +headers['content-length'];
   }
 
-  removeSchemaProtocol(string: string) {
-    return string.replace(/^https?:\/\//, '');
-  }
-
   getProxyURL(url: string) {
     const { ext } = path.parse(url);
-    const schemalessURL = this.removeSchemaProtocol(url);
-    const obj = new URL(
-      `https://${this.token}.cloudimg.io/v7/${schemalessURL}`,
-    );
+    const obj = new URL(`https://${this.token}.cloudimg.io/v7/${url}`);
 
     obj.searchParams.append('org_if_sml', '1'); // https://docs.cloudimage.io/transformations/image-operations/prevent-enlargement
     obj.searchParams.append('func', 'bound'); // https://docs.cloudimage.io/transformations/image-operations/bound#examples

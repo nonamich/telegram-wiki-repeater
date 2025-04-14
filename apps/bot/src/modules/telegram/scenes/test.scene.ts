@@ -37,7 +37,7 @@ export class TestScene {
     ctx.wizard.next();
 
     await ctx.sendMessage(
-      `Send me date as  ${dayjs().format(dataFormat)} format`,
+      `Send me date as ${dayjs().format(dataFormat)} format`,
     );
   }
 
@@ -120,7 +120,7 @@ export class TestScene {
         case 'on_this_day':
           await this.sender.sendOnThisDay(
             chat.id,
-            featuredContent.onthisday!.at(7)!,
+            featuredContent.onthisday!.at(1)!,
           );
           break;
       }

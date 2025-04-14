@@ -52,5 +52,6 @@ export const TELEGRAM_IMAGE_BLACK_LIST_ENCODED = [
   'R2F5X1ByaWRlX0ZsYWc=',
   'VHJhbnNnZW5kZXJfUHJpZGVfZmxhZw==',
   'U292aWV0X1NvY2lhbGlzdF9SZXB1YmxpYw==',
+  'UmVwdWJsaWNfb2ZfQ2hpbmE=',
 ];
 export const TELEGRAM_MAX_ON_THIS_DAY_TEXT = 600;

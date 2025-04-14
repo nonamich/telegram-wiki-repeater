@@ -1,5 +1,7 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectBot } from 'nestjs-telegraf';
+import { firstValueFrom } from 'rxjs';
 import { Telegraf } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 
@@ -22,6 +24,7 @@ export class TelegramSender {
     readonly views: TelegramViews,
     readonly telegramImagesService: TelegramImages,
     readonly imagesService: ImagesService,
+    readonly httpService: HttpService,
   ) {}
 
   async sendFeaturedArticle(chatId: ChatId, article: WikiArticle) {
@@ -61,10 +64,22 @@ export class TelegramSender {
     const extra = this.getDefaultExtra();
 
     if (photoURL) {
-      await this.bot.telegram.sendPhoto(chatId, photoURL, {
-        ...extra,
-        caption: html,
-      });
+      const { data: source } = await firstValueFrom(
+        this.httpService.get<NodeJS.ReadableStream>(photoURL, {
+          responseType: 'stream',
+        }),
+      );
+
+      await this.bot.telegram.sendPhoto(
+        chatId,
+        {
+          source,
+        },
+        {
+          ...extra,
+          caption: html,
+        },
+      );
 
       return;
     }
